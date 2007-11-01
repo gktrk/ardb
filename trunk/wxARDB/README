@@ -1,0 +1,45 @@
+
+Anarch Revolt Deck Builder (ARDB)
+
+Synopsis:
+===========================
+
+ARDB is a helpful program to players of the VTES card game.
+It features a searchable database of all existing cards.
+It features an inventory manager for your collection.
+It features a deck builder tool.
+It is cross-platform.
+It is Free Software (free speach, free beer)
+
+
+Requirements:
+===========================
+
+wxWindows version 2.4 (http://www.wxwindows.org)
+
+
+How to build:
+===========================
+
+LINUX:
+./make_linux.sh
+should take care of all the build process.
+
+Launch ardb and let it create ~/.ardb/ and it's database.
+Then, copy the directory src/vtesicons in ~/.ardb/
+and copy resources/*.xsl to ~/.ardb/
+
+
+WINDOWS:
+./make_win32.sh
+is the build script for cross-compiling an MS Windows .exe.
+For help about setting up a functional cross-compiling environment,
+please check docs/cross-compiling
+
+
+Known issues:
+===========================
+
+LINUX:
+It doesn't like UTF-8. No, it doesn't.
+launch ardb with: `LANG=C ardb`
