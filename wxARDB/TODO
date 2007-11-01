@@ -1,0 +1,16 @@
+au chargement, mettre le focus dans la zone de texte de recherche
+permettre de faire une selection a partir des champs have/need/spare
+un systeme de sauvegarde ou d'export de la selection en cours
+recreate interfacedata after DB update
+add inventory export to text
+add custom ardb.ini search filters for library cards
+Color lines depending on 'have'
+"Ignore reprints" for card sets filter
+ENTER/DEL/ESCAPE accelerator for filters
+Deck Simulator: set font size
+Default sort order for deck crypt
+Fix bug with xml char encoding
+Visual hint for sort order in lists
+window-level accelerators for deck builder
+preferences
+fix locale bug for crypt avg
