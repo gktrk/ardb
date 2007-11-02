@@ -202,7 +202,7 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos, const wxS
   wxMenuBar *pMenuBar = new wxMenuBar;
 
   pMenuBar->Append (pFileMenu, wxT ("File"));
-  pMenuBar->Append (pBrowserMenu, wxT("Browser"));
+
   pMenuBar->Append (pInventoryMenu, wxT("Inventory"));
   pMenuBar->Append (pHelpMenu, wxT ("Help"));
   
