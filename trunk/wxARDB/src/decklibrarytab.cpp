@@ -163,7 +163,7 @@ DeckLibraryTab::AddOrUpdateTreeItem (wxTreeItemId oParent, wxString& sLabel, lon
   bool bSearch = TRUE, bFound = FALSE;
   wxString sLabelCount = wxT (""), sLabelWhat;
   wxTreeItemId oSearchId, oMatchId;
-  long lCookie;
+  wxTreeItemIdValue cookie;
   long lCount;
 
   if (!oParent.IsOk ())
@@ -174,7 +174,7 @@ DeckLibraryTab::AddOrUpdateTreeItem (wxTreeItemId oParent, wxString& sLabel, lon
 
   if (m_pTree->ItemHasChildren (oParent))
     {
-      oSearchId = m_pTree->GetFirstChild (oParent, lCookie);
+      oSearchId = m_pTree->GetFirstChild (oParent, cookie);
       
       // Here we search if an item of the same label is already in the tree
       while (bSearch)
@@ -188,7 +188,7 @@ DeckLibraryTab::AddOrUpdateTreeItem (wxTreeItemId oParent, wxString& sLabel, lon
 	      oMatchId = oSearchId;
 	      bFound = TRUE;
 	    }
-	  oSearchId = m_pTree->GetNextChild (oParent, lCookie);
+	  oSearchId = m_pTree->GetNextChild (oParent, cookie);
 	  if (!oSearchId.IsOk ())
 	    {
 	      bSearch = FALSE;
@@ -294,7 +294,8 @@ wxArrayLong *
 DeckLibraryTab::DeleteBranch (wxTreeItemId oItemId, bool bFirstCall)
 {
   wxArrayLong *pRefArray = new wxArrayLong (), *pOtherArray;
-  long lCardRef, lCookie = (long) &oItemId;
+  long lCardRef = (long) &oItemId;
+  wxTreeItemIdValue cookie;
   MyTreeItemData *pData;
 
   m_bNoEvents = TRUE;
@@ -321,7 +322,7 @@ DeckLibraryTab::DeleteBranch (wxTreeItemId oItemId, bool bFirstCall)
     }
       
   // Recursively process the children
-  wxTreeItemId oChildId = m_pTree->GetFirstChild (oItemId, lCookie);
+  wxTreeItemId oChildId = m_pTree->GetFirstChild (oItemId, cookie);
   while (oChildId.IsOk ())
     {
       pOtherArray = DeleteBranch (oChildId, FALSE);
@@ -330,7 +331,7 @@ DeckLibraryTab::DeleteBranch (wxTreeItemId oItemId, bool bFirstCall)
 	  WX_APPEND_ARRAY (*pRefArray, *pOtherArray);
 	  delete pOtherArray;
 	}
-      oChildId = m_pTree->GetNextChild (oItemId, lCookie);
+      oChildId = m_pTree->GetNextChild (oItemId, cookie);
     }
 
   // after all the recursive processing has taken place, 
@@ -386,7 +387,7 @@ void
 DeckLibraryTab::MoreOfAnItem (wxTreeItemId oItemId, long lCount)
 {
   wxTreeItemId oChild;
-  long lCookie;
+  wxTreeItemIdValue cookie;
   long lCardRef;
 
   if (!oItemId.IsOk ()) return;
@@ -411,7 +412,7 @@ DeckLibraryTab::MoreOfAnItem (wxTreeItemId oItemId, long lCount)
   else
     {
       // We don't know what to modify, so we'll try with a child
-      oChild = m_pTree->GetFirstChild (oItemId, lCookie);
+      oChild = m_pTree->GetFirstChild (oItemId, cookie);
       if (oChild.IsOk ())
 	{
 	  MoreOfAnItem (oChild, lCount);
@@ -706,7 +707,8 @@ DeckLibraryTab::OnTreeRightClicked (wxTreeEvent &event)
 void
 DeckLibraryTab::OnTreeSelect (wxTreeEvent &event)
 {
-  long lCookie, lCount;
+  wxTreeItemIdValue  cookie;
+  long lCount;
   MyTreeItemData *pData = NULL;
   wxString sName;
   wxTreeItemId oItem, oParentItem;
@@ -721,7 +723,7 @@ DeckLibraryTab::OnTreeSelect (wxTreeEvent &event)
   if (pData == NULL) 
     {
       oParentItem = oItem;
-      oItem = m_pTree->GetFirstChild (oItem, lCookie);
+      oItem = m_pTree->GetFirstChild (oItem, cookie);
       if (oItem.IsOk ())
 	{
 	  pData = (MyTreeItemData *) m_pTree->GetItemData (oItem);

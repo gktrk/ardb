@@ -56,8 +56,7 @@ DeckWindow::DeckWindow (DeckModel *pModel, const wxPoint& pos, const wxSize& siz
   m_pLibraryTab (NULL),
   m_oMenu (),
   m_pModel (pModel),
-  m_pNotebook (NULL),
-  m_pNotebookSizer (NULL)
+  m_pNotebook (NULL)
 {
   wxBoxSizer *pPapaSizer;
   
@@ -66,8 +65,7 @@ DeckWindow::DeckWindow (DeckModel *pModel, const wxPoint& pos, const wxSize& siz
   pPapaSizer = new wxBoxSizer (wxVERTICAL);
 
   m_pNotebook = new wxNotebook (this, -1);
-  m_pNotebookSizer = new wxNotebookSizer (m_pNotebook);
-  pPapaSizer->Add (m_pNotebookSizer, 3, wxEXPAND);
+  pPapaSizer->Add (m_pNotebook, 3, wxEXPAND);
 
   SetSizer (pPapaSizer);
   pPapaSizer->Layout ();

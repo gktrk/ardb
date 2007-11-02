@@ -45,7 +45,7 @@ class BrowserCryptController
   BrowserCryptController (BrowserCryptModel *pModel);
 
   void RemoveCard (long lCard, wxString &sName, bool bUpdateView = TRUE);
-  bool GetFilterMode ();
+  CryptFilterMode GetFilterMode ();
   void SetFilterMode (CryptFilterMode eMode);
   void UpdateModel (BrowserCryptFilter *pFilter);
 

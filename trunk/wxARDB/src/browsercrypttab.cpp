@@ -185,7 +185,6 @@ BrowserCryptTab::Init ()
   m_pCardGrid->SetRowLabelSize (0);
   m_pCardGrid->SetColLabelSize (20);
   m_pCardGrid->SetColMinimalAcceptableWidth (0);
-  //m_pCardGrid->AppendCols (12, FALSE);
   m_pCardGrid->SetColLabelValue (0, wxT ("Have"));
   m_pCardGrid->SetColLabelValue (1, wxT ("Want"));
   m_pCardGrid->SetColLabelValue (2, wxT ("Spare"));
@@ -217,11 +216,14 @@ BrowserCryptTab::Init ()
   }
 
   m_pPapaSizer->Add (m_pSplitterWindow, 1, wxEXPAND);
-
-  m_pPapaSizer->Layout ();
+  m_pPapaSizer->Layout();
   
-    //apparently useless and causes display bug when creating a new browser
-  m_pPapaSizer->Fit (m_pParent);
+  if (!m_uiNumber)
+  {
+	//Required for Windows.  Without controls
+	//are not displayed.
+	m_pPapaSizer->Fit(m_pParent);
+  }
   
 
   // Put both in the splitter window

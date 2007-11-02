@@ -72,7 +72,6 @@ public:
   BrowserLibraryModel *m_pBrowserLibraryModel;
   wxBoxSizer          *m_pPapaSizer;
   wxNotebook          *m_pNotebook;
-  wxNotebookSizer     *m_pNotebookSizer;
 
   unsigned int         m_uiCryptBrowserCount;
   unsigned int         m_uiLibraryBrowserCount;

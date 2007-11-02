@@ -182,7 +182,6 @@ BrowserLibraryTab::Init ()
   m_pCardGrid->SetRowLabelSize (0);
   m_pCardGrid->SetColLabelSize (20);
   m_pCardGrid->SetColMinimalAcceptableWidth (0);
-  //m_pCardGrid->AppendCols (9, FALSE);
   m_pCardGrid->SetColLabelValue (0, wxT ("Have"));
   m_pCardGrid->SetColLabelValue (1, wxT ("Want"));
   m_pCardGrid->SetColLabelValue (2, wxT ("Spare"));
@@ -211,9 +210,12 @@ BrowserLibraryTab::Init ()
 
   m_pPapaSizer->Layout ();
 
-    //apparently useless and causes display bug when creating a new browser
-	m_pPapaSizer->Fit (m_pParent);
-
+  if (!m_uiNumber)
+  {
+	//Required for Windows.  Without controls
+	//are not displayed.
+	m_pPapaSizer->Fit(m_pParent);
+  }
 
   // Put both in the splitter window
   if (m_pSplitterWindow) m_pSplitterWindow->SetSashGravity(0.6);
