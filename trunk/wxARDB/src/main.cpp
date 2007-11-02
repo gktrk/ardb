@@ -28,6 +28,10 @@
 #pragma hdrstop
 #endif
 
+#ifndef __BORLANDC__
+#define __TIMESTAMP__ wxT (__DATE__" "__TIME__)
+#endif
+
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
 #endif
@@ -52,8 +56,6 @@ class BrowserFrame ;
 #  include "icon.xpm"
 #endif
 #  include "ardbsplash.xpm"
-
-
 
 BEGIN_EVENT_TABLE (BrowserFrame, wxFrame)
   EVT_MENU (ID_BROWSER_CLOSE_TAB, BrowserFrame::OnBrowserCloseTab)
