@@ -28,7 +28,7 @@
 #pragma hdrstop
 #endif
 
-#ifndef __BORLANDC__
+#ifndef __WXMSW__
 #define __TIMESTAMP__ wxT (__DATE__" "__TIME__)
 #endif
 
@@ -165,8 +165,7 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos, const wxS
 
   // create Notebook
   m_pNotebook = new wxNotebook (this, -1);
-  m_pNotebookSizer = new wxNotebookSizer (m_pNotebook);
-  m_pPapaSizer->Add (m_pNotebookSizer, 3, wxEXPAND);
+  m_pPapaSizer->Add (m_pNotebook, 3, wxEXPAND);
 
   SetSizer (m_pPapaSizer);
   //  m_pPapaSizer->Layout ();

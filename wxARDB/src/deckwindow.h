@@ -49,7 +49,6 @@ class DeckWindow : public wxFrame
   wxMenu           m_oMenu;
   DeckModel       *m_pModel;
   wxNotebook      *m_pNotebook;
-  wxNotebookSizer *m_pNotebookSizer;
 
   void OnFileClose (wxCommandEvent& event);
   void OnFileExportHTML (wxCommandEvent& event);

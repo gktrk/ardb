@@ -48,7 +48,7 @@ BrowserCryptController::RemoveCard (long lCard, wxString &sName, bool bUpdateVie
 }
 
 
-bool
+CryptFilterMode
 BrowserCryptController::GetFilterMode ()
 {
   return m_eMode;

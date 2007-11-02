@@ -45,7 +45,7 @@ class BrowserLibraryController
   BrowserLibraryController (BrowserLibraryModel *pModel);
 
   void RemoveCard (long lCard, wxString &sName, bool bUpdateView = TRUE);
-  bool GetFilterMode ();
+  LibraryFilterMode GetFilterMode ();
   void SetFilterMode (LibraryFilterMode eMode);
   void UpdateModel (BrowserLibraryFilter *pFilter);
 

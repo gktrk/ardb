@@ -94,7 +94,6 @@ BrowserCryptFilter::BrowserCryptFilter(BrowserCryptController *pController) :
 
   // create the notebook
   wxNotebook *pNotebook = new wxNotebook (this , -1);
-  wxNotebookSizer *pNotebookSizer = new wxNotebookSizer (pNotebook);  
 
   // create the criterion panel
   wxFlexGridSizer *pPrimoSizer = new wxFlexGridSizer (2, 5, 5);
@@ -330,7 +329,7 @@ BrowserCryptFilter::BrowserCryptFilter(BrowserCryptController *pController) :
 
   SetIcon (*g_pIcon);  
 
-  pPapaSizer->Add (pNotebookSizer, 1, wxEXPAND | wxLEFT, 5);
+  pPapaSizer->Add (pNotebook, 1, wxEXPAND | wxLEFT, 5);
   pPapaSizer->Add (pOKCancelSizer, 0, wxALIGN_RIGHT | wxALL, 5);
   pPapaSizer->Layout ();
   pPapaSizer->Fit (this);

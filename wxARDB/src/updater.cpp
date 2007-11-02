@@ -72,115 +72,115 @@ Updater::~Updater ()
 void
 Updater::decodeCSV(wxInputStream *file, char sep, char quote, int maxrecords, int *numfields, wxArrayString *pResult, bool bSkipFirstLine = true)
 {
-  wxString sChar, current = wxT("");
-  bool inquotemode = false;
-  bool inescapemode = false;
-  bool wasinquotemode = false;
-  int recs = 0;
-  long ldummy;
-  *numfields = 0;
+	wxString sChar, current = wxT("");
+	bool inquotemode = false;
+	bool inescapemode = false;
+	bool wasinquotemode = false;
+	int recs = 0;
+	long ldummy;
+	*numfields = 0;
 
-  pResult->Alloc (3000);
-  current.Alloc (3000);
+	pResult->Alloc (3000);
+	current.Alloc (3000);
 
-  if (!pResult || !file) return;
+	if (!pResult || !file) return;
 
-  char acBuffer[2] = {'\0', '\0'};
-  wxChar c = 0;
+	char acBuffer[2] = {'\0', '\0'};
+	wxChar c = 0;
 
-  if (bSkipFirstLine)
-    {
-      // Skip first line (column names)
-      while (!file->Eof () && c != 10) 
-	c = file->GetC ();
-    }
-
-  while (!file->Eof ()) {
-    //    c = file->GetC();
-
-    file->Read (acBuffer, 1);
-
-    // Avoid MS-Windows Latin 1 weird characters
-    // ERRATUM: that obviously doesn't work at all :(
-    if ((unsigned char) *acBuffer >= 0x80 &&
-	(unsigned char) *acBuffer <= 0x9F) *acBuffer = ' ';
-    
-    sChar = wxString (acBuffer, wxConvISO8859_1);
-    c = sChar.GetChar(0);
-
-    if (c==quote){
-      if (inquotemode){
-	if (inescapemode){
-	  inescapemode = false;
-	  //add the escaped char here
-	  current.Append(c);
-	} else {
-	  //are we escaping, or just finishing the quote?
-	  char d = file->GetC();
-	  if (d==quote) {
-	    inescapemode = true;
-	  } else {
-	    inquotemode = false;
-	  }
-	  file->Ungetch(d);
+	if (bSkipFirstLine)
+	{
+		// Skip first line (column names)
+		while (!file->Eof () && c != 10) 
+			c = file->GetC ();
 	}
-      } else {
-	wasinquotemode = true;
-	inquotemode = true;
-      }
-    } else if (c==sep) {
-      if (inquotemode){
-	//add the sep here
-	current.Append(c);
-      } else {
-	//not quoting, start new record
-	current.Trim (true);
-	current.Trim (false);
-	current.Replace (wxT ("\""), wxT ("\"\""));
-	if (wasinquotemode || !current.Length () ||
-	    !current.ToLong (&ldummy)) {
-	  current.Prepend (wxT ('"'));
-	  current.Append ('"');
+
+	while (!file->Eof ()) {
+		//    c = file->GetC();
+
+		file->Read (acBuffer, 1);
+
+		// Avoid MS-Windows Latin 1 weird characters
+		// ERRATUM: that obviously doesn't work at all :(
+		if ((unsigned char) *acBuffer >= 0x80 &&
+			(unsigned char) *acBuffer <= 0x9F) *acBuffer = ' ';
+
+		sChar = wxString (acBuffer, wxConvISO8859_1);
+		c = sChar.GetChar(0);
+
+		if (c==quote){
+			if (inquotemode){
+				if (inescapemode){
+					inescapemode = false;
+					//add the escaped char here
+					current.Append(c);
+				} else {
+					//are we escaping, or just finishing the quote?
+					char d = file->GetC();
+					if (d==quote) {
+						inescapemode = true;
+					} else {
+						inquotemode = false;
+					}
+					file->Ungetch(d);
+				}
+			} else {
+				wasinquotemode = true;
+				inquotemode = true;
+			}
+		} else if (c==sep) {
+			if (inquotemode){
+				//add the sep here
+				current.Append(c);
+			} else {
+				//not quoting, start new record
+				current.Trim (true);
+				current.Trim (false);
+				current.Replace (wxT ("\""), wxT ("\"\""));
+				if (wasinquotemode || !current.Length () ||
+					!current.ToLong (&ldummy)) {
+						current.Prepend (wxT ('"'));
+						current.Append ('"');
+				}
+				pResult->Add (current);
+				wasinquotemode = false;
+				current.Clear ();
+			}
+		} else if (c==10) {
+			if (inquotemode){
+				//add the newline
+				current.Append(c);
+			} else {
+				//not quoting, start new record
+				current.Trim (true);
+				current.Trim (false);
+				current.Replace (wxT ("\""), wxT ("\"\""));
+				if (wasinquotemode || !current.Length () ||
+					!current.ToLong (&ldummy)) {
+						current.Prepend (wxT ('"'));
+						current.Append ('"');
+				}
+				pResult->Add (current);
+				wasinquotemode = false;
+				current.Clear ();
+				//for the first line, store the field count
+				if (*numfields == 0){
+					*numfields = pResult->GetCount();
+				}
+				recs++;
+				if ((recs>maxrecords)&&(maxrecords!=-1)) {
+					break;
+				}   
+			}
+		} else if (c==13) {
+			if (inquotemode){
+				//add the carrier return if in quote mode only
+				current.Append(c);
+			}
+		} else {//another character type
+			current.Append(c);
+		}
 	}
-	pResult->Add (current);
-	wasinquotemode = false;
-	current.Clear ();
-      }
-    } else if (c==10) {
-      if (inquotemode){
-	//add the newline
-	current.Append(c);
-      } else {
-	//not quoting, start new record
-	current.Trim (true);
-	current.Trim (false);
-	current.Replace (wxT ("\""), wxT ("\"\""));
-	if (wasinquotemode || !current.Length () ||
-	    !current.ToLong (&ldummy)) {
-	  current.Prepend (wxT ('"'));
-	  current.Append ('"');
-	}
-	pResult->Add (current);
-	wasinquotemode = false;
-	current.Clear ();
-	//for the first line, store the field count
-	if (*numfields == 0){
-	  *numfields = pResult->GetCount();
-	}
-	recs++;
-	if ((recs>maxrecords)&&(maxrecords!=-1)) {
-	  break;
-	}   
-      }
-    } else if (c==13) {
-      if (inquotemode){
-	//add the carrier return if in quote mode only
-	current.Append(c);
-      }
-    } else {//another character type
-      current.Append(c);
-    }
-  }
 }
 
 
@@ -367,7 +367,7 @@ Updater::LoadDisciplinesFromCSV ()
       pDatabase->Query (wxT ("BEGIN TRANSACTION;"));
       
       // Drop the first items which are not disciplines
-      m_oDisciplinesArray.Remove (0, uiCrap);
+      m_oDisciplinesArray.RemoveAt (0, uiCrap);
 
       pDatabase->Query (wxT ("DELETE FROM disciplines;"));
       for (unsigned int c=0; c<m_oDisciplinesArray.GetCount (); c++)
@@ -431,52 +431,52 @@ Updater::LoadTableFromCSV (wxString sTable, wxString sCSVFile, int iNulls = 1)
 
   //now lets import all data, one row at a time
   for (unsigned int i = 0; i < oList.GetCount (); i++) 
-    {
-      wxString& sItem = oList.Item (i);
-      if (colNum == 0) 
-	{
-	  sQuery = wxT ("INSERT INTO ");
-	  sQuery.Append (sTable);
-	  sQuery.Append (wxT (" VALUES("));
-	}
-      //      QuoteAsNeeded (&sItem);
-      sQuery.Append (sItem);
-      
-      colNum++;
-      if (colNum < iNumFields)
-	{
-	  sQuery.Append (wxT(","));
-	} else {
+  {
+	  wxString& sItem = oList.Item (i);
+	  if (colNum == 0) 
+	  {
+		  sQuery = wxT ("INSERT INTO ");
+		  sQuery.Append (sTable);
+		  sQuery.Append (wxT (" VALUES("));
+	  }
+	  //      QuoteAsNeeded (&sItem);
+	  sQuery.Append (sItem);
 
-	  colNum = 0;
-	  sQuery.Append (sNulls);
-	  sQuery.Append (wxT(");"));
+	  colNum++;
+	  if (colNum < iNumFields)
+	  {
+		  sQuery.Append (wxT(","));
+	  } else {
 
-	  // Tweak : replace every occurences of 'Promo-xx' by 'Promo:xx', 
-	  // it's easier to parse
-	  sQuery.Replace (wxT ("Promo-"), wxT ("Promo:"));
+		  colNum = 0;
+		  sQuery.Append (sNulls);
+		  sQuery.Append (wxT(");"));
 
-	  // Remove all the ugly '{', '}', and '{()}' which mark erratas
-	  sQuery.Replace (wxT ("{()}"), wxT (""));
-	  sQuery.Replace (wxT ("{"), wxT (""));
-	  sQuery.Replace (wxT ("}"), wxT (""));
+		  // Tweak : replace every occurences of 'Promo-xx' by 'Promo:xx', 
+		  // it's easier to parse
+		  sQuery.Replace (wxT ("Promo-"), wxT ("Promo:"));
 
-// 	  printf (sQuery.mb_str (wxConvLibc));
-// 	  printf ("\n");
+		  // Remove all the ugly '{', '}', and '{()}' which mark erratas
+		  sQuery.Replace (wxT ("{()}"), wxT (""));
+		  sQuery.Replace (wxT ("{"), wxT (""));
+		  sQuery.Replace (wxT ("}"), wxT (""));
 
-	  if (pDatabase->Query (sQuery) == NULL)
-	    {
-	      wxLogError (wxT ("An error occured : canceling import."));
-	      Log(wxT ("\n"));
-	      delete pCopyBuffer;
-	      return -1;
-	    }
-	  rowNum++;
-	  if (!(rowNum % 100)) 
-	    {
-	      Log (wxT ("."));
-	    }
-	}
+		  // 	  printf (sQuery.mb_str (wxConvLibc));
+		  // 	  printf ("\n");
+
+		  if (pDatabase->Query (sQuery) == NULL)
+		  {
+			  wxLogError (wxT ("An error occured : canceling import."));
+			  Log(wxT ("\n"));
+			  delete pCopyBuffer;
+			  return -1;
+		  }
+		  rowNum++;
+		  if (!(rowNum % 100)) 
+		  {
+			  Log (wxT ("."));
+		  }
+	  }
     }
 
   Log(wxT ("\n"));

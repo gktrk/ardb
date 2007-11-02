@@ -46,7 +46,7 @@ BrowserLibraryController::RemoveCard (long lCard, wxString &sName, bool bUpdateV
 }
 
 
-bool
+LibraryFilterMode
 BrowserLibraryController::GetFilterMode ()
 {
   return m_eMode;

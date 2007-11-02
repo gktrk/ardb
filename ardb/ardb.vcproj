@@ -40,7 +40,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(SolutionDir)\include\libxslt&quot;;&quot;$(SolutionDir)\include\libxml\include&quot;;&quot;$(SolutionDir)\include&quot;;&quot;$(SolutionDir)\include\wxwidgets&quot;;&quot;$(SolutionDir)\sqlite&quot;;&quot;$(SolutionDir)\lib\vc_lib\msw&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -116,6 +116,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="&quot;$(SolutionDir)\include\libxslt&quot;;&quot;$(SolutionDir)\include\libxml\include&quot;;&quot;$(SolutionDir)\include&quot;;&quot;$(SolutionDir)\include\wxwidgets&quot;;&quot;$(SolutionDir)\sqlite&quot;;&quot;$(SolutionDir)\lib\vc_lib\msw&quot;"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="0"
 			/>
 			<Tool
