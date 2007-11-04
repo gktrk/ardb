@@ -492,6 +492,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\wxARDB\src\imagePanel.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\wxARDB\src\imagePanel.h"
+					>
+				</File>
+				<File
 					RelativePath="..\wxARDB\src\interfacedata.cpp"
 					>
 				</File>

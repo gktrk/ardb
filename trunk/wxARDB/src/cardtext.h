@@ -33,7 +33,7 @@ class CardText: public wxTextCtrl
   ~CardText () { }
   
   wxString DisplayCryptText (long lCardRef);
-  void DisplayLibraryText (long lCardRef);
+  wxString DisplayLibraryText (long lCardRef);
 
  private:
 	 wxString CardNameToFileName(wxString name);

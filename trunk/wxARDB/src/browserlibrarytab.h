@@ -35,6 +35,8 @@
 #include "cardtext.h"
 #include "types.h"
 
+#include "imagePanel.h"
+
 class BrowserLibraryController;
 class BrowserLibraryCardGrid; // declared below
 class BrowserLibraryFilterGrid; // declared below
@@ -77,6 +79,7 @@ private:
   wxStaticText *     m_pCardCountLabel;
   BrowserLibraryCardGrid * m_pCardGrid;
   CardText *         m_pCardText;
+  ImagePanel*		m_pImagePanel;
     
   unsigned int       m_uiFilterListHeight;
   unsigned int       m_uiNumber;

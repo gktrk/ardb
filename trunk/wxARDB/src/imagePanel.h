@@ -29,6 +29,7 @@ public:
 
 protected:
     void OnPaint(wxPaintEvent &event); ///< Handle paint events for the panel
+	void OnSize(wxSizeEvent &event);
 
 private:
     wxImage image;

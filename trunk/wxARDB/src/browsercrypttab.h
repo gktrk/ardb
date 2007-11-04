@@ -35,6 +35,8 @@
 #include "cardtext.h"
 #include "types.h"
 
+#include "imagePanel.h"
+
 class BrowserCryptController;
 class BrowserCryptCardGrid; // declared below
 class BrowserCryptFilterGrid; // declared below
@@ -78,6 +80,7 @@ private:
   wxStaticText *     m_pCardCountLabel;
   BrowserCryptCardGrid * m_pCardGrid;
   CardText *         m_pCardText;
+  ImagePanel*		m_pImagePanel;
     
   unsigned int       m_uiCapacityTotal;
   unsigned int       m_uiFilterListHeight;
