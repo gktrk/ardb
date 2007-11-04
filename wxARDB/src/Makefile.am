@@ -40,7 +40,8 @@ ardb_SOURCES = \
 	main.cpp \
 	speling.cpp \
 	types.cpp \
-	updater.cpp
+	updater.cpp \
+	imagePanel.cpp
 
 ardb_resource.o: ardb.rc
 	$(RESCOMP) -i$(srcdir)/ardb.rc -o ardb_resource.o \
