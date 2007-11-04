@@ -64,7 +64,14 @@ CardText::DisplayCryptText (long lCardRef)
 			SetDefaultStyle (wxTextAttr (wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOW), oFont));
 			WriteText (oRecord.Item (0));
 
+			wxString adv = oRecord.Item(1);
+
 			cardName = CardNameToFileName(oRecord.Item(0));
+
+			if (!adv.IsEmpty())
+			{
+				cardName += "adv";
+			}
 
 			oFont.SetWeight (wxNORMAL);
 			SetDefaultStyle (wxTextAttr (wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOW), oFont));
@@ -135,7 +142,7 @@ CardText::DisplayCryptText (long lCardRef)
 }
 
 
-void
+wxString
 CardText::DisplayLibraryText (long lCardRef)
 {
 	wxArrayString oRecord;
@@ -143,6 +150,7 @@ CardText::DisplayLibraryText (long lCardRef)
 	Database *pDatabase = Database::Instance ();
 	RecordSet *pResultSet;
 	wxString sRarityQuery, sViewQuery;
+	wxString cardName;
 
 	if (pDatabase && lCardRef > 0) 
 	{
@@ -163,6 +171,8 @@ CardText::DisplayLibraryText (long lCardRef)
 		if (pResultSet && pResultSet->GetCount () > 0)
 		{
 			oRecord = pResultSet->Item (0);
+
+			cardName = CardNameToFileName(oRecord.Item(0));
 
 			// Get the name
 			oFont.SetWeight (wxBOLD);
@@ -228,6 +238,8 @@ CardText::DisplayLibraryText (long lCardRef)
 		}
 		Thaw ();
 	}
+
+	return cardName;
 }
 
 wxString CardText::CardNameToFileName(wxString name)
@@ -306,6 +318,8 @@ wxString CardText::CardNameToFileName(wxString name)
 		case '-':
 		case '.':
 		case '\'':
+		case '(':
+		case ')':
 			break;
 
 		default:

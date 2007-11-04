@@ -58,6 +58,17 @@ void ImagePanel::Clear()
 	Refresh();
 }
 
+void ImagePanel::OnSize(wxSizeEvent &event)
+{
+	if (!image.IsOk()) // || event.GetEventObject() != imagePanel)
+	{
+		event.Skip();
+		return;
+	}
+
+	Refresh();
+}
+
 /// Draw the image in the panel if it exists
 void ImagePanel::OnPaint(wxPaintEvent &event)
 {
@@ -105,7 +116,7 @@ void ImagePanel::OnPaint(wxPaintEvent &event)
 	x = (newWidth - thumbWidth)/2;
 
 	wxBitmap bitmap;
-	bitmap = wxBitmap(image.Scale(thumbWidth, thumbHeight,wxIMAGE_QUALITY_HIGH));
+	bitmap = wxBitmap(image.Scale(thumbWidth,thumbHeight));
 
     if (bitmap.GetPalette())
     {
@@ -125,4 +136,5 @@ void ImagePanel::OnPaint(wxPaintEvent &event)
 BEGIN_EVENT_TABLE(ImagePanel, wxPanel)
     // Paint event for the panel
     EVT_PAINT(ImagePanel::OnPaint)
+	EVT_SIZE(ImagePanel::OnSize)
 END_EVENT_TABLE()
