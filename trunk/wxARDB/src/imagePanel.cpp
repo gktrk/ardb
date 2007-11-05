@@ -1,3 +1,30 @@
+/*  Anarch Revolt Deck Builder - a VTES inventory manager / deck builder
+ *
+ *  Copyright (C) 2007 Graham Smith
+ *  graham.r.smith@gmail.com
+ *  
+ *  Official project page: http://code.google.com/p/ardb/
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  
+ */
+
+#ifndef _imagepanel_h
+#define _imagepaenl_h
+
+
 #include "wx/wxprec.h"
 
 #include <wx/confbase.h>
@@ -14,9 +41,10 @@
  *         the main program's frame.
  *  \param image - an initial image to load into the panel
  */
-ImagePanel::ImagePanel(wxWindow *parent) :
+ImagePanel::ImagePanel(wxWindow *parent, ImageDialog *dialog) :
     wxPanel(parent)
 {
+	m_pDialog = dialog;
 }
 
 // --------------------------------------------------------
@@ -43,8 +71,9 @@ void ImagePanel::SetImage(wxString fileName)
 	{
 		image.Destroy();
 	}
-
-	image.LoadFile(fileName);
+	
+	m_fileName = fileName;
+	image.LoadFile(m_fileName);
     Refresh();
 }
 
@@ -67,6 +96,16 @@ void ImagePanel::OnSize(wxSizeEvent &event)
 	}
 
 	Refresh();
+}
+
+void ImagePanel::Click(wxMouseEvent &event)
+{
+	if (m_pDialog != NULL)
+	{
+		m_pDialog->SetImage(m_fileName);
+		m_pDialog->ShowModal();
+	}
+	
 }
 
 /// Draw the image in the panel if it exists
@@ -111,7 +150,7 @@ void ImagePanel::OnPaint(wxPaintEvent &event)
 		thumbHeight = newHeight;
 	}
 
-	int x,y;
+	int x;
 
 	x = (newWidth - thumbWidth)/2;
 
@@ -137,4 +176,7 @@ BEGIN_EVENT_TABLE(ImagePanel, wxPanel)
     // Paint event for the panel
     EVT_PAINT(ImagePanel::OnPaint)
 	EVT_SIZE(ImagePanel::OnSize)
+	EVT_LEFT_UP(ImagePanel::Click)
 END_EVENT_TABLE()
+
+#endif
