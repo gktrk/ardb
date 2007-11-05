@@ -1,0 +1,13 @@
+#labels Phase-Deploy
+#list of lib required to build ardb and know working versions
+
+*Anarch Revolt Deck Builder* requires the fallowing third part libraries.
+
+= libxml2 =
+  * libxml2-2.6.23
+
+= libxslt =
+  * libxslt-1.1.16
+
+= wxGTK =
+  * wxGTK-2.8.6
