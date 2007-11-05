@@ -28,9 +28,9 @@
 #pragma hdrstop
 #endif
 
-#ifndef __WXMSW__
-#define __TIMESTAMP__ wxT (__DATE__" "__TIME__)
-#endif
+
+#define BUILD_DATE wxT (__DATE__" "__TIME__)
+
 
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
@@ -330,7 +330,7 @@ void
 BrowserFrame::OnHelpAbout (wxCommandEvent& WXUNUSED (event)) 
 {
 	wxString about;
-	about.Printf(wxT ("The Anarch Revolt Deck Builder\nVersion 2 Beta\n\nby Francois Gombault & Graham Smith\n\nEmail: graham.r.smith@gmail.com\n\n Built: %s"),__TIMESTAMP__);
+	about.Printf(wxT ("The Anarch Revolt Deck Builder\nVersion 2 Beta\n\nby Francois Gombault & Graham Smith\n\nEmail: graham.r.smith@gmail.com\n\n Built: %s"),BUILD_DATE);
   
 	wxMessageBox(about, wxT ("About"), wxICON_INFORMATION | wxOK);
 }
