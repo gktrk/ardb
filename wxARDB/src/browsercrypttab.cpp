@@ -45,6 +45,8 @@ class BrowserFrame;
 #include <wx/fileconf.h>
 #include <wx/dir.h>
 
+#include "imagedialog.h"
+
 #define CARD_IMAGE_DIR wxT("cardimages")
 
 
