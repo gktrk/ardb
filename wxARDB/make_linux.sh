@@ -5,6 +5,11 @@
 # Parameters are passed to configure
 # 
 
+dos2unix acinclude.m4
+dos2unix configure.in
+dos2unix Makefile.am
+dos2unix wxARDB.spec
+
 ACLOCAL=aclocal
 AUTOMAKE=automake
 AUTOCONF=autoconf
