@@ -4,23 +4,23 @@
 = The actual Team =
 == Graham Smith ==
   * Project Leader
-  * Head Developper
+  * Head Developer
   * Windows package maintainer
 
-== Meshee.knight =
-  * Website developper
+== Meshee Knight =
+  * Website developer
   * Webmaster
   * Debian package maintainer
   * Project coordinator
 
-== sven.helmer ==
+== Sven Helmer ==
   * Coder
   * GNU/Linux compatibility
   * OpenSuse package maintainer
 
 = Open position =
 == Coder ==
-We look forward more developper contribution with c++/gtk background
+We look forward more developer contribution with c++/gtk background
 
 == Maintainer ==
 We need package maintainer for
