@@ -11,3 +11,5 @@
 
 = wxGTK http://www.wxwidgets.org/ =
   * wxGTK-2.8.6
+
+_Knowned to not compile with wxGTK-2.6.x_
