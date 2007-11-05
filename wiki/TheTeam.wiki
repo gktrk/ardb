@@ -16,6 +16,7 @@
 == sven.helmer ==
   * Coder
   * GNU/Linux compatibility
+  * OpenSuse package maintainer
 
 = Open position =
 == Coder ==
@@ -25,7 +26,6 @@ We look forward more developper contribution with c++/gtk background
 We need package maintainer for
   * Ubuntu
   * Fedora
-  * OpenSuse
   * OSX Leopard
 
 == Tester ==
