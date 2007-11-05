@@ -3,11 +3,11 @@
 
 *Anarch Revolt Deck Builder* requires the fallowing third part libraries.
 
-= libxml2 =
+= libxml2 http://xmlsoft.org/ =
   * libxml2-2.6.23
 
-= libxslt =
+= libxslt http://xmlsoft.org/XSLT/ =
   * libxslt-1.1.16
 
-= wxGTK =
+= wxGTK http://www.wxwidgets.org/ =
   * wxGTK-2.8.6
