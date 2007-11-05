@@ -70,7 +70,7 @@ CardText::DisplayCryptText (long lCardRef)
 
 			if (!adv.IsEmpty())
 			{
-				cardName += "adv";
+				cardName += wxT ("adv");
 			}
 
 			oFont.SetWeight (wxNORMAL);
