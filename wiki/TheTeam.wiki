@@ -18,9 +18,9 @@
   * GNU/Linux compatibility
   * OpenSuse package maintainer
 
-= Open position =
+= Open positions =
 == Coder ==
-We look forward more developer contribution with c++/gtk background
+We look forward to more developer contribution with c++/gtk background
 
 == Maintainer ==
 We need package maintainer for
@@ -29,11 +29,11 @@ We need package maintainer for
   * OSX Leopard
 
 == Tester ==
-We need as much willing tester that will challenge each release candidate.
+We need many willing tester that will challenge each release candidate.
 
 == Doc ==
-We look for a documentation coordinator that will do the following
-  * write end user doc
-  * manage Frequently Asked Questions
-  * fix application wording
-  * define website content
+We are looking for a documentation coordinator that will do the following:
+  * Write end user doc
+  * Manage Frequently Asked Questions
+  * Fix application wording
+  * Define website content
