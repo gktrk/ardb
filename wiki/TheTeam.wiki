@@ -1,14 +1,39 @@
 #labels Phase-Implementation
-#My first googlecode wiki plateform test
+#Presentation of the team and of vacant position
 
-= Introduction =
+= The actual Team =
+== Graham Smith ==
+  * Project Leader
+  * Head Developper
+  * Windows package maintainer
 
-Add your content here.
+== Meshee.knight =
+  * Website developper
+  * Webmaster
+  * Debian package maintainer
+  * Project coordinator
 
+== sven.helmer ==
+  * Coder
+  * GNU/Linux compatibility
 
-= Details =
+= Open position =
+== Coder ==
+We look forward more developper contribution with c++/gtk background
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+== Maintainer ==
+We need package maintainer for
+  * Ubuntu
+  * Fedora
+  * OpenSuse
+  * OSX Leopard
+
+== Tester ==
+We need as much willing tester that will challenge each release candidate.
+
+== Doc ==
+We look for a documentation coordinator that will do the following
+  * write end user doc
+  * manage Frequently Asked Questions
+  * fix application wording
+  * define website content
