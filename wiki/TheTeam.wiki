@@ -1,5 +1,5 @@
+#summary Presentation of the team and vacant position
 #labels Phase-Implementation
-#Presentation of the team and of vacant position
 
 = The actual Team =
 == Graham Smith ==
