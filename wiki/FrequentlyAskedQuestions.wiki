@@ -1,3 +1,6 @@
+#summary Frequently Asked Questions
+#labels Phase-Support
+
 = Q?: Can i distribute Ardb on my own website =
 Yes, Ardb is release on the GPL v2 Licencing terms (http://www.gnu.org/copyleft/gpl.html), meaning you can use, modify, distribute Ardb freely as long as you keep it on same license terms.
 
