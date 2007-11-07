@@ -32,7 +32,7 @@ The more information a bug report has, the more likely it will be to get fixed. 
 Yes, visit us on the [http://groups.google.com/group/ardb-discuss Ardb Discussion List]. 
 
 = Q? Will Ardb work on Windows 95/98 one day =
-No. Ardb is based on fairly recent technologies, like Unicode. Windows 95/98 don't have proper Unicode support. They're too old. Or they're not good enough, I don't know. Either way, they're no longer supported by Microsoft anyway, so I fail to see why I would support them. You should probably upgrade to a better system... May I suggest MacOS or Linux? ^_^
+No. Ardb is based on fairly recent technologies, like Unicode. Windows 95/98 don't have proper Unicode support. They're too old. Or they're not good enough, I don't know. Either way, they're no longer supported by Microsoft anyway. You should probably upgrade to a better system... May I suggest MacOS or Linux? ^_^
 
 = Q? What is this Happy Families thing in Deck Builder =
 [http://wiki.vekn.org/index.php/Happy_Families Happy Families] is a formula designed by Legbiter to ensure a good card flow playing your deck. More information on this can be found on [http://legbiter.tripod.com/ Legbiter's web page(old)]
