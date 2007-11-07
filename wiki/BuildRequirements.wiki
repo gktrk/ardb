@@ -1,5 +1,5 @@
+#summary List of lib required to build ardb and know working versions
 #labels Phase-Deploy
-#list of lib required to build ardb and know working versions
 
 *Anarch Revolt Deck Builder* requires the fallowing third part libraries.
 
