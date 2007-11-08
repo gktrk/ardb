@@ -7,16 +7,22 @@
   * Head Developer
   * Windows package maintainer
 
-== Meshee Knight =
+[mailto:graham.r.smith@gmail.com Contact me]
+
+== Meshenka =
   * Website developer
   * Webmaster
   * Debian package maintainer
   * Project coordinator
 
+[mailto:meshee.knight@gmail.com Contact me]
+
 == Sven Helmer ==
-  * Coder
-  * GNU/Linux compatibility
+  * Developer
+  * GNU/Linux compatibility manager
   * OpenSuse package maintainer
+
+[mailto:sven.helmer@gmail.com Contact me]
 
 = Open positions =
 == Coder ==
