@@ -1,0 +1,68 @@
+#summary Howto build Ardb from source under linux OS
+#labels Phase-Deploy
+
+= Install required libs =
+This program requires the following packages for build:
+ * libxml-dev - Development files for the GNOME XML library
+ * libxslt-dev - XSLT processing library - development kit
+ * libsqlite2-dev - SQLite development files
+ * libwxgtk2.8-dev *WITH UNICODE SUPPORT* - wxWidgets Cross-platform C++ GUI toolkit (GTK+ development)
+ * tofrodos - Converts DOS <-> Unix text files, alias tofromdos
+
+_Some linux distribution packaging system could name those libs differently. Rpm based linux (fedora, mandriva) uses the "-devel" postfix for developments packages_
+
+= Get the source code =
+
+[http://code.google.com/p/ardb/source from svn], from [http://code.google.com/p/ardb/downloads/list official source tarballs], whatever _to build from source you need the source code_ 
+
+= Compile sources = 
+How to build the ARDB program: Use one of the following methods
+ * Using build script 
+ * Using autotools
+
+== Using build script: make_linux.sh ==
+Do the following:
+{{{
+meshee@lasombra:~ cd <path_to_codebase>/wxARDB/
+meshee@lasombra:~ bash make_linux.sh
+}}}
+
+Everything should be fine...
+
+If it's not, try manually running
+
+== Manual running a.k.a autotools == 
+{{{
+meshee@lasombra:~ cd <path_to_codebase>/wxARDB/
+meshee@lasombra:~ aclocal
+meshee@lasombra:~ automake --add-missing
+meshee@lasombra:~ autoconf
+meshee@lasombra:~ ./configure
+meshee@lasombra:~ make
+}}}
+
+(builds alright with autoconf-2.13, automake-1.4)
+
+Executable could be find here: * <path_to_codebase>/wxARDB/src/ardb*
+
+= Final steps =
+Create config folder:
+{{{
+meshee@lasombra:~ mkdir ~/.ardb
+}}}
+
+Copy resources to config folder:
+{{{
+meshee@lasombra:~ cp  resources/vtesicons/* ~/.ardb
+meshee@lasombra:~ cp  resources/*.xsl ~/.ardb
+}}}
+
+= Run Ardb =
+Launch ardb and let it create ~/.ardb/cards.db from white-wolf.com
+
+{{{
+meshee@lasombra:~ src/ardb
+}}}
+
+-- 
+Enjoy
