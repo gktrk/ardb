@@ -172,6 +172,7 @@ class DeckModel
   void ComputeLibraryStats ();
   void RefreshModel (bool bRefreshUI = FALSE);
   void ShouldSaveWarning ();
+  wxString StripInvalidFilename(wxString name);
 
   // XML stuff that needs wrapping
   xmlNodePtr my_xmlNewChild (xmlNodePtr parent, 
