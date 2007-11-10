@@ -307,7 +307,11 @@ DeckLibraryTab::DeleteBranch (wxTreeItemId oItemId, bool bFirstCall)
     }
 
   // For foolproofness, we don't allow deleting the whole tree this way
-  if (oItemId == m_oRootId) return NULL;
+  //if (oItemId == m_oRootId)
+  //{
+//	  Update();
+//	  return NULL;
+  //}
 
   pData = (MyTreeItemData *) m_pTree->GetItemData (oItemId);
 
@@ -633,15 +637,20 @@ DeckLibraryTab::OnPopupRemoveAll (wxCommandEvent& WXUNUSED (event))
 {
   wxTreeItemId oSelectedId;
 
-  if (m_bNoEvents || !m_pTree) return;
-  oSelectedId = m_pTree->GetSelection ();
-  DeleteBranch (oSelectedId);
+  if (m_bNoEvents || !m_pTree)
+  {
+	  return;
+  }
+
+  oSelectedId = m_pTree->GetSelection();
+  DeleteBranch(oSelectedId);
 }
 
 
 void
 DeckLibraryTab::OnTreeItemActivate (wxTreeEvent & WXUNUSED (event))
 {
+#if 0
   wxArrayInt oArrayCount;
   wxArrayString oArrayName;
 
@@ -657,6 +666,7 @@ DeckLibraryTab::OnTreeItemActivate (wxTreeEvent & WXUNUSED (event))
     }
   
   delete pDialog;
+#endif
 }
 
 

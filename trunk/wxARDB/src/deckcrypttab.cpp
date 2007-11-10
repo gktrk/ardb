@@ -585,6 +585,7 @@ DeckCryptTab::OnPopupRemoveAll (wxCommandEvent& WXUNUSED (event))
 void
 DeckCryptTab::OnVampireActivate (wxListEvent& WXUNUSED (event)) 
 {
+#if 0
   wxArrayInt oArrayCount;
   wxArrayString oArrayName;
   
@@ -602,6 +603,7 @@ DeckCryptTab::OnVampireActivate (wxListEvent& WXUNUSED (event))
     }
   
   delete pDialog;
+#endif
 }
 
 
