@@ -106,7 +106,7 @@ Updater::decodeCSV(wxInputStream *file, char sep, char quote, int maxrecords, in
 			(unsigned char) *acBuffer <= 0x9F) *acBuffer = ' ';
 
 		sChar = wxString (acBuffer, wxConvISO8859_1);
-		c = sChar.GetChar(0);
+		c = Updater::MakeAscii(sChar.GetChar(0));
 
 		if (c==quote){
 			if (inquotemode){
@@ -1013,4 +1013,68 @@ Updater::UpdateDatabaseFromCSV ()
   pDatabase->Query (wxT ("VACUUM;"));
 
   return 0;
+}
+
+wxChar Updater::MakeAscii(wxChar c)
+{
+	wxChar result = c;
+
+	switch (c)
+	{
+	case 'à':
+	case 'á':
+	case 'â':
+	case 'ã':
+	case 'ä':
+	case 'å':
+		result = 'a';
+		break;
+
+	case 'ç':
+		result = 'c';
+		break;
+
+	case 'é':
+	case 'è':
+	case 'ê':
+	case 'ë':
+		result = 'e';
+		break;
+
+	case 'ì':
+	case 'í':
+	case 'î':
+	case 'ï':
+		result = 'i';
+		break;
+
+	case 'ñ':
+		result = 'n';
+		break;
+
+	case 'ò':
+	case 'ó':
+	case 'ô':
+	case 'õ':
+	case 'ö':
+		result = 'o';
+		break;
+
+	case 'ù':
+	case 'ú':
+	case 'û':
+	case 'ü':
+		result = 'u';
+		break;
+
+	case 'ý':
+	case 'ÿ':
+		result = 'y';
+		break;
+
+	default:
+		break;
+	}
+
+	return result;
 }
