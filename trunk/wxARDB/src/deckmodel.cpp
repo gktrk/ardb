@@ -622,7 +622,7 @@ DeckModel::ExportToHTML ()
 {
   Database *pDatabase = Database::Instance ();
   wxString sXSL, sConfEntry = wxT("DeckHTMLTemplate");
-  wxString sFile = m_sName;
+  wxString sFile = StripInvalidFilename(m_sName);
   
   if (pDatabase == NULL) return false;
 
@@ -662,7 +662,7 @@ DeckModel::ExportToJOL ()
 {
   Database *pDatabase = Database::Instance ();
   wxString sXSL, sConfEntry = wxT("DeckJOLTemplate");
-  wxString sFile = m_sName;
+  wxString sFile = StripInvalidFilename(m_sName);
   
   if (pDatabase == NULL) return false;
 
@@ -702,7 +702,7 @@ DeckModel::ExportToPhpBB ()
 {
   Database *pDatabase = Database::Instance ();
   wxString sXSL, sConfEntry = wxT("DeckPhpBBTemplate");
-  wxString sFile = m_sName;
+  wxString sFile = StripInvalidFilename(m_sName);
   
   if (pDatabase == NULL) return false;
 
@@ -742,7 +742,7 @@ DeckModel::ExportToText ()
 {
   Database *pDatabase = Database::Instance ();
   wxString sXSL, sConfEntry = wxT("DeckTextTemplate");
-  wxString sFile = m_sName;
+  wxString sFile = StripInvalidFilename(m_sName);
   
   if (pDatabase == NULL) return false;
 
@@ -780,7 +780,7 @@ DeckModel::ExportToText ()
 bool
 DeckModel::ExportToXML ()
 {
-  wxString sFile = m_sName;
+  wxString sFile = StripInvalidFilename(m_sName);
   
   sFile.Append (wxT (".xml"));
   
@@ -1796,5 +1796,24 @@ DeckModel::ShouldSaveWarning ()
 	  ExportToXML ();
 	}
     }
+}
+
+wxString DeckModel::StripInvalidFilename(wxString name)
+{
+	wxString result = name;
+	wxChar invalidChars[] = {wxT('"'), wxT('*'), wxT('<'), wxT('>'), wxT('['), wxT(']'), wxT('='), wxT('+'), wxT('\\'), wxT('/'), wxT(','), wxT('.'), wxT(':'), wxT(';'), wxT('{'), wxT('}')};
+
+	for(int i=0;i<name.Len();i++)
+	{
+		for(int j=0;j<sizeof(invalidChars);j++)
+		{
+			if (name[i] == invalidChars[j])
+			{
+				result[i] = wxT(' ');
+			}
+		}
+	}
+
+	return result;
 }
  
