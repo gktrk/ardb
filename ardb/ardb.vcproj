@@ -344,14 +344,6 @@
 				Name="wxArdb"
 				>
 				<File
-					RelativePath="..\wxARDB\src\amountdialog.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\wxARDB\src\amountdialog.h"
-					>
-				</File>
-				<File
 					RelativePath="..\wxARDB\src\ardb.rc"
 					>
 				</File>

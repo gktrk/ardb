@@ -254,6 +254,7 @@ DeckWindow::OnToolsMergeXML (wxCommandEvent& WXUNUSED (event))
 void
 DeckWindow::OnToolsResize (wxCommandEvent& WXUNUSED (event))
 {
+#if 0
   unsigned int uiOldCount = m_pModel->GetLibraryCount ();
   wxArrayInt oArrayCount;
   wxArrayString oArrayText;
@@ -271,6 +272,7 @@ DeckWindow::OnToolsResize (wxCommandEvent& WXUNUSED (event))
     }
   
   delete pDialog;
+#endif
 }
 
 
