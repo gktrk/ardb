@@ -31,7 +31,6 @@
 #include <wx/config.h>
 #include <wx/dcmemory.h>
 
-#include "config.h"
 #include "imagePanel.h"
 
 // --------------------------------------------------------
