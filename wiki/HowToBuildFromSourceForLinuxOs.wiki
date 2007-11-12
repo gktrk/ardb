@@ -64,5 +64,45 @@ Launch ardb and let it create ~/.ardb/cards.db from white-wolf.com
 meshee@lasombra:~ src/ardb
 }}}
 
+= For Debian Etch users =
+Debian Etch does not offer official packages for wxWidgets 2.8.x serie. Don't panic, Meshenka is here and found for you a repository that will save you soul:
+
+from [http://wiki.wxpython.org/InstallingOnUbuntuOrDebian wxPython.org]
+
+== Add a new repository to source.list ==
+in /etc/apt/source.list add this :
+{{{
+# wxWidgets/wxPython repository at  apt.wxwidgets.org
+deb http://apt.wxwidgets.org/ etch-wx main
+}}}
+
+The repository packages are signed so you have to register the key. Do the following:
+{{{
+gpg --keyserver pgpkeys.mit.edu --recv-key  06EA41DE4F6C1E86
+gpg -a --export 06EA41DE4F6C1E86 | apt-key add  -
+}}}
+
+06EA41DE4F6C1E86 is the missing key `aptitude update` complains about (key of "Vadim Zeitlin <vadim@tt-solutions.com>" package maintainer)
+
+== Install wxWidgets.2.8.x ==
+Do an `aptitude update`, know that you had register Vadim's key to apt-key update should go smoothly. Now you can `aptitude search ^libwx` and install required dev packages:
+  * libwxbase2.8-dev 
+  * libwxgtk2.8-dev
+
+{{{
+aptitude install libwxbase2.8-dev libwxgtk2.8-dev
+}}}
+
+Et voila!!
+
+== Check install ==
+You can check that you now have wx2.8.x installed by doing the following as root:
+{{{
+lasombra:~# wx-config --version-full
+2.8.6.1
+}}}
+
+
+
 -- 
 Enjoy
