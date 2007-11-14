@@ -22,7 +22,7 @@
  */
 
 #ifndef _imagepanel_h
-#define _imagepaenl_h
+#define _imagepanel_h
 
 
 #include "wx/wxprec.h"
@@ -101,7 +101,7 @@ void ImagePanel::Click(wxMouseEvent &event)
 {
 	if (m_pDialog != NULL)
 	{
-		m_pDialog->SetImage(m_fileName);
+		//m_pDialog->SetImage(m_fileName);
 		m_pDialog->ShowModal();
 	}
 	
@@ -128,18 +128,18 @@ void ImagePanel::OnPaint(wxPaintEvent &event)
 	int orgWidth = image.GetWidth();
 	int orgHeight = image.GetHeight();
 
-	int thumbWidth;
-	int thumbHeight;
+	int thumbWidth = 0;
+	int thumbHeight = 0;
 
 	if (orgWidth > orgHeight) 
 	{
 		thumbWidth = newWidth;
-		thumbHeight = orgHeight * ((float)newHeight / (float)orgWidth);
+		thumbHeight = (int) (orgHeight * (float)newHeight / (float)orgWidth);
 	}
 
 	if (orgWidth < orgHeight) 
 	{
-		thumbWidth = orgWidth * ((float)newWidth / (float)orgHeight);
+		thumbWidth = (int) (orgWidth * (float)newWidth / (float)orgHeight);
 		thumbHeight = newHeight;
 	}
 
