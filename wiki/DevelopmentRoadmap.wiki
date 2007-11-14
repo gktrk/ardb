@@ -7,31 +7,46 @@ So don't ask for a release date, as each such question will delay actual [http:/
 
 We nonetheless *have* a roadmap.
 
-= Ardb-v1.99 =
-The last of the Ardb-v1.x serie will be a major bugfix release of the last of François G stable release.
+= Ardb-v2.0 =
+The first release of the new Ardb Team Ardb-v2.0 serie will be a major bugfix release of the last of François G stable release.
+
 == Brand new in this release ==
 We plan to fix all knowned issues that lies in the Ardb codebase.
 
-== Packaging ==
-Ardb-v1.99 will be packaged for the following Operating Systems:
-  * [http://en.wikipedia.org/wiki/Windows Windows 2000/XP/Vista]
-  * [http://en.wikipedia.org/wiki/Ubuntu_%28Linux_distribution%29 Ubuntu Linux]
-  * [http://en.wikipedia.org/wiki/OS_X OS X Leopard]
-  * [http://en.wikipedia.org/wiki/OpenSuse OpenSuse Linux]
-
-= Ardb-v2.0 =
-Ardb will be the first release to introduce new feature and major codebase upgrades.
-
-== Brand new in this release ==
 Ardb-v2.0 will introduce the following new featues:
   * Card Browser image panel [http://code.google.com/p/ardb/issues/detail?id=3 ENH-03]
   * Improved Deck Statistics [http://code.google.com/p/ardb/issues/detail?id=5 ENH-05]
-  * New Updater codebase
+
+You can see all issues of Ardb-v2.0 [http://code.google.com/p/ardb/issues/list?q=milestone%3AArdb2 here]
 
 == Packaging ==
 Ardb-v2.0 will be packaged for the following Operating Systems:
   * [http://en.wikipedia.org/wiki/Windows Windows 2000/XP/Vista]
   * [http://en.wikipedia.org/wiki/Ubuntu_%28Linux_distribution%29 Ubuntu Linux]
   * [http://en.wikipedia.org/wiki/OS_X OS X Leopard]
+  * [http://en.wikipedia.org/wiki/OpenSuse OpenSuse Linux]
+  * Source code bundle
+
+= Ardb-v3.0 =
+Ardb-v3.0 will introduce new feature and major codebase refactoring.
+
+== Brand new in this release ==
+  * New UI Layout
+  * Improved Deck Builder Statistics
+  * Dik the stupid Deck Builder Helper
+  * More export format
+  * Refactored Vtes Set Selector
+  * Print capability for Card Browser Result Set
+  * New Updater codebase
+  * New Database Layout
+
+You can see all issues of Ardb-v3.0 [http://code.google.com/p/ardb/issues/list?q=milestone%3AArdb3 here]
+
+== Packaging ==
+Ardb-v3.0 will be packaged for the following Operating Systems:
+  * [http://en.wikipedia.org/wiki/Windows Windows 2000/XP/Vista]
+  * [http://en.wikipedia.org/wiki/Ubuntu_%28Linux_distribution%29 Ubuntu Linux]
+  * [http://en.wikipedia.org/wiki/OS_X OS X Leopard]
   * [http://en.wikipedia.org/wiki/Debian Debian GNU/Linux Etch]
   * [http://en.wikipedia.org/wiki/OpenSuse OpenSuse Linux]
+  * Source code bundle
