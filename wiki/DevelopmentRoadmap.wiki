@@ -17,7 +17,7 @@ Ardb-v2.0 will introduce the following new featues:
   * Card Browser image panel [http://code.google.com/p/ardb/issues/detail?id=3 ENH-03]
   * Improved Deck Statistics [http://code.google.com/p/ardb/issues/detail?id=5 ENH-05]
 
-You can see all issues of Ardb-v2.0 [http://code.google.com/p/ardb/issues/list?q=milestone%3AArdb2 here]
+You can see all issues of Ardb-v2.0 [http://code.google.com/p/ardb/issues/list?can=1&q=milestone%3AArdb2&colspec=ID+Type+Milestone+Status+Priority+Owner+Summary+Modified&cells=tiles here]
 
 == Packaging ==
 Ardb-v2.0 will be packaged for the following Operating Systems:
@@ -40,7 +40,7 @@ Ardb-v3.0 will introduce new feature and major codebase refactoring.
   * New Updater codebase
   * New Database Layout
 
-You can see all issues of Ardb-v3.0 [http://code.google.com/p/ardb/issues/list?q=milestone%3AArdb3 here]
+You can see all issues of Ardb-v3.0 [http://code.google.com/p/ardb/issues/list?can=1&q=milestone%3AArdb3&colspec=ID+Type+Milestone+Status+Priority+Owner+Summary+Modified&cells=tiles here]
 
 == Packaging ==
 Ardb-v3.0 will be packaged for the following Operating Systems:
