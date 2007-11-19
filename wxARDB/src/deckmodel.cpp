@@ -1171,7 +1171,7 @@ DeckModel::ImportFromXML (wxString &sFileName, bool bImportAll)
 	LIBXML_TEST_VERSION;
 
 	xmlStringDoc = ReadXmlFile(sFileName);
-	doc = xmlParseDoc((xmlChar *)xmlStringDoc.c_str());		//xmlParseFile(sFileName.mb_str (wxConvLibc));
+	doc = xmlParseDoc((xmlChar *)xmlStringDoc.c_str());
 	if (doc == NULL) return 0;
 
 	// Create xpath evaluation context
