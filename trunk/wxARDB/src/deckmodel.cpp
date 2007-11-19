@@ -25,6 +25,7 @@
 #include "deckmodel.h"
 #include "interfacedata.h"
 #include "updater.h"
+#include "importxml.h"
 
 #ifdef __WXMAC__
 // required for some reason by libxslt on macOS X
@@ -1154,327 +1155,329 @@ DeckModel::ImportFromXML ()
 bool
 DeckModel::ImportFromXML (wxString &sFileName, bool bImportAll)
 {
-  Database *pDatabase = Database::Instance ();
-  
-  bool bMorphed = FALSE;
-  xmlChar *pString, *pStringName, *pStringSet, *pStringAdvanced, *pDatabaseID = 0, *pCount = 0;
-  xmlDocPtr doc; // the document tree
-  xmlXPathContextPtr xpathCtx; 
-  xmlXPathObjectPtr xpathObj; 
-  xmlNodeSetPtr nodes;
-  xmlNodePtr cur, tmpnode;
-  int size;
- 
-  xmlInitParser ();
-  LIBXML_TEST_VERSION;
+	Database *pDatabase = Database::Instance();
 
-  doc = xmlParseFile (sFileName.mb_str (wxConvLibc));
-  if (doc == NULL) return 0;
-  
-  // Create xpath evaluation context
-  xpathCtx = xmlXPathNewContext (doc);
-  if (xpathCtx == NULL) 
-    {
-      xmlFreeDoc(doc); 
-      return 0;
-    }
+	bool bMorphed = FALSE;
+	xmlChar *pString, *pStringName, *pStringSet, *pStringAdvanced, *pDatabaseID = 0, *pCount = 0;
+	xmlDocPtr doc; // the document tree
+	xmlXPathContextPtr xpathCtx; 
+	xmlXPathObjectPtr xpathObj; 
+	xmlNodeSetPtr nodes;
+	xmlNodePtr cur, tmpnode;
+	int size;
+	wxString xmlStringDoc;
 
-  // TODO: check the validity using the DTD
+	xmlInitParser();
+	LIBXML_TEST_VERSION;
 
-  pDatabase->Query (wxT ("BEGIN TRANSACTION;"));
+	xmlStringDoc = ReadXmlFile(sFileName);
+	doc = xmlParseDoc((xmlChar *)xmlStringDoc.c_str());		//xmlParseFile(sFileName.mb_str (wxConvLibc));
+	if (doc == NULL) return 0;
 
-  if (bImportAll)
-    {
-      // Get the deck's name
-      xpathObj = xmlXPathEvalExpression (BAD_CAST "/deck/name", xpathCtx);
-      if (xpathObj == NULL)
+	// Create xpath evaluation context
+	xpathCtx = xmlXPathNewContext(doc);
+	if (xpathCtx == NULL) 
 	{
-	  xmlXPathFreeContext(xpathCtx); 
-	  xmlFreeDoc(doc); 
-	  return 0;
+		xmlFreeDoc(doc); 
+		return 0;
 	}
-      nodes = xpathObj->nodesetval;
-      if (nodes->nodeTab[0])
-	{
-	  pString = xmlXPathCastNodeToString (nodes->nodeTab[0]);
-	  if (pString)
-	    {
-	      // TODO: Get the character encoding from the xml file itself
-	      wxString sString ((const char *) pString, wxConvUTF8);
-	      wxString &sStringRef = sString;
-	      SetName (sStringRef);
-	      free (pString);
-	    }
-	  
-	}
-      free (xpathObj);
-      
-      // Get the deck's author
-      xpathObj = xmlXPathEvalExpression (BAD_CAST "/deck/author", xpathCtx);
-      if (xpathObj == NULL)
-	{
-	  xmlXPathFreeContext(xpathCtx); 
-	  xmlFreeDoc(doc); 
-	  return 0;
-	}
-      nodes = xpathObj->nodesetval;
-      if (nodes->nodeTab[0])
-	{
-	  pString = xmlXPathCastNodeToString (nodes->nodeTab[0]);
-	  if (pString)
-	    {
-	      wxString sString ((const char *) pString, wxConvUTF8);
-	      wxString &sStringRef = sString;
-	      SetAuthor (sStringRef);
-	      free (pString);
-	    }
-	  
-	}
-      free (xpathObj);
-      
-      // Get the deck's description
-      xpathObj = xmlXPathEvalExpression (BAD_CAST "/deck/description", xpathCtx);
-      if (xpathObj == NULL)
-	{
-	  xmlXPathFreeContext(xpathCtx); 
-	  xmlFreeDoc(doc); 
-	  return 0;
-	}
-      nodes = xpathObj->nodesetval;
-      if (nodes->nodeTab[0])
-	{
-	  pString = xmlXPathCastNodeToString (nodes->nodeTab[0]);
-	  if (pString)
-	    {
-	      wxString sString ((const char *) pString, wxConvUTF8);
-	      wxString &sStringRef = sString;
-	      SetDescription (sStringRef);
-	      free (pString);
-	    }
-	  
-	}
-      free (xpathObj);
-    }
 
-  // Get the deck's crypt
-  xpathObj = xmlXPathEvalExpression (BAD_CAST "/deck/crypt/vampire/@*", xpathCtx);
-  if (xpathObj == NULL)
-    {
-      xmlXPathFreeContext(xpathCtx); 
-      xmlFreeDoc(doc); 
-      return 0;
-    }
-  nodes = xpathObj->nodesetval;
-  size = (nodes) ? nodes->nodeNr : 0;
-  for(int i = 0; i < size; i++) 
-    {
-      if (nodes->nodeTab[i])
+	// TODO: check the validity using the DTD
+
+	pDatabase->Query (wxT ("BEGIN TRANSACTION;"));
+
+	if (bImportAll)
 	{
-	  cur = nodes->nodeTab[i];
-	  pString = xmlXPathCastNodeToString (cur);
-	  if (!strcmp ((char *) cur->name, "databaseID"))
-	    pDatabaseID = pString;
-	  else if (!strcmp ((char *) cur->name, "count"))
-	    pCount = pString;
-
-	  if (pDatabaseID && pCount)
-	    {
-	      long lID, lCount;
-	      wxString sID ((const char *) pDatabaseID, wxConvLibc), 
-		sCount ((const char *) pCount, wxConvLibc);
-	      
-	      sID.ToLong (&lID);
-	      sCount.ToLong (&lCount);
-
-	      wxArrayString * pResult = AddToCrypt (lID, lCount, FALSE);
-
-	      if (pResult)
+		// Get the deck's name
+		xpathObj = xmlXPathEvalExpression (BAD_CAST "/deck/name", xpathCtx);
+		if (xpathObj == NULL)
 		{
-		  // Check that the correct card has been added
-		  tmpnode = cur->parent->children;
-		  while (tmpnode && strcmp ((char *) tmpnode->name, "name")) 
-		    {
-		      tmpnode = tmpnode->next;
-		    }
-		  if (tmpnode)
-		    {
-		      pStringName = xmlXPathCastNodeToString (tmpnode);
-		      if (pStringName)
-			{
-			  wxString sStringName ((const char *) pStringName, wxConvUTF8);
-
-			  // Compare the card names
-			  if (sStringName.Cmp (pResult->Item (1)))
-			    {
-			      // Get the card set
-			      tmpnode = cur->parent->children;
-			      while (tmpnode && strcmp ((char *) tmpnode->name, "set")) 
-				{
-				  tmpnode = tmpnode->next;
-				}
-			      pStringSet = NULL;
-			      if (tmpnode)
-				{
-				  pStringSet = xmlXPathCastNodeToString (tmpnode);
-				}
-
-			      // Get the advanced flag
-			      tmpnode = cur->parent->children;
-			      while (tmpnode && strcmp ((char *) tmpnode->name, "adv")) 
-				{
-				  tmpnode = tmpnode->next;
-				}
-			      pStringAdvanced = NULL;
-			      if (tmpnode)
-				{
-				  pStringAdvanced = xmlXPathCastNodeToString (tmpnode);
-				}
-
-			      if (pStringSet && pStringAdvanced)
-				{
-				  wxString sStringSet ((const char *) pStringSet, wxConvUTF8);
-				  wxString sStringAdv ((const char *) pStringAdvanced, wxConvUTF8);
-				  
-				  DelFromCrypt (lID, lCount, FALSE);
-				  AddToCrypt (sStringName, sStringAdv, sStringSet, lCount, FALSE);
-				  bMorphed = TRUE;
-				  
-				  free (pStringSet);
-				  free (pStringAdvanced);
-				}
-			      else
-				{
-				  DelFromCrypt (lID, lCount, FALSE);
-				  AddToCrypt (sStringName, wxEmptyString, wxEmptyString,
-					      lCount, FALSE);
-				  bMorphed = TRUE;
-				}
-			    }
-			  free (pStringName);
-			}
-		    }
+			xmlXPathFreeContext(xpathCtx); 
+			xmlFreeDoc(doc); 
+			return 0;
 		}
-
-	      free (pDatabaseID);
-	      free (pCount);
-	      pDatabaseID = 0;
-	      pCount = 0;
-	    }
-	}
-    }
-  free (xpathObj);
-
-  // Get the deck's library
-  xpathObj = xmlXPathEvalExpression (BAD_CAST "/deck/library/card/@*", xpathCtx);
-  if (xpathObj == NULL)
-    {
-      xmlXPathFreeContext(xpathCtx); 
-      xmlFreeDoc(doc); 
-      return 0;
-    }
-  nodes = xpathObj->nodesetval;
-  size = (nodes) ? nodes->nodeNr : 0;
-  for(int i = 0; i < size; i++) 
-    {
-      if (nodes->nodeTab[i])
-	{
-	  cur = nodes->nodeTab[i];
-	  pString = xmlXPathCastNodeToString (cur);
-	  if (!strcmp ((char *) cur->name, "databaseID"))
-	    pDatabaseID = pString;
-	  else if (!strcmp ((char *) cur->name, "count"))
-	    pCount = pString;
-
-	  if (pDatabaseID && pCount)
-	    {
-	      long lID, lCount;
-	      wxString sID ((const char *) pDatabaseID, wxConvLibc), 
-		sCount ((const char *) pCount, wxConvLibc);
-	      
-	      sID.ToLong (&lID);
-	      sCount.ToLong (&lCount);
-
-	      wxArrayString * pResult = AddToLibrary (lID, lCount, FALSE);
-
-	      if (pResult)
+		nodes = xpathObj->nodesetval;
+		if (nodes->nodeTab[0])
 		{
-		  // Check that the correct card has been added
-		  tmpnode = cur->parent->children;
-		  while (tmpnode && strcmp ((char *) tmpnode->name, "name")) 
-		    {
-		      tmpnode = tmpnode->next;
-		    }
-		  if (tmpnode)
-		    {
-		      pStringName = xmlXPathCastNodeToString (tmpnode);
-		      if (pStringName)
+			pString = xmlXPathCastNodeToString (nodes->nodeTab[0]);
+			if (pString)
 			{
-			  wxString sStringName ((const char *) pStringName, wxConvUTF8);
-
-			  // Compare the card names
-			  if (sStringName.Cmp (pResult->Item (1)))
-			    {
-			      // Get the card set
-			      tmpnode = cur->parent->children;
-			      while (tmpnode && strcmp ((char *) tmpnode->name, "set")) 
-				{
-				  tmpnode = tmpnode->next;
-				}
-			      pStringSet = NULL;
-			      if (tmpnode)
-				{
-				  pStringSet = xmlXPathCastNodeToString (tmpnode);
-				  if (pStringSet)
-				    {
-				      wxString sStringSet ((const char *) pStringSet, wxConvUTF8);
-				      
-				      DelFromLibrary (lID, lCount, FALSE);
-				      AddToLibrary (sStringName, sStringSet, lCount, FALSE);
-				      bMorphed = TRUE;
-
-				      free (pStringSet);
-				    }
-				  else
-				    {
-				      DelFromLibrary (lID, lCount, FALSE);
-				      AddToLibrary (sStringName, wxEmptyString, lCount, FALSE);
-				      bMorphed = TRUE;
-				    }
-				}
-			    }
-			  free (pStringName);
+				// TODO: Get the character encoding from the xml file itself
+				wxString sString ((const char *) pString, wxConvUTF8);
+				wxString &sStringRef = sString;
+				SetName (sStringRef);
+				free (pString);
 			}
-		    }
+
 		}
+		free (xpathObj);
 
-	      free (pDatabaseID);
-	      free (pCount);
-	      pDatabaseID = 0;
-	      pCount = 0;
-	    }
+		// Get the deck's author
+		xpathObj = xmlXPathEvalExpression (BAD_CAST "/deck/author", xpathCtx);
+		if (xpathObj == NULL)
+		{
+			xmlXPathFreeContext(xpathCtx); 
+			xmlFreeDoc(doc); 
+			return 0;
+		}
+		nodes = xpathObj->nodesetval;
+		if (nodes->nodeTab[0])
+		{
+			pString = xmlXPathCastNodeToString (nodes->nodeTab[0]);
+			if (pString)
+			{
+				wxString sString ((const char *) pString, wxConvUTF8);
+				wxString &sStringRef = sString;
+				SetAuthor (sStringRef);
+				free (pString);
+			}
+
+		}
+		free (xpathObj);
+
+		// Get the deck's description
+		xpathObj = xmlXPathEvalExpression (BAD_CAST "/deck/description", xpathCtx);
+		if (xpathObj == NULL)
+		{
+			xmlXPathFreeContext(xpathCtx); 
+			xmlFreeDoc(doc); 
+			return 0;
+		}
+		nodes = xpathObj->nodesetval;
+		if (nodes->nodeTab[0])
+		{
+			pString = xmlXPathCastNodeToString (nodes->nodeTab[0]);
+			if (pString)
+			{
+				wxString sString ((const char *) pString, wxConvUTF8);
+				wxString &sStringRef = sString;
+				SetDescription (sStringRef);
+				free (pString);
+			}
+
+		}
+		free (xpathObj);
 	}
-    }
-  free (xpathObj);
 
-  // free
-  xmlXPathFreeContext(xpathCtx); 
-  xmlFreeDoc(doc);
-  
-  // Cleanup function for the XML library.
-  xmlCleanupParser();
+	// Get the deck's crypt
+	xpathObj = xmlXPathEvalExpression (BAD_CAST "/deck/crypt/vampire/@*", xpathCtx);
+	if (xpathObj == NULL)
+	{
+		xmlXPathFreeContext(xpathCtx); 
+		xmlFreeDoc(doc); 
+		return 0;
+	}
+	nodes = xpathObj->nodesetval;
+	size = (nodes) ? nodes->nodeNr : 0;
+	for(int i = 0; i < size; i++) 
+	{
+		if (nodes->nodeTab[i])
+		{
+			cur = nodes->nodeTab[i];
+			pString = xmlXPathCastNodeToString (cur);
+			if (!strcmp ((char *) cur->name, "databaseID"))
+				pDatabaseID = pString;
+			else if (!strcmp ((char *) cur->name, "count"))
+				pCount = pString;
 
-  pDatabase->Query (wxT ("COMMIT TRANSACTION;"));
+			if (pDatabaseID && pCount)
+			{
+				long lID, lCount;
+				wxString sID ((const char *) pDatabaseID, wxConvLibc), 
+					sCount ((const char *) pCount, wxConvLibc);
 
-  if (bMorphed)
-    {
-      ExportWithXSL (sFileName, NULL);
-    }
+				sID.ToLong (&lID);
+				sCount.ToLong (&lCount);
 
-  RefreshModel (TRUE);
+				wxArrayString * pResult = AddToCrypt (lID, lCount, FALSE);
 
-  m_bSaved = TRUE;
+				if (pResult)
+				{
+					// Check that the correct card has been added
+					tmpnode = cur->parent->children;
+					while (tmpnode && strcmp ((char *) tmpnode->name, "name")) 
+					{
+						tmpnode = tmpnode->next;
+					}
+					if (tmpnode)
+					{
+						pStringName = xmlXPathCastNodeToString (tmpnode);
+						if (pStringName)
+						{
+							wxString sStringName ((const char *) pStringName, wxConvUTF8);
 
- return 1;
+							// Compare the card names
+							if (sStringName.Cmp (pResult->Item (1)))
+							{
+								// Get the card set
+								tmpnode = cur->parent->children;
+								while (tmpnode && strcmp ((char *) tmpnode->name, "set")) 
+								{
+									tmpnode = tmpnode->next;
+								}
+								pStringSet = NULL;
+								if (tmpnode)
+								{
+									pStringSet = xmlXPathCastNodeToString (tmpnode);
+								}
+
+								// Get the advanced flag
+								tmpnode = cur->parent->children;
+								while (tmpnode && strcmp ((char *) tmpnode->name, "adv")) 
+								{
+									tmpnode = tmpnode->next;
+								}
+								pStringAdvanced = NULL;
+								if (tmpnode)
+								{
+									pStringAdvanced = xmlXPathCastNodeToString (tmpnode);
+								}
+
+								if (pStringSet && pStringAdvanced)
+								{
+									wxString sStringSet ((const char *) pStringSet, wxConvUTF8);
+									wxString sStringAdv ((const char *) pStringAdvanced, wxConvUTF8);
+
+									DelFromCrypt (lID, lCount, FALSE);
+									AddToCrypt (sStringName, sStringAdv, sStringSet, lCount, FALSE);
+									bMorphed = TRUE;
+
+									free (pStringSet);
+									free (pStringAdvanced);
+								}
+								else
+								{
+									DelFromCrypt (lID, lCount, FALSE);
+									AddToCrypt (sStringName, wxEmptyString, wxEmptyString,
+										lCount, FALSE);
+									bMorphed = TRUE;
+								}
+							}
+							free (pStringName);
+						}
+					}
+				}
+
+				free (pDatabaseID);
+				free (pCount);
+				pDatabaseID = 0;
+				pCount = 0;
+			}
+		}
+	}
+	free (xpathObj);
+
+	// Get the deck's library
+	xpathObj = xmlXPathEvalExpression (BAD_CAST "/deck/library/card/@*", xpathCtx);
+	if (xpathObj == NULL)
+	{
+		xmlXPathFreeContext(xpathCtx); 
+		xmlFreeDoc(doc); 
+		return 0;
+	}
+	nodes = xpathObj->nodesetval;
+	size = (nodes) ? nodes->nodeNr : 0;
+	for(int i = 0; i < size; i++) 
+	{
+		if (nodes->nodeTab[i])
+		{
+			cur = nodes->nodeTab[i];
+			pString = xmlXPathCastNodeToString (cur);
+			if (!strcmp ((char *) cur->name, "databaseID"))
+				pDatabaseID = pString;
+			else if (!strcmp ((char *) cur->name, "count"))
+				pCount = pString;
+
+			if (pDatabaseID && pCount)
+			{
+				long lID, lCount;
+				wxString sID ((const char *) pDatabaseID, wxConvLibc), 
+					sCount ((const char *) pCount, wxConvLibc);
+
+				sID.ToLong (&lID);
+				sCount.ToLong (&lCount);
+
+				wxArrayString * pResult = AddToLibrary (lID, lCount, FALSE);
+
+				if (pResult)
+				{
+					// Check that the correct card has been added
+					tmpnode = cur->parent->children;
+					while (tmpnode && strcmp ((char *) tmpnode->name, "name")) 
+					{
+						tmpnode = tmpnode->next;
+					}
+					if (tmpnode)
+					{
+						pStringName = xmlXPathCastNodeToString (tmpnode);
+						if (pStringName)
+						{
+							wxString sStringName ((const char *) pStringName, wxConvUTF8);
+
+							// Compare the card names
+							if (sStringName.Cmp (pResult->Item (1)))
+							{
+								// Get the card set
+								tmpnode = cur->parent->children;
+								while (tmpnode && strcmp ((char *) tmpnode->name, "set")) 
+								{
+									tmpnode = tmpnode->next;
+								}
+								pStringSet = NULL;
+								if (tmpnode)
+								{
+									pStringSet = xmlXPathCastNodeToString (tmpnode);
+									if (pStringSet)
+									{
+										wxString sStringSet ((const char *) pStringSet, wxConvUTF8);
+
+										DelFromLibrary (lID, lCount, FALSE);
+										AddToLibrary (sStringName, sStringSet, lCount, FALSE);
+										bMorphed = TRUE;
+
+										free (pStringSet);
+									}
+									else
+									{
+										DelFromLibrary (lID, lCount, FALSE);
+										AddToLibrary (sStringName, wxEmptyString, lCount, FALSE);
+										bMorphed = TRUE;
+									}
+								}
+							}
+							free (pStringName);
+						}
+					}
+				}
+
+				free (pDatabaseID);
+				free (pCount);
+				pDatabaseID = 0;
+				pCount = 0;
+			}
+		}
+	}
+	free (xpathObj);
+
+	// free
+	xmlXPathFreeContext(xpathCtx); 
+	xmlFreeDoc(doc);
+
+	// Cleanup function for the XML library.
+	xmlCleanupParser();
+
+	pDatabase->Query (wxT ("COMMIT TRANSACTION;"));
+
+	if (bMorphed)
+	{
+		ExportWithXSL (sFileName, NULL);
+	}
+
+	RefreshModel (TRUE);
+
+	m_bSaved = TRUE;
+
+	return 1;
 }
 
 
