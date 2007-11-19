@@ -29,6 +29,8 @@ wxString ReadXmlFile(wxString filename)
 		}
 	}
 
+	file.Close();
+
 	return xmlString;
 }
 
