@@ -146,7 +146,7 @@ MyApp::OnInit ()
   SetTopWindow (g_pMainWindow);
 
   //reset edition filter
-  ardb_db_ef_reset();
+  //ardb_db_ef_reset();
 
   if (pSplash != NULL) delete pSplash;
 
@@ -270,7 +270,7 @@ BrowserFrame::OnClose (wxCloseEvent& WXUNUSED(event))
   DeckModel::DeleteInstance ();
   DrawSimulator::DeleteInstance ();
   Updater::DeleteInstance ();
-  EditionsDialog::DeleteInstance ();
+  //EditionsDialog::DeleteInstance ();
 
   delete g_pIcon;
   delete g_pSplashBitmap;
