@@ -51,6 +51,7 @@ class BrowserFrame ;
 #include "editionsdialog.h"
 #include "drawsimulator.h"
 #include "inventorymodel.h"
+#include "ardb_db_edition_filter.h"
 
 #ifndef __WXMSW__
 #  include "icon.xpm"
@@ -62,7 +63,7 @@ BEGIN_EVENT_TABLE (BrowserFrame, wxFrame)
   EVT_MENU (ID_BROWSER_NEW_CRYPT, BrowserFrame::OnBrowserNewCrypt)
   EVT_MENU (ID_BROWSER_NEW_LIBRARY, BrowserFrame::OnBrowserNewLibrary)
   EVT_MENU (ID_FILE_DECKBUILDER, BrowserFrame::OnFileDeckBuilder)
-  EVT_MENU (ID_FILE_EDITIONS, BrowserFrame::OnFileEditions)
+  //EVT_MENU (ID_FILE_EDITIONS, BrowserFrame::OnFileEditions)
   EVT_MENU (ID_FILE_PREFERENCES, BrowserFrame::OnFilePreferences)
   EVT_MENU (ID_FILE_UPDATEDB, BrowserFrame::OnFileUpdateDatabase)
   EVT_MENU (ID_FILE_EXIT, BrowserFrame::OnFileExit)
@@ -144,6 +145,9 @@ MyApp::OnInit ()
 				    wxSize (iWidth, iHeight));
   SetTopWindow (g_pMainWindow);
 
+  //reset edition filter
+  ardb_db_ef_reset();
+
   if (pSplash != NULL) delete pSplash;
 
   return TRUE;
@@ -182,7 +186,7 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos, const wxS
   //   pFileMenu->AppendSeparator () ;
   pFileMenu->Append (ID_FILE_DECKBUILDER, wxT ("Deck Builder\tCtrl+D"), wxT (""));
   pFileMenu->AppendSeparator () ;
-  pFileMenu->Append (ID_FILE_EDITIONS, wxT ("VTES Sets..."), wxT (""));
+  //pFileMenu->Append (ID_FILE_EDITIONS, wxT ("VTES Sets..."), wxT (""));
   pFileMenu->Append (ID_FILE_UPDATEDB, wxT ("Update Database"), wxT (""));
   pFileMenu->AppendSeparator () ;
   pFileMenu->Append (ID_FILE_EXIT, wxT ("Quit\tCtrl+Q"), wxT (""));
@@ -289,7 +293,7 @@ BrowserFrame::OnFileDeckBuilder (wxCommandEvent& WXUNUSED (event))
   DeckModel::Instance ();
 }
 
-
+/*
 void
 BrowserFrame::OnFileEditions (wxCommandEvent& WXUNUSED (event)) 
 {
@@ -298,7 +302,7 @@ BrowserFrame::OnFileEditions (wxCommandEvent& WXUNUSED (event))
   m_pBrowserCryptModel->Reset ();
   m_pBrowserLibraryModel->Reset ();
 }
-
+*/
 
 void
 BrowserFrame::OnFilePreferences (wxCommandEvent& WXUNUSED (event)) 

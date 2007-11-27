@@ -41,7 +41,9 @@ ardb_SOURCES = \
 	speling.cpp \
 	types.cpp \
 	updater.cpp \
-	imagePanel.cpp
+	imagePanel.cpp \
+	ardb_db_edition_filter.cpp \
+	importxml.cpp
 
 ardb_resource.o: ardb.rc
 	$(RESCOMP) -i$(srcdir)/ardb.rc -o ardb_resource.o \
