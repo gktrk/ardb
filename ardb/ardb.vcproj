@@ -476,14 +476,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\wxARDB\src\editionsdialog.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\wxARDB\src\editionsdialog.h"
-					>
-				</File>
-				<File
 					RelativePath="..\wxARDB\src\imagedialog.cpp"
 					>
 				</File>
@@ -497,6 +489,14 @@
 				</File>
 				<File
 					RelativePath="..\wxARDB\src\imagePanel.h"
+					>
+				</File>
+				<File
+					RelativePath="..\wxARDB\src\importxml.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\wxARDB\src\importxml.h"
 					>
 				</File>
 				<File
