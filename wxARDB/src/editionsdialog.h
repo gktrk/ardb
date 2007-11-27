@@ -30,6 +30,7 @@
 #include <wx/listctrl.h>
 
 #include "database.h"
+#include "ardb_db_edition_filter.h"
 
 
 class EditionsDialog : public wxDialog

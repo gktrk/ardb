@@ -40,30 +40,11 @@ EditionsDialog::EditionsDialog () :
   m_pIgnoreEditionsList (NULL),
   m_pUseEditionsList (NULL)
 {
-  Database *pDatabase = Database::Instance ();
-  if (!pDatabase) return;
-  RecordSet *pResult;
-
-  // Get the editions in use
-  pResult = pDatabase->Query (wxT ("SELECT DISTINCT full_name FROM cards_sets WHERE record_num IN (SELECT DISTINCT release_set FROM cards_library) AND full_name NOT LIKE 'Proxy%' ORDER BY release_date DESC"), NULL);
-  if (pResult)
-    {
-      for (unsigned int i = 0; i < pResult->GetCount (); i++)
-	{
-	  m_oUseEditionsArray.Add (pResult->Item (i).Item (0));
-	}
-    }
-
+  // Get the editions in uses
+  m_oUseEditionsArray = ardb_db_ef_get_inuse_editions();
+	
   // Get the editions ignored
-  pResult = pDatabase->Query (wxT ("SELECT DISTINCT full_name FROM cards_sets WHERE record_num IN (SELECT DISTINCT release_set FROM cards_library_ignored) AND full_name NOT LIKE 'Proxy%' ORDER BY release_date DESC"), NULL);
-  if (pResult)
-    {
-      for (unsigned int i = 0; i < pResult->GetCount (); i++)
-	{
-	  m_oIgnoreEditionsArray.Add (pResult->Item (i).Item (0));
-	}
-    }
-
+  m_oIgnoreEditionsArray = ardb_db_ef_get_ignored_editions();
 
   wxBoxSizer *pPapaSizer = new wxBoxSizer (wxVERTICAL);
   wxBoxSizer *pHorizontalSizer = new wxBoxSizer (wxHORIZONTAL);
@@ -181,11 +162,23 @@ EditionsDialog::OnIgnoreButtonClick (wxCommandEvent& WXUNUSED (event))
 void 
 EditionsDialog::OnOK(wxCommandEvent& WXUNUSED (event))
 {
+  
+  Hide ();
+  //make wxListView into wxStringArray
+  wxArrayString useEditions, ignoreEditions;
+  for (int i = 0; i < m_pIgnoreEditionsList->GetItemCount(); i++){
+  	ignoreEditions.Add(m_pIgnoreEditionsList->GetItemText(i));
+  }
+  
+  for (int i = 0; i < m_pUseEditionsList->GetItemCount(); i++){
+  	useEditions.Add(m_pUseEditionsList->GetItemText(i));
+  }
+  
+  ardb_db_ef_move(useEditions, ignoreEditions);
+  /*
   Database *pDatabase = Database::Instance ();
   if (!pDatabase) return;
   wxString sQuery;
-  
-  Hide ();
 
   //  pDatabase->ToggleVerbose ();
   pDatabase->Query (wxT ("BEGIN TRANSACTION;"));
@@ -193,6 +186,7 @@ EditionsDialog::OnOK(wxCommandEvent& WXUNUSED (event))
   for (int i = 0; i < m_pIgnoreEditionsList->GetItemCount (); i++)
     {
       // Move crypt cards
+      // InUse --> Ignored
       sQuery.Printf (wxT ("INSERT OR REPLACE INTO cards_crypt_ignored "
 			  "SELECT * FROM cards_crypt "
 			  "WHERE release_set IN "
@@ -265,6 +259,7 @@ EditionsDialog::OnOK(wxCommandEvent& WXUNUSED (event))
   pDatabase->Query (wxT ("VACUUM"));
   //  pDatabase->ToggleVerbose ();
 
+*/
   DeleteInstance ();
 }
 
