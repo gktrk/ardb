@@ -26,6 +26,8 @@
 #include "database.h"
 #include "updater.h"
 
+#include "importxml.h"
+
 #ifdef __WXMAC__
 // required for some reason by libxslt on macOS X
 #include <libxml/xmlexports.h>
@@ -565,334 +567,337 @@ InventoryModel::ImportFromXML ()
 bool
 InventoryModel::ImportFromXML (wxString &sFileName)
 {
-//  Database *pDatabase = Database::Instance ();
-//  
-//  bool bMorphed = FALSE;
-//  xmlChar *pString, *pStringName, *pStringSet, *pStringAdvanced, *pDatabaseID = 0, *pHave = 0, *pSpare = 0, *pWant = 0;
-//  xmlDocPtr doc; // the document tree
-//  xmlXPathContextPtr xpathCtx; 
-//  xmlXPathObjectPtr xpathObj; 
-//  xmlNodeSetPtr nodes;
-//  xmlNodePtr cur, tmpnode;
-//  int size;
-// 
-//  xmlInitParser ();
-//  LIBXML_TEST_VERSION;
-//
-//  doc = xmlParseFile (sFileName.mb_str (wxConvLibc));
-//  if (doc == NULL) return 0;
-//  
-//  // Create xpath evaluation context
-//  xpathCtx = xmlXPathNewContext (doc);
-//  if (xpathCtx == NULL) 
-//    {
-//      xmlFreeDoc(doc); 
-//      return 0;
-//    }
-//
-//  // TODO: check the validity using the DTD
-//
-//  pDatabase->Query (wxT ("BEGIN TRANSACTION;"));
-//
-//  // Get the inventory's crypt
-//  xpathObj = xmlXPathEvalExpression (BAD_CAST "/inventory/crypt/vampire/@*", xpathCtx);
-//  if (xpathObj == NULL)
-//    {
-//      xmlXPathFreeContext(xpathCtx); 
-//      xmlFreeDoc(doc); 
-//      return 0;
-//    }
-//  nodes = xpathObj->nodesetval;
-//  size = (nodes) ? nodes->nodeNr : 0;
-//  for(int i = 0; i < size; i++) 
-//    {
-//      if (nodes->nodeTab[i])
-//	{
-//	  cur = nodes->nodeTab[i];
-//	  pString = xmlXPathCastNodeToString (cur);
-//	  if (!strcmp ((char *) cur->name, "databaseID"))
-//	    pDatabaseID = pString;
-//	  else if (!strcmp ((char *) cur->name, "have"))
-//	    pHave = pString;
-//	  else if (!strcmp ((char *) cur->name, "need"))
-//	    pWant = pString;
-//	  else if (!strcmp ((char *) cur->name, "spare"))
-//	    pSpare = pString;
-//
-//	  if (pDatabaseID && pHave && pWant && pSpare)
-//	    {
-//	      long lID, lHave, lWant, lSpare;
-//	      wxString sID ((const char *) pDatabaseID, wxConvLibc), 
-//		sHave ((const char *) pHave, wxConvLibc),
-//		sWant ((const char *) pWant, wxConvLibc),
-//		sSpare ((const char *) pSpare, wxConvLibc);
-//	      
-//	      sID.ToLong (&lID);
-//	      sHave.ToLong (&lHave);
-//	      sWant.ToLong (&lWant);
-//	      sSpare.ToLong (&lSpare);
-//
-//
-//	      wxString sQuery;
-//	      wxArrayString *pResult;
-//	      RecordSet oRecordSet;
-//
-//	      // Get the name we have for this card in the DB
-//	      sQuery.Printf (wxT ("SELECT card_name FROM crypt_view WHERE card_ref = %d;"), lID);
-//	      pDatabase->Query (sQuery, &oRecordSet);
-//	      pResult = NULL;
-//	      if (oRecordSet.GetCount () > 0)
-//		pResult = &(oRecordSet.Item (0));
-//// 	      else
-//// 		wxLogMessage (wxT ("card_ref not found : %d"), lID);
-//
-//	      // Get the name we have for this card in the XML
-//	      tmpnode = cur->parent->children;
-//	      while (tmpnode && strcmp ((char *) tmpnode->name, "name")) 
-//		{
-//		  tmpnode = tmpnode->next;
-//		}
-//	      if (tmpnode)
-//		{
-//		  pStringName = xmlXPathCastNodeToString (tmpnode);
-//		  if (pStringName)
-//		    {
-//		      wxString sStringName ((const char *) pStringName, wxConvUTF8);
-//		      // Compare the card names
-//		      // ARDB Should be Set-ignorant for now
-//		      // if (pResult && !sStringName.Cmp (pResult->Item (0)))
-//		      if (0)
-//			{
-//			  // OK these are the same names
-//			  SetHaveCrypt (lID, lHave);
-//			  SetWantCrypt (lID, lWant);
-//			  SetSpareCrypt (lID, lSpare);
-//			}
-//		      else
-//			{
-//			  // Name mismatch -> DB morphed, we'll trust the XML info
-//			  bMorphed = TRUE;
-//
-//			  // Get the card set
-//			  tmpnode = cur->parent->children;
-//			  while (tmpnode && strcmp ((char *) tmpnode->name, "set")) 
-//			    {
-//			      tmpnode = tmpnode->next;
-//			    }
-//			  pStringSet = NULL;
-//			  if (tmpnode)
-//			    {
-//			      pStringSet = xmlXPathCastNodeToString (tmpnode);
-//			    }
-//
-//			  // Get the advanced flag
-//			  tmpnode = cur->parent->children;
-//			  while (tmpnode && strcmp ((char *) tmpnode->name, "adv")) 
-//			    {
-//			      tmpnode = tmpnode->next;
-//			    }
-//			  pStringAdvanced = NULL;
-//			  if (tmpnode)
-//			    {
-//			      pStringAdvanced = xmlXPathCastNodeToString (tmpnode);
-//			    }
-//
-//			  if (pStringSet && pStringAdvanced)
-//			    {
-//			      wxString sStringSet ((const char *) pStringSet, wxConvUTF8);
-//			      wxString sStringAdv ((const char *) pStringAdvanced, wxConvUTF8);
-//
-//			      /*
-//			      // ARDB Should be Set-ignorant for now
-//			      SetHWSCryptName (sStringName, sStringSet, sStringAdv.Length () > 0,
-//					       lHave, lWant, lSpare);
-//			      */
-//			      SetHWSCryptName (sStringName, wxEmptyString, sStringAdv.Length () > 0,
-//					       lHave, lWant, lSpare);
-//				  
-//			      free (pStringSet);
-//			      free (pStringAdvanced);
-//			      pStringSet = 0;
-//			      pStringAdvanced = 0;
-//			    }
-//			  else
-//			    {
-//			      SetHWSCryptName (sStringName, wxEmptyString, FALSE,
-//				       lHave, lWant, lSpare);
-//			    }
-//			  
-//			}
-//		      free (pStringName);
-//		      pStringName = 0;
-//		    }
-//		  else
-//		    {
-//		      wxLogMessage (wxT ("DB/XML mismatch for ID %d, ignoring that card"), lID);
-//		    }
-//		}
-//
-//	      free (pDatabaseID);
-//	      free (pHave);
-//	      free (pWant);
-//	      free (pSpare);
-//	      pDatabaseID = 0;
-//	      pHave = 0;
-//	      pWant = 0;
-//	      pSpare = 0;
-//	    }
-//	}
-//    }
-//  free (xpathObj);
-//  
-//  // Get the inventory's library
-//  xpathObj = xmlXPathEvalExpression (BAD_CAST "/inventory/library/card/@*", xpathCtx);
-//  if (xpathObj == NULL)
-//    {
-//      xmlXPathFreeContext(xpathCtx); 
-//      xmlFreeDoc(doc); 
-//      return 0;
-//    }
-//  nodes = xpathObj->nodesetval;
-//  size = (nodes) ? nodes->nodeNr : 0;
-//  for(int i = 0; i < size; i++) 
-//    {
-//      if (nodes->nodeTab[i])
-//	{
-//	  cur = nodes->nodeTab[i];
-//	  pString = xmlXPathCastNodeToString (cur);
-//	  if (!strcmp ((char *) cur->name, "databaseID"))
-//	    pDatabaseID = pString;
-//	  else if (!strcmp ((char *) cur->name, "have"))
-//	    pHave = pString;
-//	  else if (!strcmp ((char *) cur->name, "need"))
-//	    pWant = pString;
-//	  else if (!strcmp ((char *) cur->name, "spare"))
-//	    pSpare = pString;
-//
-//	  if (pDatabaseID && pHave && pWant && pSpare)
-//	    {
-//	      long lID, lHave, lWant, lSpare;
-//	      wxString sID ((const char *) pDatabaseID, wxConvLibc), 
-//		sHave ((const char *) pHave, wxConvLibc),
-//		sWant ((const char *) pWant, wxConvLibc),
-//		sSpare ((const char *) pSpare, wxConvLibc);
-//	      
-//	      sID.ToLong (&lID);
-//	      sHave.ToLong (&lHave);
-//	      sWant.ToLong (&lWant);
-//	      sSpare.ToLong (&lSpare);
-//
-//
-//	      wxString sQuery;
-//	      wxArrayString *pResult;
-//	      RecordSet oRecordSet;
-//
-//	      // Get the name we have for this card in the DB
-//	      sQuery.Printf (wxT ("SELECT card_name FROM library_view WHERE card_ref = %d;"), lID);
-//	      pDatabase->Query (sQuery, &oRecordSet);
-//	      pResult = NULL;
-//	      if (oRecordSet.GetCount () > 0)
-//		pResult = &(oRecordSet.Item (0));
-//// 	      else
-//// 		wxLogMessage (wxT ("card_ref not found : %d"), lID);
-//
-//	      // Get the name we have for this card in the XML
-//	      tmpnode = cur->parent->children;
-//	      while (tmpnode && strcmp ((char *) tmpnode->name, "name")) 
-//		{
-//		  tmpnode = tmpnode->next;
-//		}
-//	      if (tmpnode)
-//		{
-//		  pStringName = xmlXPathCastNodeToString (tmpnode);
-//		  if (pStringName)
-//		    {
-//		      wxString sStringName ((const char *) pStringName, wxConvUTF8);
-//		      // Compare the card names
-//		      // ARDB Should be Set-ignorant for now
-//		      // if (pResult && !sStringName.Cmp (pResult->Item (0)))
-//		      if (0)
-//			{
-//			  // OK these are the same names
-//			  SetHaveLibrary (lID, lHave);
-//			  SetWantLibrary (lID, lWant);
-//			  SetSpareLibrary (lID, lSpare);
-//			}
-//		      else
-//			{
-//			  // Name mismatch -> DB morphed, we'll trust the XML info
-//			  bMorphed = TRUE;
-//
-//			  // Get the card set
-//			  tmpnode = cur->parent->children;
-//			  while (tmpnode && strcmp ((char *) tmpnode->name, "set")) 
-//			    {
-//			      tmpnode = tmpnode->next;
-//			    }
-//			  pStringSet = NULL;
-//			  if (tmpnode)
-//			    {
-//			      pStringSet = xmlXPathCastNodeToString (tmpnode);
-//			    }
-//
-//			  if (pStringSet)
-//			    {
-//			      wxString sStringSet ((const char *) pStringSet, wxConvUTF8);
-//
-//			      /*
-//			      // ARDB Should be Set-ignorant for now				  
-//			      SetHWSLibraryName (sStringName, sStringSet,
-//						 lHave, lWant, lSpare);
-//			      */
-//			      SetHWSLibraryName (sStringName, wxEmptyString,
-//						 lHave, lWant, lSpare);
-//				  
-//			      free (pStringSet);
-//			      pStringSet = 0;
-//			    }
-//			  else
-//			    {
-//			      SetHWSLibraryName (sStringName, wxEmptyString,
-//						 lHave, lWant, lSpare);
-//			    }
-//			  
-//			}
-//		      free (pStringName);
-//		      pStringName = 0;
-//		    }
-//		  else
-//		    {
-//		      wxLogMessage (wxT ("DB/XML mismatch for ID %d, ignoring that card"), lID);
-//		    }
-//		}
-//
-//	      free (pDatabaseID);
-//	      free (pHave);
-//	      free (pWant);
-//	      free (pSpare);
-//	      pDatabaseID = 0;
-//	      pHave = 0;
-//	      pWant = 0;
-//	      pSpare = 0;
-//	    }
-//	}
-//    }
-//  free (xpathObj);
-//  
-//
-//  // free
-//  xmlXPathFreeContext(xpathCtx); 
-//  xmlFreeDoc(doc);
-//  
-//  // Cleanup function for the XML library.
-//  xmlCleanupParser();
-//
-//  pDatabase->Query (wxT ("COMMIT TRANSACTION;"));
-//
-//  if (bMorphed)
-//    {
-//      ExportWithXSL (sFileName, NULL);
-//    }
+	Database *pDatabase = Database::Instance ();
+
+	bool bMorphed = FALSE;
+	xmlChar *pString, *pStringName, *pStringSet, *pStringAdvanced, *pDatabaseID = 0, *pHave = 0, *pSpare = 0, *pWant = 0;
+	xmlDocPtr doc; // the document tree
+	xmlXPathContextPtr xpathCtx; 
+	xmlXPathObjectPtr xpathObj; 
+	xmlNodeSetPtr nodes;
+	xmlNodePtr cur, tmpnode;
+	int size;
+	wxString xmlStringDoc;
+
+	xmlInitParser ();
+	LIBXML_TEST_VERSION;
+
+	xmlStringDoc = ReadXmlFile(sFileName);
+	doc = xmlParseDoc((xmlChar *)xmlStringDoc.c_str());
+
+	if (doc == NULL) return 0;
+
+	// Create xpath evaluation context
+	xpathCtx = xmlXPathNewContext (doc);
+	if (xpathCtx == NULL) 
+	{
+		xmlFreeDoc(doc); 
+		return 0;
+	}
+
+	// TODO: check the validity using the DTD
+
+	pDatabase->Query (wxT ("BEGIN TRANSACTION;"));
+
+	// Get the inventory's crypt
+	xpathObj = xmlXPathEvalExpression (BAD_CAST "/inventory/crypt/vampire/@*", xpathCtx);
+	if (xpathObj == NULL)
+	{
+		xmlXPathFreeContext(xpathCtx); 
+		xmlFreeDoc(doc); 
+		return 0;
+	}
+	nodes = xpathObj->nodesetval;
+	size = (nodes) ? nodes->nodeNr : 0;
+	for(int i = 0; i < size; i++) 
+	{
+		if (nodes->nodeTab[i])
+		{
+			cur = nodes->nodeTab[i];
+			pString = xmlXPathCastNodeToString (cur);
+			if (!strcmp ((char *) cur->name, "databaseID"))
+				pDatabaseID = pString;
+			else if (!strcmp ((char *) cur->name, "have"))
+				pHave = pString;
+			else if (!strcmp ((char *) cur->name, "need"))
+				pWant = pString;
+			else if (!strcmp ((char *) cur->name, "spare"))
+				pSpare = pString;
+
+			if (pDatabaseID && pHave && pWant && pSpare)
+			{
+				long lID, lHave, lWant, lSpare;
+				wxString sID ((const char *) pDatabaseID, wxConvLibc), 
+					sHave ((const char *) pHave, wxConvLibc),
+					sWant ((const char *) pWant, wxConvLibc),
+					sSpare ((const char *) pSpare, wxConvLibc);
+
+				sID.ToLong (&lID);
+				sHave.ToLong (&lHave);
+				sWant.ToLong (&lWant);
+				sSpare.ToLong (&lSpare);
+
+
+				wxString sQuery;
+				wxArrayString *pResult;
+				RecordSet oRecordSet;
+
+				// Get the name we have for this card in the DB
+				sQuery.Printf (wxT ("SELECT card_name FROM crypt_view WHERE card_ref = %d;"), lID);
+				pDatabase->Query (sQuery, &oRecordSet);
+				pResult = NULL;
+				if (oRecordSet.GetCount () > 0)
+					pResult = &(oRecordSet.Item (0));
+				// 	      else
+				// 		wxLogMessage (wxT ("card_ref not found : %d"), lID);
+
+				// Get the name we have for this card in the XML
+				tmpnode = cur->parent->children;
+				while (tmpnode && strcmp ((char *) tmpnode->name, "name")) 
+				{
+					tmpnode = tmpnode->next;
+				}
+				if (tmpnode)
+				{
+					pStringName = xmlXPathCastNodeToString (tmpnode);
+					if (pStringName)
+					{
+						wxString sStringName ((const char *) pStringName, wxConvUTF8);
+						// Compare the card names
+						// ARDB Should be Set-ignorant for now
+						// if (pResult && !sStringName.Cmp (pResult->Item (0)))
+						if (0)
+						{
+							// OK these are the same names
+							SetHaveCrypt (lID, lHave);
+							SetWantCrypt (lID, lWant);
+							SetSpareCrypt (lID, lSpare);
+						}
+						else
+						{
+							// Name mismatch -> DB morphed, we'll trust the XML info
+							bMorphed = TRUE;
+
+							// Get the card set
+							tmpnode = cur->parent->children;
+							while (tmpnode && strcmp ((char *) tmpnode->name, "set")) 
+							{
+								tmpnode = tmpnode->next;
+							}
+							pStringSet = NULL;
+							if (tmpnode)
+							{
+								pStringSet = xmlXPathCastNodeToString (tmpnode);
+							}
+
+							// Get the advanced flag
+							tmpnode = cur->parent->children;
+							while (tmpnode && strcmp ((char *) tmpnode->name, "adv")) 
+							{
+								tmpnode = tmpnode->next;
+							}
+							pStringAdvanced = NULL;
+							if (tmpnode)
+							{
+								pStringAdvanced = xmlXPathCastNodeToString (tmpnode);
+							}
+
+							if (pStringSet && pStringAdvanced)
+							{
+								wxString sStringSet ((const char *) pStringSet, wxConvUTF8);
+								wxString sStringAdv ((const char *) pStringAdvanced, wxConvUTF8);
+
+								/*
+								// ARDB Should be Set-ignorant for now
+								SetHWSCryptName (sStringName, sStringSet, sStringAdv.Length () > 0,
+								lHave, lWant, lSpare);
+								*/
+								SetHWSCryptName (sStringName, wxEmptyString, sStringAdv.Length () > 0,
+									lHave, lWant, lSpare);
+
+								free (pStringSet);
+								free (pStringAdvanced);
+								pStringSet = 0;
+								pStringAdvanced = 0;
+							}
+							else
+							{
+								SetHWSCryptName (sStringName, wxEmptyString, FALSE,
+									lHave, lWant, lSpare);
+							}
+
+						}
+						free (pStringName);
+						pStringName = 0;
+					}
+					else
+					{
+						wxLogMessage (wxT ("DB/XML mismatch for ID %d, ignoring that card"), lID);
+					}
+				}
+
+				free (pDatabaseID);
+				free (pHave);
+				free (pWant);
+				free (pSpare);
+				pDatabaseID = 0;
+				pHave = 0;
+				pWant = 0;
+				pSpare = 0;
+			}
+		}
+	}
+	free (xpathObj);
+
+	// Get the inventory's library
+	xpathObj = xmlXPathEvalExpression (BAD_CAST "/inventory/library/card/@*", xpathCtx);
+	if (xpathObj == NULL)
+	{
+		xmlXPathFreeContext(xpathCtx); 
+		xmlFreeDoc(doc); 
+		return 0;
+	}
+	nodes = xpathObj->nodesetval;
+	size = (nodes) ? nodes->nodeNr : 0;
+	for(int i = 0; i < size; i++) 
+	{
+		if (nodes->nodeTab[i])
+		{
+			cur = nodes->nodeTab[i];
+			pString = xmlXPathCastNodeToString (cur);
+			if (!strcmp ((char *) cur->name, "databaseID"))
+				pDatabaseID = pString;
+			else if (!strcmp ((char *) cur->name, "have"))
+				pHave = pString;
+			else if (!strcmp ((char *) cur->name, "need"))
+				pWant = pString;
+			else if (!strcmp ((char *) cur->name, "spare"))
+				pSpare = pString;
+
+			if (pDatabaseID && pHave && pWant && pSpare)
+			{
+				long lID, lHave, lWant, lSpare;
+				wxString sID ((const char *) pDatabaseID, wxConvLibc), 
+					sHave ((const char *) pHave, wxConvLibc),
+					sWant ((const char *) pWant, wxConvLibc),
+					sSpare ((const char *) pSpare, wxConvLibc);
+
+				sID.ToLong (&lID);
+				sHave.ToLong (&lHave);
+				sWant.ToLong (&lWant);
+				sSpare.ToLong (&lSpare);
+
+
+				wxString sQuery;
+				wxArrayString *pResult;
+				RecordSet oRecordSet;
+
+				// Get the name we have for this card in the DB
+				sQuery.Printf (wxT ("SELECT card_name FROM library_view WHERE card_ref = %d;"), lID);
+				pDatabase->Query (sQuery, &oRecordSet);
+				pResult = NULL;
+				if (oRecordSet.GetCount () > 0)
+					pResult = &(oRecordSet.Item (0));
+				// 	      else
+				// 		wxLogMessage (wxT ("card_ref not found : %d"), lID);
+
+				// Get the name we have for this card in the XML
+				tmpnode = cur->parent->children;
+				while (tmpnode && strcmp ((char *) tmpnode->name, "name")) 
+				{
+					tmpnode = tmpnode->next;
+				}
+				if (tmpnode)
+				{
+					pStringName = xmlXPathCastNodeToString (tmpnode);
+					if (pStringName)
+					{
+						wxString sStringName ((const char *) pStringName, wxConvUTF8);
+						// Compare the card names
+						// ARDB Should be Set-ignorant for now
+						// if (pResult && !sStringName.Cmp (pResult->Item (0)))
+						if (0)
+						{
+							// OK these are the same names
+							SetHaveLibrary (lID, lHave);
+							SetWantLibrary (lID, lWant);
+							SetSpareLibrary (lID, lSpare);
+						}
+						else
+						{
+							// Name mismatch -> DB morphed, we'll trust the XML info
+							bMorphed = TRUE;
+
+							// Get the card set
+							tmpnode = cur->parent->children;
+							while (tmpnode && strcmp ((char *) tmpnode->name, "set")) 
+							{
+								tmpnode = tmpnode->next;
+							}
+							pStringSet = NULL;
+							if (tmpnode)
+							{
+								pStringSet = xmlXPathCastNodeToString (tmpnode);
+							}
+
+							if (pStringSet)
+							{
+								wxString sStringSet ((const char *) pStringSet, wxConvUTF8);
+
+								/*
+								// ARDB Should be Set-ignorant for now				  
+								SetHWSLibraryName (sStringName, sStringSet,
+								lHave, lWant, lSpare);
+								*/
+								SetHWSLibraryName (sStringName, wxEmptyString,
+									lHave, lWant, lSpare);
+
+								free (pStringSet);
+								pStringSet = 0;
+							}
+							else
+							{
+								SetHWSLibraryName (sStringName, wxEmptyString,
+									lHave, lWant, lSpare);
+							}
+
+						}
+						free (pStringName);
+						pStringName = 0;
+					}
+					else
+					{
+						wxLogMessage (wxT ("DB/XML mismatch for ID %d, ignoring that card"), lID);
+					}
+				}
+
+				free (pDatabaseID);
+				free (pHave);
+				free (pWant);
+				free (pSpare);
+				pDatabaseID = 0;
+				pHave = 0;
+				pWant = 0;
+				pSpare = 0;
+			}
+		}
+	}
+	free (xpathObj);
+
+
+	// free
+	xmlXPathFreeContext(xpathCtx); 
+	xmlFreeDoc(doc);
+
+	// Cleanup function for the XML library.
+	xmlCleanupParser();
+
+	pDatabase->Query (wxT ("COMMIT TRANSACTION;"));
+
+	if (bMorphed)
+	{
+		ExportWithXSL (sFileName, NULL);
+	}
 
   return 1;
 }

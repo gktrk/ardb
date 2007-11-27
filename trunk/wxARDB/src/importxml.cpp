@@ -2,7 +2,7 @@
 #include "importxml.h"
 #include <wx/file.h>
 
-#define BUFFER_SIZE 256
+#define BUFFER_SIZE 1024
 
 char MakeAscii(char c);
 
