@@ -3,7 +3,10 @@
  *  Copyright (C) 2002 Francois Gombault
  *  gombault.francois@wanadoo.fr
  *  
- *  Official project page: https://savannah.nongnu.org/projects/anarchdb/
+ *  contributors:
+ *    meshee.knight@gmail.com
+ *  
+ *  Official project page: http://code.google.com/p/ardb/
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -164,7 +167,7 @@ EditionsDialog::OnOK(wxCommandEvent& WXUNUSED (event))
 {
   
   Hide ();
-  //make wxListView into wxStringArray
+  //make wxListView into wxArrayString
   wxArrayString useEditions, ignoreEditions;
   for (int i = 0; i < m_pIgnoreEditionsList->GetItemCount(); i++){
   	ignoreEditions.Add(m_pIgnoreEditionsList->GetItemText(i));
@@ -175,91 +178,6 @@ EditionsDialog::OnOK(wxCommandEvent& WXUNUSED (event))
   }
   
   ardb_db_ef_move(useEditions, ignoreEditions);
-  /*
-  Database *pDatabase = Database::Instance ();
-  if (!pDatabase) return;
-  wxString sQuery;
-
-  //  pDatabase->ToggleVerbose ();
-  pDatabase->Query (wxT ("BEGIN TRANSACTION;"));
-  // In use --> Ignored
-  for (int i = 0; i < m_pIgnoreEditionsList->GetItemCount (); i++)
-    {
-      // Move crypt cards
-      // InUse --> Ignored
-      sQuery.Printf (wxT ("INSERT OR REPLACE INTO cards_crypt_ignored "
-			  "SELECT * FROM cards_crypt "
-			  "WHERE release_set IN "
-			  "(SELECT record_num FROM cards_sets"
-			  " WHERE full_name = '%s' OR full_name = 'Proxy %s')"),
-		     m_pIgnoreEditionsList->GetItemText (i).c_str (),
-		     m_pIgnoreEditionsList->GetItemText (i).c_str ());
-      pDatabase->Query (sQuery);
-      sQuery.Printf (wxT ("DELETE FROM cards_crypt "
-			  "WHERE release_set IN "
-			  "(SELECT record_num FROM cards_sets"
-			  " WHERE full_name = '%s' OR full_name = 'Proxy %s')"),
-		     m_pIgnoreEditionsList->GetItemText (i).c_str (),
-		     m_pIgnoreEditionsList->GetItemText (i).c_str ());
-      pDatabase->Query (sQuery);
-      // Move library cards
-      sQuery.Printf (wxT ("INSERT OR REPLACE INTO cards_library_ignored "
-			  "SELECT * FROM cards_library "
-			  "WHERE release_set IN "
-			  "(SELECT record_num FROM cards_sets"
-			  " WHERE full_name = '%s' OR full_name = 'Proxy %s')"),
-		     m_pIgnoreEditionsList->GetItemText (i).c_str (),
-		     m_pIgnoreEditionsList->GetItemText (i).c_str ());
-      pDatabase->Query (sQuery);
-      sQuery.Printf (wxT ("DELETE FROM cards_library "
-			  "WHERE release_set IN "
-			  "(SELECT record_num FROM cards_sets"
-			  " WHERE full_name = '%s' OR full_name = 'Proxy %s')"),
-		     m_pIgnoreEditionsList->GetItemText (i).c_str (),
-		     m_pIgnoreEditionsList->GetItemText (i).c_str ());
-      pDatabase->Query (sQuery);
-    }
-  // Ignored --> In use
-  for (int i = 0; i < m_pUseEditionsList->GetItemCount (); i++)
-    {
-      // Move crypt cards
-      sQuery.Printf (wxT ("INSERT OR REPLACE INTO cards_crypt "
-			  "SELECT * FROM cards_crypt_ignored "
-			  "WHERE release_set IN "
-			  "(SELECT record_num FROM cards_sets"
-			  " WHERE full_name = '%s' OR full_name = 'Proxy %s')"),
-		     m_pUseEditionsList->GetItemText (i).c_str (),
-		     m_pUseEditionsList->GetItemText (i).c_str ());
-      pDatabase->Query (sQuery);
-      sQuery.Printf (wxT ("DELETE FROM cards_crypt_ignored "
-			  "WHERE release_set IN "
-			  "(SELECT record_num FROM cards_sets"
-			  " WHERE full_name = '%s' OR full_name = 'Proxy %s')"),
-		     m_pUseEditionsList->GetItemText (i).c_str (),
-		     m_pUseEditionsList->GetItemText (i).c_str ());
-      pDatabase->Query (sQuery);
-      // Move library cards
-      sQuery.Printf (wxT ("INSERT OR REPLACE INTO cards_library "
-			  "SELECT * FROM cards_library_ignored "
-			  "WHERE release_set IN "
-			  "(SELECT record_num FROM cards_sets"
-			  " WHERE full_name = '%s' OR full_name = 'Proxy %s')"),
-		     m_pUseEditionsList->GetItemText (i).c_str (),
-		     m_pUseEditionsList->GetItemText (i).c_str ());
-      pDatabase->Query (sQuery);
-      sQuery.Printf (wxT ("DELETE FROM cards_library_ignored "
-			  "WHERE release_set IN "
-			  "(SELECT record_num FROM cards_sets"
-			  " WHERE full_name = '%s' OR full_name = 'Proxy %s')"),
-		     m_pUseEditionsList->GetItemText (i).c_str (),
-		     m_pUseEditionsList->GetItemText (i).c_str ());
-      pDatabase->Query (sQuery);
-    }
-  pDatabase->Query (wxT ("COMMIT TRANSACTION;"));
-  pDatabase->Query (wxT ("VACUUM"));
-  //  pDatabase->ToggleVerbose ();
-
-*/
   DeleteInstance ();
 }
 
