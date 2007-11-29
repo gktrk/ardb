@@ -2,9 +2,11 @@
  *
  *  Copyright (C) 2002 Francois Gombault
  *  gombault.francois@wanadoo.fr
- *  
- *  Official project page: https://savannah.nongnu.org/projects/anarchdb/
  *
+ *  contributors:
+ *    meshee.knight@gmail.com
+ *  
+ *  Official project page: http://code.google.com/p/ardb/
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

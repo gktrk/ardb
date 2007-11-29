@@ -3,7 +3,7 @@
  *  Copyright (C) 2007 Sylvain Gogel
  *  meshee.knight@gmail.com
  *  
- *  Official project page: https://savannah.nongnu.org/projects/anarchdb/
+ *  Official project page: http://code.google.com/p/ardb/
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -24,7 +24,6 @@
 /**
  * this lib encapsulate all Database manipulation done by the "File/VTES Sets..."
  * mainly used in editionsdialog.cpp.
- * This code had to be factored out for a better seperation between View and Model  
  */
  
 #include "ardb_db_edition_filter.h"
