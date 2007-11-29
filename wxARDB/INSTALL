@@ -23,6 +23,8 @@ Launch ardb and let it create ~/.ardb/ and it's database.
 Then, copy the directory src/vtesicons in ~/.ardb/
 and copy resources/*.xsl to ~/.ardb/
 
+more details here: http://code.google.com/p/ardb/wiki/HowToBuildFromSourceForLinuxOs
+
 Cross-compiling for Windows
 =================
 
