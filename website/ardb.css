@@ -33,13 +33,15 @@ body * {
 #ar-wrapper{ 
 	width: 958px;
     margin:0 auto;
-    overflow:none;
+    overflow:auto;
 }
 
 #ar-header{ 
 	height:35px;
     position:relative;
-    font:14px arial,helvetica,clean,sans-serif;*font-size:small;*font:x-small;
+    font:14px arial,helvetica,clean,sans-serif;
+	font-size:small;
+	/*font:x-small;*/
 }
                             
 #ar-header h1, #ar-header img { 
