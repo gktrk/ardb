@@ -30,8 +30,6 @@
 #include <wx/panel.h>
 #include <wx/dialog.h>
 
-#include "imagedialog.h"
-
 /** The main program frame
  * 
  *  This shows the main window for the program which includes the menu, a
@@ -41,7 +39,7 @@
 class ImagePanel : public wxPanel 
 {
 public:
-    ImagePanel(wxWindow *parent, ImageDialog *dialog = NULL);
+    ImagePanel(wxWindow *parent);
     ~ImagePanel();
 
     void SetImage(wxString fileName);
@@ -54,8 +52,8 @@ protected:
 
 private:
     wxImage image;
-	ImageDialog *m_pDialog;
 	wxString m_fileName;
+	wxWindow *m_pParent;
 
 protected:
     DECLARE_EVENT_TABLE()

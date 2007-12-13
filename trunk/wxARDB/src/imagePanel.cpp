@@ -33,6 +33,8 @@
 
 #include "imagePanel.h"
 
+#include "ImageDialog.h"
+
 // --------------------------------------------------------
 // Constructors
 
@@ -40,10 +42,10 @@
  *         the main program's frame.
  *  \param image - an initial image to load into the panel
  */
-ImagePanel::ImagePanel(wxWindow *parent, ImageDialog *dialog) :
+ImagePanel::ImagePanel(wxWindow *parent) :
     wxPanel(parent)
 {
-	m_pDialog = dialog;
+	m_pParent = parent;
 }
 
 // --------------------------------------------------------
@@ -82,6 +84,7 @@ void ImagePanel::SetImage(wxString fileName)
 */
 void ImagePanel::Clear()
 {
+	m_fileName = wxT("");
 	image.Destroy();
 	Refresh();
 }
@@ -99,12 +102,10 @@ void ImagePanel::OnSize(wxSizeEvent &event)
 
 void ImagePanel::Click(wxMouseEvent &event)
 {
-	if (m_pDialog != NULL)
-	{
-		//m_pDialog->SetImage(m_fileName);
-		m_pDialog->ShowModal();
-	}
-	
+	ImageDialog dialog;
+	dialog.SetImage(m_fileName);
+	dialog.CentreOnParent ();
+	dialog.ShowModal();
 }
 
 /// Draw the image in the panel if it exists
