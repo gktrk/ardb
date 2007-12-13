@@ -631,16 +631,6 @@ DeckModel::ExportToHTML ()
        << wxFileName::GetPathSeparator ()
        << wxT("deck2html_eldb.xsl");
 
-  wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get ();
-  if (pConfig)
-    {
-      if (!pConfig->Read (sConfEntry, &sXSL))
-	{
-	  pConfig->Write (sConfEntry, sXSL);
-	  pConfig->Flush (TRUE);
-	}
-    }
-
   sFile.Append (wxT (".html"));
 
   wxFileDialog oFileDialog (m_pView, wxT ("Export deck..."),
@@ -670,16 +660,6 @@ DeckModel::ExportToJOL ()
   sXSL << pDatabase->GetDatabaseDirectory () 
        << wxFileName::GetPathSeparator ()
        << wxT("deck2jol.xsl");
-
-  wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get ();
-  if (pConfig)
-    {
-      if (!pConfig->Read (sConfEntry, &sXSL))
-	{
-	  pConfig->Write (sConfEntry, sXSL);
-	  pConfig->Flush (TRUE);
-	}
-    }
 
   sFile.Append (wxT (".jol"));
   
@@ -711,16 +691,6 @@ DeckModel::ExportToPhpBB ()
        << wxFileName::GetPathSeparator ()
        << wxT("deck2phpbb.xsl");
 
-  wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get ();
-  if (pConfig)
-    {
-      if (!pConfig->Read (sConfEntry, &sXSL))
-	{
-	  pConfig->Write (sConfEntry, sXSL);
-	  pConfig->Flush (TRUE);
-	}
-    }
-
   sFile.Append (wxT ("-phpBB.txt"));
   
   wxFileDialog oFileDialog (m_pView, wxT ("Export deck..."),
@@ -742,7 +712,8 @@ bool
 DeckModel::ExportToText ()
 {
   Database *pDatabase = Database::Instance ();
-  wxString sXSL, sConfEntry = wxT("DeckTextTemplate");
+  wxString sXSL;
+  wxString sConfEntry = wxT("DeckTextTemplate");
   wxString sFile = StripInvalidFilename(m_sName);
   
   if (pDatabase == NULL) return false;
@@ -751,25 +722,15 @@ DeckModel::ExportToText ()
        << wxFileName::GetPathSeparator ()
        << wxT("deck2text.xsl");
 
-  wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get ();
-  if (pConfig)
-    {
-      if (!pConfig->Read (sConfEntry, &sXSL))
-	{
-	  pConfig->Write (sConfEntry, sXSL);
-	  pConfig->Flush (TRUE);
-	}
-    }
-
-  sFile.Append (wxT (".txt"));
-
+  sFile.Append(wxT (".txt"));
   wxFileDialog oFileDialog (m_pView, wxT ("Export deck..."),
 			    wxT (""), sFile, wxT ("*.txt"),
 			    wxSAVE | wxOVERWRITE_PROMPT);
+  
   if (oFileDialog.ShowModal () != wxID_OK)
-    {
-      return true;
-    }
+  {
+	  return true;
+  }
   
   sFile = oFileDialog.GetDirectory () << wxFileName::GetPathSeparator ()
 				      << oFileDialog.GetFilename ();

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="ardb"
 	ProjectGUID="{49422860-299B-4EC4-853E-77E26B7882CE}"
 	RootNamespace="ardb"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -64,6 +65,8 @@
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -83,9 +86,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -133,6 +133,8 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="Ws2_32.lib Rpcrt4.lib comctl32.lib libxml.lib libxslt_so.lib wxbase28.lib wxbase28_net.lib wxbase28_odbc.lib wxbase28_xml.lib wxmsw28_adv.lib wxmsw28_aui.lib wxmsw28_core.lib wxmsw28_dbgrid.lib wxmsw28_gl.lib wxmsw28_html.lib wxmsw28_media.lib wxmsw28_qa.lib wxmsw28_richtext.lib wxmsw28_xrc.lib wxexpat.lib wxjpeg.lib wxpng.lib wxregex.lib wxtiff.lib wxzlib.lib"
 				AdditionalLibraryDirectories="$(SolutionDir)\lib\libxslt\Release;$(SolutionDir)\lib\libxml\Release;$(SolutionDir)\lib\vc_lib"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -151,9 +153,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -352,15 +351,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\wxARDB\src\browsercryptcontroller.h"
-					>
-				</File>
-				<File
 					RelativePath="..\wxARDB\src\browsercryptfilter.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\wxARDB\src\browsercryptfilter.h"
 					>
 				</File>
 				<File
@@ -368,15 +359,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\wxARDB\src\browsercryptmodel.h"
-					>
-				</File>
-				<File
 					RelativePath="..\wxARDB\src\browsercrypttab.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\wxARDB\src\browsercrypttab.h"
 					>
 				</File>
 				<File
@@ -384,15 +367,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\wxARDB\src\browserlibrarycontroller.h"
-					>
-				</File>
-				<File
 					RelativePath="..\wxARDB\src\browserlibraryfilter.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\wxARDB\src\browserlibraryfilter.h"
 					>
 				</File>
 				<File
@@ -400,15 +375,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\wxARDB\src\browserlibrarymodel.h"
-					>
-				</File>
-				<File
 					RelativePath="..\wxARDB\src\browserlibrarytab.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\wxARDB\src\browserlibrarytab.h"
 					>
 				</File>
 				<File
@@ -416,15 +383,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\wxARDB\src\cardtext.h"
-					>
-				</File>
-				<File
 					RelativePath="..\wxARDB\src\database.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\wxARDB\src\database.h"
 					>
 				</File>
 				<File
@@ -432,15 +391,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\wxARDB\src\deckcrypttab.h"
-					>
-				</File>
-				<File
 					RelativePath="..\wxARDB\src\deckinfotab.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\wxARDB\src\deckinfotab.h"
 					>
 				</File>
 				<File
@@ -448,15 +399,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\wxARDB\src\decklibrarytab.h"
-					>
-				</File>
-				<File
 					RelativePath="..\wxARDB\src\deckmodel.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\wxARDB\src\deckmodel.h"
 					>
 				</File>
 				<File
@@ -464,15 +407,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\wxARDB\src\deckwindow.h"
-					>
-				</File>
-				<File
 					RelativePath="..\wxARDB\src\drawsimulator.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\wxARDB\src\drawsimulator.h"
 					>
 				</File>
 				<File
@@ -480,15 +415,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\wxARDB\src\imagedialog.h"
-					>
-				</File>
-				<File
 					RelativePath="..\wxARDB\src\imagePanel.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\wxARDB\src\imagePanel.h"
 					>
 				</File>
 				<File
@@ -496,23 +423,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\wxARDB\src\importxml.h"
-					>
-				</File>
-				<File
 					RelativePath="..\wxARDB\src\interfacedata.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\wxARDB\src\interfacedata.h"
-					>
-				</File>
-				<File
 					RelativePath="..\wxARDB\src\inventorymodel.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\wxARDB\src\inventorymodel.h"
 					>
 				</File>
 				<File
@@ -538,15 +453,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\wxARDB\src\main.h"
-					>
-				</File>
-				<File
 					RelativePath="..\wxARDB\src\speling.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\wxARDB\src\speling.h"
 					>
 				</File>
 				<File
@@ -554,15 +461,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\wxARDB\src\types.h"
-					>
-				</File>
-				<File
 					RelativePath="..\wxARDB\src\updater.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\wxARDB\src\updater.h"
 					>
 				</File>
 			</Filter>
@@ -572,6 +471,106 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath="..\wxARDB\src\browsercryptcontroller.h"
+				>
+			</File>
+			<File
+				RelativePath="..\wxARDB\src\browsercryptfilter.h"
+				>
+			</File>
+			<File
+				RelativePath="..\wxARDB\src\browsercryptmodel.h"
+				>
+			</File>
+			<File
+				RelativePath="..\wxARDB\src\browsercrypttab.h"
+				>
+			</File>
+			<File
+				RelativePath="..\wxARDB\src\browserlibrarycontroller.h"
+				>
+			</File>
+			<File
+				RelativePath="..\wxARDB\src\browserlibraryfilter.h"
+				>
+			</File>
+			<File
+				RelativePath="..\wxARDB\src\browserlibrarymodel.h"
+				>
+			</File>
+			<File
+				RelativePath="..\wxARDB\src\browserlibrarytab.h"
+				>
+			</File>
+			<File
+				RelativePath="..\wxARDB\src\cardtext.h"
+				>
+			</File>
+			<File
+				RelativePath="..\wxARDB\src\database.h"
+				>
+			</File>
+			<File
+				RelativePath="..\wxARDB\src\deckcrypttab.h"
+				>
+			</File>
+			<File
+				RelativePath="..\wxARDB\src\deckinfotab.h"
+				>
+			</File>
+			<File
+				RelativePath="..\wxARDB\src\decklibrarytab.h"
+				>
+			</File>
+			<File
+				RelativePath="..\wxARDB\src\deckmodel.h"
+				>
+			</File>
+			<File
+				RelativePath="..\wxARDB\src\deckwindow.h"
+				>
+			</File>
+			<File
+				RelativePath="..\wxARDB\src\drawsimulator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\wxARDB\src\imagedialog.h"
+				>
+			</File>
+			<File
+				RelativePath="..\wxARDB\src\imagePanel.h"
+				>
+			</File>
+			<File
+				RelativePath="..\wxARDB\src\importxml.h"
+				>
+			</File>
+			<File
+				RelativePath="..\wxARDB\src\interfacedata.h"
+				>
+			</File>
+			<File
+				RelativePath="..\wxARDB\src\inventorymodel.h"
+				>
+			</File>
+			<File
+				RelativePath="..\wxARDB\src\main.h"
+				>
+			</File>
+			<File
+				RelativePath="..\wxARDB\src\speling.h"
+				>
+			</File>
+			<File
+				RelativePath="..\wxARDB\src\types.h"
+				>
+			</File>
+			<File
+				RelativePath="..\wxARDB\src\updater.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

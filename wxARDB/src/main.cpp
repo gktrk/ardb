@@ -228,13 +228,13 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos, const wxS
 
 BrowserFrame::~BrowserFrame ()
 {
-  wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get ();
-  if (pConfig)
-    {
-      pConfig->Write (wxT ("BrowserWindowHeight"), GetSize ().GetHeight ());
-      pConfig->Write (wxT ("BrowserWindowWidth"), GetSize ().GetWidth ());
-      pConfig->Flush (TRUE);
-    }
+	wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get ();
+	if (pConfig)
+	{
+		pConfig->Write (wxT ("BrowserWindowHeight"), GetSize ().GetHeight ());
+		pConfig->Write (wxT ("BrowserWindowWidth"), GetSize ().GetWidth ());
+		pConfig->Flush (TRUE);
+	}
 }
 
 void
@@ -336,7 +336,7 @@ void
 BrowserFrame::OnHelpAbout (wxCommandEvent& WXUNUSED (event)) 
 {
 	wxString about;
-	about.Printf(wxT ("The Anarch Revolt Deck Builder\nVersion 2 Beta\n\nby Francois Gombault & Graham Smith\n\nEmail: graham.r.smith@gmail.com\n\n Built: %s"),BUILD_DATE);
+	about.Printf(wxT ("The Anarch Revolt Deck Builder\nVersion 2 RC 1\n\nby Francois Gombault & Graham Smith\n\nEmail: graham.r.smith@gmail.com\n\n Built: %s"),BUILD_DATE);
   
 	wxMessageBox(about, wxT ("About"), wxICON_INFORMATION | wxOK);
 }

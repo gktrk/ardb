@@ -24,7 +24,7 @@
 #include "imagedialog.h"
 
 
-ImageDialog::ImageDialog() : wxDialog(0,wxT("Card"),true)
+ImageDialog::ImageDialog() : wxDialog (0, -1, wxT ("Card Image"), wxDefaultPosition, wxDefaultSize)
 {
 }
 
