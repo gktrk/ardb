@@ -223,8 +223,9 @@ BrowserCryptController::ProcessDisciplines (BrowserCryptFilter *pFilter)
 	  break;
 	case 2:
 	  // Inferior or superior
- 	  sExpression.Printf (wxT ("disciplines LIKE '%s'"),
- 			      pUIData->GetDisciplines ()->Item (i)[1].c_str());
+ 	  sExpression.Printf (wxT ("(inferior LIKE '%s') OR (superior LIKE '%s')"),
+ 			      pUIData->GetDisciplines ()->Item (i)[1].c_str(),
+ 			      pUIData->GetDisciplines ()->Item (i)[2].c_str());
 	  AddToWhereClause (sExpression);
 	  sSummary.Printf (wxT ("%s"), pUIData->GetDisciplines ()->Item (i)[0].c_str());
 	  AddToFilterSummary (sSummary);
