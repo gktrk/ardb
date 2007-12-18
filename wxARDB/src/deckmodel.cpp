@@ -1131,9 +1131,19 @@ DeckModel::ImportFromXML (wxString &sFileName, bool bImportAll)
 	xmlInitParser();
 	LIBXML_TEST_VERSION;
 
-	xmlStringDoc = ReadXmlFile(sFileName);
+	xmlStringDoc = ReadXmlFile(sFileName,true);
 	doc = xmlParseDoc((xmlChar *)xmlStringDoc.c_str());
-	if (doc == NULL) return 0;
+	if (doc == NULL)
+	{
+		xmlStringDoc = ReadXmlFile(sFileName,false);
+
+		doc = xmlParseDoc((xmlChar *)xmlStringDoc.c_str());
+
+		if (doc == NULL)
+		{
+			return 0;
+		}
+	}
 
 	// Create xpath evaluation context
 	xpathCtx = xmlXPathNewContext(doc);

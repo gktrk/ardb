@@ -465,6 +465,7 @@ InventoryModel::GetHaveCrypt (long lRef)
 bool
 InventoryModel::ImportFromCSV ()
 {
+#if !TEST
   Database *pDatabase = Database::Instance ();
   int iNumFields;
   unsigned int uiIndex = 0;
@@ -536,6 +537,7 @@ InventoryModel::ImportFromCSV ()
     }
 
   pDatabase->Query (wxT ("COMMIT TRANSACTION;"));
+#endif
   return TRUE;
 }
 
@@ -582,10 +584,24 @@ InventoryModel::ImportFromXML (wxString &sFileName)
 	xmlInitParser ();
 	LIBXML_TEST_VERSION;
 
-	xmlStringDoc = ReadXmlFile(sFileName);
+	xmlStringDoc = ReadXmlFile(sFileName,true);
+
 	doc = xmlParseDoc((xmlChar *)xmlStringDoc.c_str());
 
-	if (doc == NULL) return 0;
+	if (doc == NULL)
+	{
+		//Failed to parse XML as 2 byte UTF-8
+		//Try 1 byte!
+
+		xmlStringDoc = ReadXmlFile(sFileName,false);
+
+		doc = xmlParseDoc((xmlChar *)xmlStringDoc.c_str());
+
+		if (doc == NULL)
+		{
+			return 0;
+		}		
+	}
 
 	// Create xpath evaluation context
 	xpathCtx = xmlXPathNewContext (doc);
