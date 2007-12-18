@@ -1067,16 +1067,17 @@ Database::Instance ()
 	  wxLogError (wxT ("Ugly database error"));
 	}
     }
-
+#if !TEST
   if (spInstance) 
-    {
+   {
       if (spInstance->m_bMustUpdate == true)
-	{
-	  spInstance->m_bMustUpdate = false;
-	  Updater *pUpdater = Updater::Instance ();
-	  pUpdater->DoUpdate ();
-	}
-    }
+		{
+		spInstance->m_bMustUpdate = false;
+		Updater *pUpdater = Updater::Instance ();
+		pUpdater->DoUpdate ();
+		}
+   }
+#endif
 
   return spInstance;
 }

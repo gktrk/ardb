@@ -6,7 +6,7 @@
 
 char Unicode2Ascii(int code);
 
-wxString ReadXmlFile(wxString filename)
+wxString ReadXmlFile(wxString filename, bool twoByte)
 {
 	size_t bytesRead = 0;
 	unsigned char buffer[BUFFER_SIZE];
@@ -27,17 +27,24 @@ wxString ReadXmlFile(wxString filename)
 				{
 					if (buffer[i] >= 128) // 2 byte unicode char
 					{
-						utf8[utf8index++] = buffer[i];
-
-						if (utf8index == 2)
+						if (twoByte)
 						{
-							//Got both utf8 bytes
-							//calc unicode value
-							int unicode = (utf8[0]-192)*64 + (utf8[1]-128);
-							utf8index = 0;
+							utf8[utf8index++] = buffer[i];
 
-							//lookup unicode
-							xmlString += Unicode2Ascii(unicode);
+							if (utf8index == 2)
+							{
+								//Got both utf8 bytes
+								//calc unicode value
+								int unicode = (utf8[0]-192)*64 + (utf8[1]-128);
+								utf8index = 0;
+
+								//lookup unicode
+								xmlString += Unicode2Ascii(unicode);
+							}
+						}
+						else
+						{
+							xmlString += Unicode2Ascii(buffer[i]);
 						}
 					}
 					else
