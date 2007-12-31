@@ -37,9 +37,9 @@ BrowserCryptModel::BrowserCryptModel (wxNotebook *pViewPanel, unsigned int uiNum
   m_uiCardCount (0)  
 {
   m_sViewQuery.Printf (wxT ("SELECT DISTINCT "
-			    "       have AS hav, "
-			    "       want AS wan, "
-			    "       spare AS spa, "
+			    "       sum(have) AS hav, "
+			    "       sum(want) AS wan, "
+			    "       sum(spare) AS spa, "
 			    "       card_name, "
 			    "       advanced, "
 			    "       capacity, "
@@ -48,19 +48,20 @@ BrowserCryptModel::BrowserCryptModel (wxNotebook *pViewPanel, unsigned int uiNum
 			    "       title, "
 			    "       groupnumber, "
 			    "       card_text, "
-			    "       card_ref, "
+			    "       min(card_ref), "
 			    "       name_ref, "
 			    "       dumbitdown(card_name) "
-			    "FROM crypt_view_unified "
+			    "FROM crypt_view "
 			    "WHERE card_ref IN (SELECT card_name "
-			    "                   FROM crypt_selection WHERE browser_num = %d) " ),
+			    "                   FROM crypt_selection WHERE browser_num = %d) " 
+			    "GROUP BY name_ref, advanced "),
 		       m_uiModelIDNumber);
 
-  m_sAddQuery.Printf (wxT ("INSERT INTO crypt_selection SELECT %d, card_ref, NULL FROM crypt_view_unified %s"), m_uiModelIDNumber, wxT("%s"));
+  m_sAddQuery.Printf (wxT ("INSERT INTO crypt_selection SELECT %d, card_ref, NULL FROM crypt_view %s"), m_uiModelIDNumber, wxT("%s"));
   
-  m_sRemoveQuery.Printf (wxT ("DELETE FROM crypt_selection WHERE browser_num = %d AND card_name IN (SELECT card_ref FROM crypt_view_with_proxy %s)"), m_uiModelIDNumber,  wxT("%s"));
+  m_sRemoveQuery.Printf (wxT ("DELETE FROM crypt_selection WHERE browser_num = %d AND card_name IN (SELECT card_ref FROM crypt_view %s)"), m_uiModelIDNumber,  wxT("%s"));
 
-  m_sKeepQuery.Printf (wxT ("DELETE FROM crypt_selection WHERE browser_num = %d AND card_name NOT IN (SELECT card_ref FROM crypt_view_with_proxy %s)"), m_uiModelIDNumber, wxT("%s"));
+  m_sKeepQuery.Printf (wxT ("DELETE FROM crypt_selection WHERE browser_num = %d AND card_name NOT IN (SELECT card_ref FROM crypt_view %s)"), m_uiModelIDNumber, wxT("%s"));
 
   m_sWipeQuery.Printf (wxT ("DELETE FROM crypt_selection WHERE browser_num = %d; "),
 		       m_uiModelIDNumber);
