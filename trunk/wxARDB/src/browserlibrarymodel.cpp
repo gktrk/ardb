@@ -37,28 +37,29 @@ BrowserLibraryModel::BrowserLibraryModel (wxNotebook *pViewPanel, unsigned int u
   m_uiModelIDNumber (uiNumber)
 {
   m_sViewQuery.Printf (wxT ("SELECT DISTINCT "
-			    "       have AS hav, "
-			    "       want AS wan, "
-			    "       spare AS spa, "
+			    "       sum(have) AS hav, "
+			    "       sum(want) AS wan, "
+			    "       sum(spare) AS spa, "
 			    "       card_name, "
 			    "       card_type, "
 			    "       requires || min(' ', requires) || discipline  || min(' ', discipline) || clan || min(' ', clan) AS req, "
 			    "       cost, "
 			    "       card_text, "
-			    "       card_ref, "
+			    "       min(card_ref), "
 			    "       name_ref, "
 			    "       dumbitdown(card_name) "
-			    "FROM library_view_unified "
+			    "FROM library_view "
 			    "WHERE card_ref IN (SELECT card_name "
 			    "                   FROM library_selection"
-			    "                   WHERE browser_num = %d) "),
+			    "                   WHERE browser_num = %d) " 
+			    "GROUP BY card_name "),
 		       m_uiModelIDNumber);
 
-  m_sAddQuery.Printf (wxT ("INSERT INTO library_selection SELECT %d, card_ref, NULL FROM library_view_unified %s"), m_uiModelIDNumber, wxT ("%s"));
+  m_sAddQuery.Printf (wxT ("INSERT INTO library_selection SELECT %d, card_ref, NULL FROM library_view %s"), m_uiModelIDNumber, wxT ("%s"));
 
-  m_sRemoveQuery.Printf (wxT ("DELETE FROM library_selection WHERE browser_num = %d AND card_name IN (SELECT card_ref FROM library_view_with_proxy %s)"), m_uiModelIDNumber, wxT ("%s"));
+  m_sRemoveQuery.Printf (wxT ("DELETE FROM library_selection WHERE browser_num = %d AND card_name IN (SELECT card_ref FROM library_view %s)"), m_uiModelIDNumber, wxT ("%s"));
 
-  m_sKeepQuery.Printf (wxT ("DELETE FROM library_selection WHERE browser_num = %d AND card_name NOT IN (SELECT card_ref FROM library_view_with_proxy %s)"), m_uiModelIDNumber, wxT ("%s"));
+  m_sKeepQuery.Printf (wxT ("DELETE FROM library_selection WHERE browser_num = %d AND card_name NOT IN (SELECT card_ref FROM library_view %s)"), m_uiModelIDNumber, wxT ("%s"));
 
   m_sWipeQuery.Printf (wxT ("DELETE FROM library_selection WHERE browser_num = %d; "),
 		       m_uiModelIDNumber);
