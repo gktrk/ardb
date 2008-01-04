@@ -1,0 +1,39 @@
+<!ELEMENT deck (name,date,author,description,attributes,crypt,library)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT date (#PCDATA)>
+<!ELEMENT author (#PCDATA)>
+<!ELEMENT description (#PCDATA)>
+<!ELEMENT attributes (#PCDATA)>
+<!ELEMENT crypt (vampire*)>
+<!ELEMENT library (card*)>
+<!ELEMENT vampire (name?,adv?,clan?,capacity?,disciplines?,title?,group?,set?,text?)>
+<!ELEMENT card (name?,type?,set?,cost?,requirement?,text?)>
+<!ELEMENT adv (#PCDATA)>
+<!ELEMENT clan (#PCDATA)>
+<!ELEMENT capacity (#PCDATA)>
+<!ELEMENT disciplines (#PCDATA)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT group (#PCDATA)>
+<!ELEMENT set (#PCDATA)>
+<!ELEMENT type (#PCDATA)>
+<!ELEMENT cost (#PCDATA)>
+<!ELEMENT requirement (#PCDATA)>
+<!ELEMENT text (#PCDATA)>
+
+<!ATTLIST deck formatVersion CDATA #REQUIRED>
+<!ATTLIST deck databaseVersion CDATA #REQUIRED>
+<!ATTLIST deck generator CDATA #IMPLIED>
+<!ATTLIST author contact CDATA #IMPLIED>
+<!ATTLIST attributes in_use CDATA "yes">
+<!ATTLIST attributes contains_proxy CDATA "no">
+<!ATTLIST crypt size CDATA #IMPLIED>
+<!ATTLIST crypt min CDATA #IMPLIED>
+<!ATTLIST crypt max CDATA #IMPLIED>
+<!ATTLIST crypt avg CDATA #IMPLIED>
+<!ATTLIST library size CDATA #IMPLIED>
+<!ATTLIST vampire databaseID CDATA #REQUIRED>
+<!ATTLIST vampire count CDATA #REQUIRED>
+<!ATTLIST vampire url CDATA #IMPLIED>
+<!ATTLIST card databaseID CDATA #REQUIRED>
+<!ATTLIST card count CDATA #REQUIRED>
+<!ATTLIST card url CDATA #IMPLIED>
