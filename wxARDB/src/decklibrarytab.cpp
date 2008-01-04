@@ -160,93 +160,93 @@ DeckLibraryTab::~DeckLibraryTab ()
 wxTreeItemId
 DeckLibraryTab::AddOrUpdateTreeItem (wxTreeItemId oParent, wxString& sLabel, long lNumber, long lCardRef, bool bExpand)
 {
-  bool bSearch = TRUE, bFound = FALSE;
-  wxString sLabelCount = wxT (""), sLabelWhat;
-  wxTreeItemId oSearchId, oMatchId;
-  wxTreeItemIdValue cookie;
-  long lCount;
+	bool bSearch = TRUE, bFound = FALSE;
+	wxString sLabelCount = wxT (""), sLabelWhat;
+	wxTreeItemId oSearchId, oMatchId;
+	wxTreeItemIdValue cookie;
+	long lCount;
 
-  if (!oParent.IsOk ())
-    {
-      wxLogError (wxT ("AddOrUpdateTreeItem : Invalid parent item"));
-      return m_oRootId;
-    }
-
-  if (m_pTree->ItemHasChildren (oParent))
-    {
-      oSearchId = m_pTree->GetFirstChild (oParent, cookie);
-      
-      // Here we search if an item of the same label is already in the tree
-      while (bSearch)
+	if (!oParent.IsOk ())
 	{
-	  // We ignore the counter prefix
-	  sLabelWhat = m_pTree->GetItemText (oSearchId).AfterFirst (' ');
-	  // And we compare the labels
-	  bSearch = sLabelWhat.Cmp (sLabel.c_str ()) != 0;
-	  if (!bSearch)
-	    {
-	      oMatchId = oSearchId;
-	      bFound = TRUE;
-	    }
-	  oSearchId = m_pTree->GetNextChild (oParent, cookie);
-	  if (!oSearchId.IsOk ())
-	    {
-	      bSearch = FALSE;
-	    }
+		wxLogError (wxT ("AddOrUpdateTreeItem : Invalid parent item"));
+		return m_oRootId;
 	}
-      if (bFound && oMatchId.IsOk ())
-	{
-	  // increment the counter
-	  sLabelCount = m_pTree->GetItemText (oMatchId).BeforeFirst (' ');
-	  sLabelCount.ToLong (&lCount);
-	  lCount += lNumber;
-	  sLabelCount.Printf (wxT ("%ld "), lCount);
-	  // Change the text
-	  m_pTree->SetItemText (oMatchId, sLabelCount + sLabel);
-	}
-      else
-	{ 
-	  sLabelCount.Empty ();
-	  sLabelCount << lNumber << wxT (" ");
-	  oMatchId = m_pTree->AppendItem (oParent, sLabelCount << sLabel);
-	}
-    }
-  else
-    {
-      sLabelCount.Empty ();
-      sLabelCount << lNumber << wxT (" ");
-      oMatchId = m_pTree->AppendItem (oParent, sLabelCount << sLabel);
-    }
 
-  if (bExpand)
-    {
-      m_pTree->Expand (oParent);
-      if (oMatchId.IsOk ())
+	if (m_pTree->ItemHasChildren (oParent))
 	{
-	  m_pTree->EnsureVisible (oMatchId);
-	}
-    }
-  else
-    {
-      m_pTree->EnsureVisible (oParent);
-    }
+		oSearchId = m_pTree->GetFirstChild (oParent, cookie);
 
-  if (lCardRef >= 0 && oMatchId.IsOk ())
-    {
-      // Associated data is the card reference id
-      m_pTree->SetItemData (oMatchId, new MyTreeItemData (lCardRef));
-      if (lCardRef == m_lSelectedCard)
+		// Here we search if an item of the same label is already in the tree
+		while (bSearch)
+		{
+			// We ignore the counter prefix
+			sLabelWhat = m_pTree->GetItemText (oSearchId).AfterFirst (' ');
+			// And we compare the labels
+			bSearch = sLabelWhat.Cmp (sLabel.c_str ()) != 0;
+			if (!bSearch)
+			{
+				oMatchId = oSearchId;
+				bFound = TRUE;
+			}
+			oSearchId = m_pTree->GetNextChild (oParent, cookie);
+			if (!oSearchId.IsOk ())
+			{
+				bSearch = FALSE;
+			}
+		}
+		if (bFound && oMatchId.IsOk ())
+		{
+			// increment the counter
+			sLabelCount = m_pTree->GetItemText (oMatchId).BeforeFirst (' ');
+			sLabelCount.ToLong (&lCount);
+			lCount += lNumber;
+			sLabelCount.Printf (wxT ("%ld "), lCount);
+			// Change the text
+			m_pTree->SetItemText (oMatchId, sLabelCount + sLabel);
+		}
+		else
+		{ 
+			sLabelCount.Empty ();
+			sLabelCount << lNumber << wxT (" ");
+			oMatchId = m_pTree->AppendItem (oParent, sLabelCount << sLabel);
+		}
+	}
+	else
 	{
-	  if (m_bFuzzySelect)
-	    {
-	      oMatchId = m_pTree->GetItemParent (oMatchId);
-	    }
-	  m_pTree->SelectItem (oMatchId);
+		sLabelCount.Empty ();
+		sLabelCount << lNumber << wxT (" ");
+		oMatchId = m_pTree->AppendItem (oParent, sLabelCount << sLabel);
 	}
-    }
-  m_pTree->SortChildren (oParent);
 
-  return oMatchId;
+	if (bExpand)
+	{
+		m_pTree->Expand (oParent);
+		if (oMatchId.IsOk ())
+		{
+			m_pTree->EnsureVisible (oMatchId);
+		}
+	}
+	else
+	{
+		m_pTree->EnsureVisible (oParent);
+	}
+
+	if (lCardRef >= 0 && oMatchId.IsOk ())
+	{
+		// Associated data is the card reference id
+		m_pTree->SetItemData (oMatchId, new MyTreeItemData (lCardRef));
+		if (lCardRef == m_lSelectedCard)
+		{
+			if (m_bFuzzySelect)
+			{
+				oMatchId = m_pTree->GetItemParent (oMatchId);
+			}
+			m_pTree->SelectItem (oMatchId);
+		}
+	}
+	m_pTree->SortChildren (oParent);
+
+	return oMatchId;
 }
 
 
