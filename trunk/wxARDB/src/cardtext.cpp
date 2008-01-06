@@ -320,6 +320,8 @@ wxString CardText::CardNameToFileName(wxString name)
 		case '\'':
 		case '(':
 		case ')':
+		case '!':
+		case ':':
 			break;
 
 		default:
