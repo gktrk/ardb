@@ -2,8 +2,11 @@
 *
 *  Copyright (C) 2002 Francois Gombault
 *  gombault.francois@wanadoo.fr
+*
+*  Copyright (C) 2007 Graham Smith
+*  graham.r.smith@gmail.com
 *  
-*  Official project page: https://savannah.nongnu.org/projects/anarchdb/
+*  Official project page: http://code.google.com/p/ardb/
 *
 *
 * This program is free software; you can redistribute it and/or modify
