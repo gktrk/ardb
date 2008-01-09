@@ -102,7 +102,7 @@ BrowserCryptTab::~BrowserCryptTab ()
 	if (m_pModel) delete m_pModel;
 	m_pModel = NULL;
 
-	wxString sConfEntry = wxT ("SplitterPositionL");
+	wxString sConfEntry = wxT ("SplitterPositionC");
 	wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get ();
 	if (pConfig)
 	{
