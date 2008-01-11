@@ -103,14 +103,14 @@ MyApp::OnInit ()
 	g_pSplashBitmap = new wxBitmap (ardbsplash_xpm);
 
 	// Init database
-	Database::Instance ();
+	Database::Instance();
 
 	// config file
 	wxFileConfig *pConfig = new wxFileConfig (wxT ("Anarch Revolt Deck Builder"), wxT (""), wxT ("ardb.ini"), wxEmptyString, wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_RELATIVE_PATH);
 	wxFileConfig::Set (pConfig);
 
 	// Init interface data
-	InterfaceData::Instance ();
+	InterfaceData::Instance();
 
 	wxString sSplashEntry = wxT ("DisplaySplashScreen");
 	bool bDisplaySplash;
