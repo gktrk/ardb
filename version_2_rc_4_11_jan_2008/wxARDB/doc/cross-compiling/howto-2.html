@@ -1,0 +1,160 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="SGML-Tools 1.0.9">
+ <TITLE>HOWTO -- Cross-Compiling Win32 Executables on Linux: wxWindows headers, source, and libs </TITLE>
+ <LINK HREF="howto-3.html" REL=next>
+ <LINK HREF="howto-1.html" REL=previous>
+ <LINK HREF="howto.html#toc2" REL=contents>
+</HEAD>
+<BODY>
+<A HREF="howto-3.html">Next</A>
+<A HREF="howto-1.html">Previous</A>
+<A HREF="howto.html#toc2">Contents</A>
+<HR>
+<H2><A NAME="s2">2. wxWindows headers, source, and libs </A></H2>
+
+<P>If you haven't gotten the hello.exe to in PART I to compile and run then
+don't bother going any further until you get that fixed. 
+<H2><A NAME="ss2.1">2.1 Getting the wxWindows source</A>
+</H2>
+
+<P>Download the latest wxWindows source for WINDOWS from http://www.wxWindows.org
+Get the plain old wxMSW-2.4.0.zip. The wxMSW-2.4.0-setup.zip package has a
+setup.exe program that unpacks the files from .cab archive. WINE may handle
+this but I didn't bother to find out. Remember this source code is for the
+windows platform. 
+<P>Unpack it in your usual package build location, I use /usr/local/src. 
+<P>
+<BLOCKQUOTE>
+cd /usr/local/src 
+unzip &lt;your download dir&gt;/wxMSW-2.4.0.zip 
+cd wxWindows-2.4.0 
+</BLOCKQUOTE>
+<H2><A NAME="ss2.2">2.2 Invalid token trouble! -- Maybe...</A>
+</H2>
+
+<P>Now for a bit of ugliness that you may not have to deal with ? nobody else
+mentions this in the resources I found. When I started the build I got a pot
+full of compiler errors something about &quot;invalid token found...&quot;
+etc. Oddly enough my new cross-compiler really hates linefeeds at the end of
+a line and all the wxWindows files are in the old dos CR/LF format. BUMMER!
+<P>
+<P>On SuSE there is a utility (actually an alias) called dos2Unix. It will
+strip the LFs in a file in place and leaves a nice unix type file. It's actually
+an alias around recode and is defined thus: 
+<P>alias dos2unix='recode ibmpc..lat1' 
+<P>I converted the needed files with these commands: 
+<P>
+<PRE>
+dos2unix `find . -name &quot;*.txt&quot;` 
+dos2unix `find . -name &quot;*.h&quot;` 
+dos2unix `find . -name &quot;*.env&quot;` 
+dos2unix `find . -name &quot;*.c&quot;` 
+dos2unix `find . -name &quot;*.cpp&quot;` 
+dos2unix `find . -name &quot;*.cxx&quot;` 
+dos2unix `find . -name &quot;*.y&quot;` 
+dos2unix `find . -name &quot;*.l&quot;` 
+dos2unix `find . -name &quot;*.rsrc&quot;` 
+dos2unix `find . -name &quot;*.in&quot;` 
+dos2unix `find . -name &quot;*.am&quot;` 
+</PRE>
+<H2><A NAME="ss2.3">2.3 Making multiple target configurations</A>
+</H2>
+
+<P>At this point you need to make some decisions. Typically in the windows
+development world you have multiple configurations -- Debug Static, Debug DLL,
+Release Static, Release DLL -- are the usual suspects. The docs say that .dlls
+library versions (shared libs) are not supported but I made them anyway and
+they work fine under WINE and windows. Your mileage may vary. 
+<P>For reasons buried deep in this project's configure and make system you
+cannot INSTALL multiple configurations of the wxWindows library ? They are
+named the same and will overwrite each other. You can, however MAKE multiple
+configurations -- just don't install them using &quot;make install&quot;. 
+<P>The section in ./wxWindows-2.4.0/docs/msw/install.txt on multiple configurations
+gives some background on the problem. I guess you could manually rename them
+copy then manually and change each wx-config script to match -- not pretty.
+If you want to replay me for this howto, figure out how to easily use multiple
+configurations, write a howto and send it to me. TIA. 
+<P>Lets say you want a static lib debug version. 
+<P>Remember your current working directory is /usr/local/src/wxWindows-2.4.0.
+Make a subdirectory to build your specific configuration. You may have as many
+of these subdirectories for as many different configurations you want to create.
+<P>
+<P>
+<BLOCKQUOTE>
+mkdir static-debug 
+cd static-debug 
+</BLOCKQUOTE>
+<P>Now you need to invoke the configure script (in the parent directory ../configure)
+with the configure options for this subdirectory build. I used a homemade script
+for this. It turned out that it saved a lot of typing for multiple configurations.
+Of course you DID remember the PREFIX and TARGET I told you to to in PART I?
+<P>
+<P>
+<HR>
+<PRE>
+#!/bin/sh 
+# use the $TARGET you edited in the minGW build-cross.sh 
+TARGET=i586-mingw32msvc 
+BUILD=MinGW-wxWinDebugStatic 
+# use the $PREFIX you edited in the minGW build-cross.sh 
+MINGWBASE=/usr/local/src/minGW 
+MINGWTARG=/usr/local/src/minGW/$TARGET 
+PREFIX=$MINGWBASE/$BUILD 
+echo &quot;be sure that $TARGET-gcc is in the path&quot; 
+
+../configure \ 
+--prefix=$PREFIX \ 
+--build=$BUILD \ 
+--target=$BUILD \ 
+--host=$TARGET \ 
+--with-msw \ 
+--libdir=$MINGWTARG/lib \ 
+--includedir=$MINGWTARG/include \ 
+--enable-debug \ 
+--enable-debug_gdb \ 
+--disable-shared \ 
+
+# for debug dll replace the last three with these 
+# --enable-debug \ 
+# --enable-debug_gdb \ 
+# --enable-shared \
+
+# for release static replace the last three with these 
+# --disable-debug \ 
+# --disable-shared \
+
+# for release dll replace the last three with these 
+# --disable-debug \ 
+# --enable-shared \ 
+# end of script
+</PRE>
+<HR>
+<P>Invoke the above modified script and wait for configure to finish. Now
+type 
+<P>
+<BLOCKQUOTE>
+make
+</BLOCKQUOTE>
+<P>The build will take a long time. You can ignore the previously declared
+warnings. After make completes don't do the "make install" step if you want multiple
+configurations. There will be a wx-config link that you can invoke to get the
+flags and paths needed in your own application projects. 
+<H2><A NAME="ss2.4">2.4 Testing wxWindows</A>
+</H2>
+
+<P>To test
+<P>
+<BLOCKQUOTE>
+cd samples 
+</BLOCKQUOTE>
+<P>Pick one of the sample projects, cd to it and type "make". You should get
+a .exe that you can copy to a windows machine and run or run on Linux using
+WINE. 
+<HR>
+<A HREF="howto-3.html">Next</A>
+<A HREF="howto-1.html">Previous</A>
+<A HREF="howto.html#toc2">Contents</A>
+</BODY>
+</HTML>
