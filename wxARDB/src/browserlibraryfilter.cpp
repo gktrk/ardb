@@ -231,39 +231,7 @@ BrowserLibraryFilter::BrowserLibraryFilter(BrowserLibraryController *pController
 
   m_pCostBlood = new wxCheckBox (this, -1, wxT ("Cost Blood"));
   m_pCostPool = new wxCheckBox (this, -1, wxT ("Cost Pool"));
-  /*
-  m_pAnarchCheckbox =  new wxCheckBox (this, -1, wxT ("Anarch"));
-  m_pBlackHandCheckbox  =  new wxCheckBox (this, -1, wxT ("Black Hand"));
-  m_pBurnOption = new wxCheckBox (this, -1, wxT ("Burn Option"));
-  m_pSeraphCheckbox = new wxCheckBox (this, -1, wxT ("Seraph"));
-  m_pTrifle = new wxCheckBox (this, -1, wxT ("Trifle"));
-  m_pTrophy = new wxCheckBox (this, -1, wxT ("Trophy"));
-  */
 
-#ifdef __WXMSW__
-  // this looks nicer in Windows
-  pOtherSizer->Add (m_pCostBlood, 0, wxALL, 3);
-  pOtherSizer->Add (m_pCostPool, 0, wxALL, 3);
-  /*
-  pOtherSizer->Add (m_pAnarchCheckbox, 0, wxALL, 3);
-  pOtherSizer->Add (m_pBlackHandCheckbox, 0, wxALL, 3);
-  pOtherSizer->Add (m_pBurnOption, 0, wxALL, 3);
-  pOtherSizer->Add (m_pSeraphCheckbox, 0, wxALL, 3);
-  pOtherSizer->Add (m_pTrifle, 0, wxALL, 3);
-  pOtherSizer->Add (m_pTrophy, 0, wxALL, 3);
-  */
-#else
-  pOtherSizer->Add (m_pCostBlood);
-  pOtherSizer->Add (m_pCostPool);
-  /*
-  pOtherSizer->Add (m_pAnarchCheckbox);
-  pOtherSizer->Add (m_pBlackHandCheckbox);
-  pOtherSizer->Add (m_pBurnOption);
-  pOtherSizer->Add (m_pSeraphCheckbox);
-  pOtherSizer->Add (m_pTrifle);
-  pOtherSizer->Add (m_pTrophy);
-  */
-#endif
  
   pTypeOtherSizer->Add (pOtherBox, 0, wxEXPAND);
 
