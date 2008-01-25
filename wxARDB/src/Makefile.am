@@ -41,6 +41,7 @@ ardb_SOURCES = \
 	speling.cpp \
 	types.cpp \
 	updater.cpp \
+	imagedialog.cpp \
 	imagePanel.cpp \
 	ardb_db_edition_filter.cpp \
 	importxml.cpp

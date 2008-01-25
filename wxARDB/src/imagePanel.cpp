@@ -33,7 +33,7 @@
 
 #include "imagePanel.h"
 
-#include "ImageDialog.h"
+#include "imagedialog.h"
 
 // --------------------------------------------------------
 // Constructors
