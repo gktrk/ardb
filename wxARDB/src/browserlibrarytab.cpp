@@ -232,12 +232,13 @@ BrowserLibraryTab::Init ()
 
 	m_pPapaSizer->Layout ();
 
+#ifdef __WXMSW__
 	if (!m_uiNumber)
 	{
-		//Required for Windows.  Without controls
-		//are not displayed.
+		//Required for Windows.  Without, controls are not displayed.
 		m_pPapaSizer->Fit(m_pParent);
 	}
+#endif
 
 	// Put both in the splitter window
 	if (m_pSplitterWindow) m_pSplitterWindow->SetSashGravity(0.6);
