@@ -31,6 +31,8 @@
 #include <wx/config.h>
 #include <wx/dcmemory.h>
 
+#include <wx/file.h>
+
 #include "imagePanel.h"
 
 #include "imagedialog.h"
@@ -73,9 +75,12 @@ void ImagePanel::SetImage(wxString fileName)
 		image.Destroy();
 	}
 	
-	m_fileName = fileName;
-	image.LoadFile(m_fileName);
-    Refresh();
+	if (wxFile::Exists(fileName))
+	{
+		m_fileName = fileName;
+		image.LoadFile(m_fileName);
+		Refresh();
+	}
 }
 
 /**
@@ -103,9 +108,13 @@ void ImagePanel::OnSize(wxSizeEvent &event)
 void ImagePanel::Click(wxMouseEvent &event)
 {
 	ImageDialog dialog;
-	dialog.SetImage(m_fileName);
-	dialog.CentreOnParent ();
-	dialog.ShowModal();
+
+	if (wxFile::Exists(m_fileName))
+	{
+		dialog.SetImage(m_fileName);
+		dialog.CentreOnParent ();
+		dialog.ShowModal();
+	}
 }
 
 /// Draw the image in the panel if it exists
