@@ -228,7 +228,7 @@ BrowserLibraryTab::Init ()
 		}
 	}
 
-	m_pPapaSizer->Add (m_pSplitterWindow, 1, wxEXPAND);
+	m_pPapaSizer->Add (m_pSplitterWindow, 1, wxEXPAND|wxFIXED_MINSIZE);
 
 	m_pPapaSizer->Layout ();
 

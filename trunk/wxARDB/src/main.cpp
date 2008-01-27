@@ -225,6 +225,12 @@ m_uiLibraryBrowserCount (0)
 
 	pMenuBar->Append (pFileMenu, wxT ("File"));
 
+#if 0	
+	//Opening extra browser windows does not work
+	//under windows.
+	pMenuBar->Append (pBrowserMenu, wxT ("Browser"));
+#endif
+
 	pMenuBar->Append (pInventoryMenu, wxT("Inventory"));
 	pMenuBar->Append (pHelpMenu, wxT ("Help"));
 
@@ -270,7 +276,8 @@ BrowserFrame::OnBrowserCloseTab (wxCommandEvent& WXUNUSED (event))
 void
 BrowserFrame::OnBrowserNewCrypt (wxCommandEvent& WXUNUSED (event))
 {
-	new BrowserCryptModel (m_pNotebook, m_uiCryptBrowserCount++);
+	new BrowserCryptModel(m_pNotebook, m_uiCryptBrowserCount++);
+
 }
 
 
