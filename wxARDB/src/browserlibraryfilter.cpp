@@ -221,17 +221,20 @@ BrowserLibraryFilter::BrowserLibraryFilter(BrowserLibraryController *pController
   wxFlexGridSizer *pOtherSizer = new wxFlexGridSizer (2);
   pOtherBox->Add (pOtherSizer, 1, wxEXPAND | wxTOP, 5);
   for (unsigned int i = 0; i < pUIData->GetLibraryReqs ()->GetCount (); i++)
-    {
+  {
       BuildLibraryReqs (i, pOtherSizer, this);
-    }
+  }
+  
   for (unsigned int i = 0; i < pUIData->GetLibraryTexts ()->GetCount (); i++)
-    {
+  {
       BuildLibraryTexts (i, pOtherSizer, this);
-    }
+  }
 
   m_pCostBlood = new wxCheckBox (this, -1, wxT ("Cost Blood"));
   m_pCostPool = new wxCheckBox (this, -1, wxT ("Cost Pool"));
 
+  pOtherSizer->Add(m_pCostBlood, 0, wxALL, 3);
+  pOtherSizer->Add(m_pCostPool, 0, wxALL, 3);
  
   pTypeOtherSizer->Add (pOtherBox, 0, wxEXPAND);
 
