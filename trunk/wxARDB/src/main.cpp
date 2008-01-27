@@ -8,6 +8,7 @@
 *  
 *  contributors:
 *    meshee.knight@gmail.com
+*	 afri@afri.cz
 *  
 *  Official project page: http://code.google.com/p/ardb/
 *
@@ -377,7 +378,7 @@ void
 BrowserFrame::OnHelpAbout (wxCommandEvent& WXUNUSED (event)) 
 {
 	wxString about;
-	about.Printf(wxT ("The Anarch Revolt Deck Builder\nVersion 2 RC 4\r\nby Francois Gombault & Graham Smith\r\nEmail: graham.r.smith@gmail.com\r\nBuilt: %s"),BUILD_DATE);
+	about.Printf(wxT ("The Anarch Revolt Deck Builder\nVersion 2 RC 5\r\nby Francois Gombault & Graham Smith\r\nEmail: graham.r.smith@gmail.com\r\nBuilt: %s"),BUILD_DATE);
 	wxMessageBox(about, wxT ("About"));
 }
 
