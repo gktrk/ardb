@@ -44,6 +44,8 @@
 
 #include <wx/confbase.h>
 #include <wx/fileconf.h>
+#include <wx/progdlg.h>
+#include <wx/cursor.h>
 
 #define IGNORE_AMOUNT -6885
 
@@ -582,7 +584,10 @@ InventoryModel::ImportFromXML (wxString &sFileName)
 	xmlNodeSetPtr nodes;
 	xmlNodePtr cur, tmpnode;
 	int size;
+	int updateAt;
+	int updateCount;
 	wxString xmlStringDoc;
+	wxProgressDialog progressDlg(wxT ("Importing..."),wxT("Crypt"));
 
 	xmlInitParser ();
 	LIBXML_TEST_VERSION;
@@ -628,8 +633,26 @@ InventoryModel::ImportFromXML (wxString &sFileName)
 	}
 	nodes = xpathObj->nodesetval;
 	size = (nodes) ? nodes->nodeNr : 0;
+	updateCount = 0;
+
+	if (size != 0)
+	{
+		updateAt = size/100;
+	}
+
 	for(int i = 0; i < size; i++) 
 	{
+
+		if(i % updateAt == 0)
+		{
+			if (updateCount < 100)
+			{
+				progressDlg.Update(updateCount++);
+			}
+		}
+
+		wxSafeYield();
+
 		if (nodes->nodeTab[i])
 		{
 			cur = nodes->nodeTab[i];
@@ -778,8 +801,28 @@ InventoryModel::ImportFromXML (wxString &sFileName)
 	}
 	nodes = xpathObj->nodesetval;
 	size = (nodes) ? nodes->nodeNr : 0;
+
+	updateCount = 0;
+
+	if (size != 0)
+	{
+		updateAt = size/100;
+	}
+
+	progressDlg.Update(updateCount,wxT("Library"));
+
 	for(int i = 0; i < size; i++) 
 	{
+		if(i % updateAt == 0)
+		{
+			if (updateCount < 100)
+			{
+				progressDlg.Update(updateCount++);
+			}
+		}
+
+		wxSafeYield();
+
 		if (nodes->nodeTab[i])
 		{
 			cur = nodes->nodeTab[i];
@@ -902,7 +945,6 @@ InventoryModel::ImportFromXML (wxString &sFileName)
 		}
 	}
 	free (xpathObj);
-
 
 	// free
 	xmlXPathFreeContext(xpathCtx); 
