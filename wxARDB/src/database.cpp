@@ -157,6 +157,8 @@ trimFunc(sqlite_func *context, int argc, const char **argv)
   *++p = '\0';
 
   sqlite_set_result_string(context, pResultString, -1);
+
+  free(pResultString);
 }
 
 
@@ -238,33 +240,38 @@ dumbitdownFunc(sqlite_func *context, int argc, const char **argv)
 	  break;
 	}
     }
+  
   pResultString[iStringLength] = 0;
   sqlite_set_result_string(context, pResultString, -1);
+  free(pResultString);
 }
 
 
 int
 Database::Callback (void *pUserData, int argc, char **argv, char ** WXUNUSED (azColName))
 {
-  wxArrayString *pRecord = new wxArrayString ();
-  RecordSet *pResultSet = (RecordSet *) pUserData;
-  Database *pDB = Database::Instance ();
-  
-  for (int i = 0; i < argc; i++)
-    {
-      if (pDB->IsVerbose ())
+	wxArrayString *pRecord = new wxArrayString();
+	RecordSet *pResultSet = (RecordSet *) pUserData;
+	Database *pDB = Database::Instance();
+
+	for (int i = 0; i < argc; i++)
 	{
-	  printf (argv[i]);
-	  printf (" ");
+		if (pDB->IsVerbose ())
+		{
+			printf (argv[i]);
+			printf (" ");
+		}
+		pRecord->Add(wxString (argv[i], wxConvISO8859_1));
 	}
-      pRecord->Add (wxString (argv[i], wxConvISO8859_1));
-    }
-  
-  if (pDB->IsVerbose ()) printf ("\n");
 
-  pResultSet->Add (pRecord);
+	if (pDB->IsVerbose ())
+	{
+		printf ("\n");
+	}
 
-  return 0;
+	pResultSet->Add(pRecord);
+
+	return 0;
 }
 
 
