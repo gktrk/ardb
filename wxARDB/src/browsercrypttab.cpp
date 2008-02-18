@@ -453,7 +453,7 @@ BrowserCryptTab::SetCardText (long lCardRef)
 		if (m_pImagePanel != NULL)
 		{
 			wxString filename;
-			filename = wxString::Format(wxT("%s/%s.jpg"),CARD_IMAGE_DIR,cardName);
+			filename = wxString::Format(wxT("%s/%s.jpg"),CARD_IMAGE_DIR,cardName.c_str());
 			if (wxFile::Exists(filename))
 			{
 				m_pImagePanel->SetImage(filename);
