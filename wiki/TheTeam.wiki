@@ -24,6 +24,12 @@
 
 [mailto:sven.helmer@gmail.com Contact me]
 
+== Petr Muller ==
+  * Developer
+  * Fedora package maintainer
+
+[mailto:afri@afri.cz Contact me]
+
 = Open positions =
 == Coder ==
 We look forward to more developer contribution with c++/gtk background
@@ -31,7 +37,6 @@ We look forward to more developer contribution with c++/gtk background
 == Maintainer ==
 We need package maintainer for
   * Ubuntu
-  * Fedora
   * OSX Leopard
 
 == Tester ==
