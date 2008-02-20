@@ -1131,23 +1131,23 @@ DeckModel::ImportFromXML (wxString &sFileName, bool bImportAll)
 	xmlInitParser();
 	LIBXML_TEST_VERSION;
 
-#ifdef LINUXBUILD
-	doc = xmlParseFile (sFileName.mb_str (wxConvLibc));
-	if (doc == NULL) return 0;
-#else
+#ifdef __WXMSW__
 	xmlStringDoc = ReadXmlFile(sFileName,true);
 	doc = xmlParseDoc((xmlChar *)xmlStringDoc.c_str());
 	if (doc == NULL)
 	{
-		xmlStringDoc = ReadXmlFile(sFileName,false);
-
-		doc = xmlParseDoc((xmlChar *)xmlStringDoc.c_str());
-
-		if (doc == NULL)
-		{
-			return 0;
-		}
+	    xmlStringDoc = ReadXmlFile(sFileName,false);
+	    
+	    doc = xmlParseDoc((xmlChar *)xmlStringDoc.c_str());
+	    
+	    if (doc == NULL)
+	    {
+		return 0;
+	    }
 	}
+#else
+	doc = xmlParseFile (sFileName.mb_str (wxConvLibc));
+	if (doc == NULL) return 0;
 #endif
 
 	// Create xpath evaluation context
