@@ -105,21 +105,21 @@ fi
 dnl debug flags or not
 case "$USE_DEBUG" in
 yes)	CXXFLAGS="-g -W -Wall"
-	WX_CONFIG_NAME="wxgtkd-2.6-config"
+	WX_CONFIG_NAME="wxgtkd-2.8-config"
     ;;    
 *)	CXXFLAGS="-O3 -W -Wall"
     ;;
 esac
 
 
-AM_PATH_WXCONFIG(2.6.0, WXFOUND=1)
+AM_PATH_WXCONFIG(2.8.0, WXFOUND=1)
 
 if test "$WXFOUND" != 1; then
     AC_MSG_ERROR([
         Please check that wx-config is in path, the directory
         where wxWindows libraries are installed (returned by
         'wx-config --libs' command) is in LD_LIBRARY_PATH or
-        equivalent variable and wxWindows is version 2.6.0 or above.
+        equivalent variable and wxWindows is version 2.8.0 or above.
     ])
 fi
 
@@ -181,7 +181,7 @@ AM_CONDITIONAL(USE_MACOS,   test $use_mac     = yes)
 
 AC_SUBST(SQLITE_CFLAGS)
 AC_SUBST(SQLITE_LIBS)
-CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS $XML2_FLAGS $XSLT_FLAGS \"-DARDB_PREFIX=\\\"$prefix\\\"\" -DLINUXBUILD "
+CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS $XML2_FLAGS $XSLT_FLAGS \"-DARDB_PREFIX=\\\"$prefix\\\"\" "
 
 AC_SUBST(LDFLAGS)
 AC_SUBST(CXXFLAGS)
