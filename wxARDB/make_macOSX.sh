@@ -40,7 +40,7 @@ then
     ACLOCAL_INCLUDES="$ACLOCAL_INCLUDES -I /opt/local/share/aclocal"
 fi
 
-if (aclocal $ACLOCAL_INCLUDES)
+if aclocal $ACLOCAL_INCLUDES
 then
     echo "OK"
 else
@@ -55,7 +55,7 @@ fi
 #then
     echo "Running automake"
     rm -fr autom4te.cache
-    if (automake --add-missing)
+    if automake --add-missing
     then
         echo "OK"
     else
@@ -69,7 +69,7 @@ fi
 #if test ! -f configure
 #then
     echo "Running autoconf"
-    if (autoconf)
+    if autoconf
     then
         echo "OK"
     else
@@ -86,7 +86,7 @@ then
 fi
 
 echo "Running ./configure"
-if (./configure --enable-debug --with-libxml2-config=/opt/local/bin/xml2-config --with-wx-config=$WX_CONFIG --with-sqlite-prefix=/usr/local)
+if ./configure --enable-debug --with-libxml2-config=/opt/local/bin/xml2-config --with-wx-config=$WX_CONFIG --with-sqlite-prefix=/usr/local
 then 
     echo "OK"
 else
