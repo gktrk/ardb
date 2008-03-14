@@ -100,7 +100,7 @@ BrowserLibraryTab::~BrowserLibraryTab ()
 	if (m_pModel) delete m_pModel;
 	m_pModel = NULL;
 
-	wxString sConfEntry = wxT ("SplitterPositionC");
+	wxString sConfEntry = wxT ("SplitterPositionL");
 	wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get ();
 	if (pConfig)
 	{
