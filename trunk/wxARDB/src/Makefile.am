@@ -44,7 +44,8 @@ ardb_SOURCES = \
 	imagedialog.cpp \
 	imagePanel.cpp \
 	ardb_db_edition_filter.cpp \
-	importxml.cpp
+	importxml.cpp \
+	cardviewer.cpp
 
 ardb_resource.o: ardb.rc
 	$(RESCOMP) -i$(srcdir)/ardb.rc -o ardb_resource.o \

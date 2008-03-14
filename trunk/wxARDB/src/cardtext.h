@@ -32,8 +32,8 @@ class CardText: public wxTextCtrl
   CardText (wxWindow* parent, wxWindowID id) :  wxTextCtrl (parent, id, wxT (""), wxDefaultPosition, wxDefaultSize, wxTE_RICH | wxTE_READONLY | wxTE_MULTILINE) { }
   ~CardText () { }
   
-  wxString DisplayCryptText (long lCardRef);
-  wxString DisplayLibraryText (long lCardRef);
+  void DisplayCryptText(long lCardRef, wxArrayString *cardImageNames);
+  void DisplayLibraryText(long lCardRef, wxArrayString *cardImageNames);
 
  private:
 	 wxString CardNameToFileName(wxString name);

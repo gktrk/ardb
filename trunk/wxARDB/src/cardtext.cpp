@@ -24,8 +24,8 @@
 #include "cardtext.h"
 #include "database.h"
 
-wxString 
-CardText::DisplayCryptText (long lCardRef)
+void 
+CardText::DisplayCryptText(long lCardRef, wxArrayString *cardImageNames)
 {
 	wxArrayString oRecord;
 	wxFont oFont;
@@ -125,10 +125,20 @@ CardText::DisplayCryptText (long lCardRef)
 				if (pResultSet->Item (i).Item (0).StartsWith (wxT ("Promo")))
 				{
 					WriteText (wxT ("Promo"));
+
+					if (cardImageNames != NULL)
+					{
+						cardImageNames->Add(wxT ("Promo/") + cardName);
+					}
 				}
 				else
 				{
 					WriteText (pResultSet->Item (i).Item (0));
+
+					if (cardImageNames != NULL)
+					{
+						cardImageNames->Add(pResultSet->Item (i).Item (0) + wxT ("/") + cardName);
+					}
 				}
 				WriteText (wxT (":"));
 				WriteText (pResultSet->Item (i).Item (1));
@@ -137,13 +147,11 @@ CardText::DisplayCryptText (long lCardRef)
 		}
 		Thaw ();
 	}
-
-	return cardName;
 }
 
 
-wxString
-CardText::DisplayLibraryText (long lCardRef)
+void
+CardText::DisplayLibraryText(long lCardRef, wxArrayString *cardImageNames)
 {
 	wxArrayString oRecord;
 	wxFont oFont;
@@ -226,11 +234,23 @@ CardText::DisplayLibraryText (long lCardRef)
 				if (pResultSet->Item (i).Item (0).StartsWith (wxT ("Promo")))
 				{
 					WriteText (wxT ("Promo"));
+
+					if (cardImageNames != NULL)
+					{
+						cardImageNames->Add(wxT ("Promo/") + cardName);
+					}
+					
 				}
 				else
 				{
 					WriteText (pResultSet->Item (i).Item (0));
+
+					if (cardImageNames != NULL)
+					{
+						cardImageNames->Add(pResultSet->Item (i).Item (0) + wxT ("/") + cardName);
+					}
 				}
+
 				WriteText (wxT (":"));
 				WriteText (pResultSet->Item (i).Item (1));
 				WriteText (wxT ("  "));
@@ -238,8 +258,6 @@ CardText::DisplayLibraryText (long lCardRef)
 		}
 		Thaw ();
 	}
-
-	return cardName;
 }
 
 wxString CardText::CardNameToFileName(wxString name)

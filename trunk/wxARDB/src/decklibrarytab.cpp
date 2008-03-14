@@ -574,7 +574,7 @@ DeckLibraryTab::OnCardPickerSelection (wxCommandEvent& WXUNUSED (event))
   
   m_pSetPicker->Clear ();
   m_oCardList.Item (0).Item (2).ToLong (&lCardRef);
-  m_pCardText->DisplayLibraryText (lCardRef);
+  m_pCardText->DisplayLibraryText(lCardRef,NULL);
 
   for (unsigned int i = 0; i < m_oCardList.GetCount (); i++)
     {

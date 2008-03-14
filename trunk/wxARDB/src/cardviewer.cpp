@@ -52,20 +52,19 @@ void CardViewer::SetImage(wxArrayString *cardNames)
 	wxString cardName = cardImages.Item((cardImages.Count()-1));
 	wxString filename = wxString::Format(wxT("%s/%s.jpg"),CARD_IMAGE_DIR,cardName.c_str());
 
-	m_setName->SetLabel(cardName.BeforeFirst(wxT('/')));
-	
 	m_nextPrevImage->SetRange(0,cardImages.Count()-1);
 	m_nextPrevImage->SetValue(cardImages.Count()-1);
 
 	if (wxFile::Exists(filename))
 	{
+		m_setName->SetLabel(cardName.BeforeFirst(wxT('/')));
 		m_imagePanel->SetImage(filename);				
 	}
 	else
 	{
 		m_imagePanel->Clear();
+		m_setName->SetLabel(cardName.BeforeFirst(wxT('/')));
 	}
-
 }
 
 void CardViewer::Clear()
@@ -80,15 +79,15 @@ void CardViewer::ChangeImage(wxSpinEvent& WXUNUSED (event))
 
 	wxString filename = wxString::Format(wxT("%s/%s.jpg"),CARD_IMAGE_DIR,cardName.c_str());
 
-	m_setName->SetLabel(cardName.BeforeFirst(wxT('/')));
-
 	if (wxFile::Exists(filename))
 	{
-		m_imagePanel->SetImage(filename);				
+		m_imagePanel->SetImage(filename);
+		m_setName->SetLabel(cardName.BeforeFirst(wxT('/')));
 	}
 	else
 	{
 		m_imagePanel->Clear();
+		m_setName->SetLabel(cardName.BeforeFirst(wxT('/')));
 	}
 }
 
