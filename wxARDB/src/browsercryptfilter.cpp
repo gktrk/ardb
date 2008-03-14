@@ -665,7 +665,7 @@ BrowserCryptFilter::OnCardPickerSelection (wxCommandEvent& WXUNUSED (event))
 		if (m_oCardList.GetCount () != 0)
 		{
 			m_oCardList.Item (0).Item (0).ToLong (&m_lFeatherRef);
-			m_pCardText->DisplayCryptText (m_lFeatherRef);
+			m_pCardText->DisplayCryptText (m_lFeatherRef,NULL);
 		}
 		else
 		{

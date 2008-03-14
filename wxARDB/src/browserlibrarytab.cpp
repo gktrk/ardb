@@ -201,18 +201,18 @@ BrowserLibraryTab::Init ()
 
 	m_pCardText = new CardText (pCardTextPanel, -1);
 	
-	m_pImagePanel = NULL;
+	m_pCardViewer = NULL;
 
 	if (wxDir::Exists(CARD_IMAGE_DIR))
 	{
-		m_pImagePanel = new ImagePanel(pCardTextPanel);
+		m_pCardViewer = new CardViewer(pCardTextPanel);
 	}
 
 	pCardTextSizer->Add(m_pCardText, 3, wxEXPAND);
 
-	if (m_pImagePanel != NULL)
+	if (m_pCardViewer != NULL)
 	{
-		pCardTextSizer->Add(m_pImagePanel, 1, wxEXPAND);
+		pCardTextSizer->Add(m_pCardViewer, 1, wxEXPAND);
 	}
 
 	pCardTextPanel->SetSizer(pCardTextSizer);
@@ -428,29 +428,27 @@ BrowserLibraryTab::SetCardText (long lCardRef)
 	{
 		m_pCardText->Clear ();
 		
-		if (m_pImagePanel != NULL)
+		if (m_pCardViewer != NULL)
 		{
-			m_pImagePanel->Clear();
+			m_pCardViewer->Clear();
 		}
 	}
 	else 
 	{
-		wxString cardName = m_pCardText->DisplayLibraryText (lCardRef);
+		wxArrayString cardNames;
+		m_pCardText->DisplayLibraryText(lCardRef,&cardNames);
 
-		if (m_pImagePanel != NULL)
+		if (m_pCardViewer != NULL)
 		{
-			wxString filename;
-			filename = wxString::Format(wxT("%s/%s.jpg"),CARD_IMAGE_DIR,cardName.c_str());
-			if (wxFile::Exists(filename))
+			if (cardNames.Count() > 0)
 			{
-				m_pImagePanel->SetImage(filename);
+				m_pCardViewer->SetImage(&cardNames);
 			}
 			else
 			{
-				m_pImagePanel->Clear();
+				m_pCardViewer->Clear();
 			}
-		}
-		
+		}		
 	}
 }
 
