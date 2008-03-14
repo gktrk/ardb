@@ -20,18 +20,15 @@ CardViewer::CardViewer( wxWindow* parent, wxWindowID id, const wxPoint& pos, con
 	m_imagePanel = new ImagePanel( this);
 	
 	bSizer9->Add( m_imagePanel, 1, wxALIGN_CENTER|wxEXPAND|wxSHAPED|wxTOP, 5 );
-	m_setName = new wxStaticText( this, wxID_ANY, wxT("MyLabel"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_setName->Wrap( -1 );
 
 	wxBoxSizer* bSizer11;
 	bSizer11 = new wxBoxSizer( wxHORIZONTAL );
 
 	bSizer11->Add( 0, 0, 1, wxEXPAND, 5 );
-	
-	bSizer11->Add( m_setName, 0, wxALIGN_CENTER|wxALL, 5 );
-	
+		
 	m_nextPrevImage = new wxSpinButton( this, ID_SPIN_BUTTON, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS|wxSP_HORIZONTAL|wxSP_WRAP );
 	bSizer11->Add( m_nextPrevImage, 0, wxALIGN_CENTER|wxALL, 5 );
+	m_nextPrevImage->SetRange(0,0);
 	
 	bSizer11->Add( 0, 0, 1, wxEXPAND, 5 );
 	
@@ -57,13 +54,11 @@ void CardViewer::SetImage(wxArrayString *cardNames)
 
 	if (wxFile::Exists(filename))
 	{
-		m_setName->SetLabel(cardName.BeforeFirst(wxT('/')));
 		m_imagePanel->SetImage(filename);				
 	}
 	else
 	{
 		m_imagePanel->Clear();
-		m_setName->SetLabel(cardName.BeforeFirst(wxT('/')));
 	}
 }
 
@@ -82,12 +77,10 @@ void CardViewer::ChangeImage(wxSpinEvent& WXUNUSED (event))
 	if (wxFile::Exists(filename))
 	{
 		m_imagePanel->SetImage(filename);
-		m_setName->SetLabel(cardName.BeforeFirst(wxT('/')));
 	}
 	else
 	{
 		m_imagePanel->Clear();
-		m_setName->SetLabel(cardName.BeforeFirst(wxT('/')));
 	}
 }
 

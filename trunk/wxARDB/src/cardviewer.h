@@ -41,9 +41,7 @@ class CardViewer : public wxPanel
 	
 	protected:
 		ImagePanel* m_imagePanel;
-		
-		wxStaticText* m_setName;
-		
+				
 		wxSpinButton* m_nextPrevImage;
 
 		wxArrayString cardImages;
