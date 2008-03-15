@@ -34,6 +34,8 @@ class CardViewer : public wxPanel
 	private:
 
 		void ChangeImage(wxSpinEvent& WXUNUSED (event));
+		void CardViewer::DisplayImage(wxString cardName);
+
 		enum
     {
       ID_SPIN_BUTTON = wxID_HIGHEST + 1,

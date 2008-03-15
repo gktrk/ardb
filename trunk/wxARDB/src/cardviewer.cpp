@@ -47,10 +47,23 @@ void CardViewer::SetImage(wxArrayString *cardNames)
 	cardImages = *cardNames;
 
 	wxString cardName = cardImages.Item((cardImages.Count()-1));
-	wxString filename = wxString::Format(wxT("%s/%s.jpg"),CARD_IMAGE_DIR,cardName.c_str());
-
+	
 	m_nextPrevImage->SetRange(0,cardImages.Count()-1);
 	m_nextPrevImage->SetValue(cardImages.Count()-1);
+	DisplayImage(cardName);
+}
+
+void CardViewer::ChangeImage(wxSpinEvent& WXUNUSED (event))
+{
+	int i = m_nextPrevImage->GetValue();
+	wxString cardName = cardImages.Item(i);
+	DisplayImage(cardName);
+}
+
+
+void CardViewer::DisplayImage(wxString cardName)
+{
+	wxString filename = wxString::Format(wxT("%s/%s.jpg"),CARD_IMAGE_DIR,cardName.c_str());
 
 	if (wxFile::Exists(filename))
 	{
@@ -58,7 +71,19 @@ void CardViewer::SetImage(wxArrayString *cardNames)
 	}
 	else
 	{
-		m_imagePanel->Clear();
+		//No set image found, find a standard image
+		wxString altName = cardName.AfterFirst(wxT('/'));
+		filename = wxString::Format(wxT("%s/%s.jpg"),CARD_IMAGE_DIR, altName.c_str());
+
+		if (wxFile::Exists(filename))
+		{
+			m_nextPrevImage->SetRange(0,0);
+			m_imagePanel->SetImage(filename);
+		}
+		else // No image at all clear the viewer
+		{
+			m_imagePanel->Clear();
+		}
 	}
 }
 
@@ -67,22 +92,6 @@ void CardViewer::Clear()
 	m_imagePanel->Clear();
 }
 
-void CardViewer::ChangeImage(wxSpinEvent& WXUNUSED (event))
-{
-	int i = m_nextPrevImage->GetValue();
-	wxString cardName = cardImages.Item(i);
-
-	wxString filename = wxString::Format(wxT("%s/%s.jpg"),CARD_IMAGE_DIR,cardName.c_str());
-
-	if (wxFile::Exists(filename))
-	{
-		m_imagePanel->SetImage(filename);
-	}
-	else
-	{
-		m_imagePanel->Clear();
-	}
-}
 
 
 // --------------------------------------------------------
