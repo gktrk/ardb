@@ -383,6 +383,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\wxARDB\src\cardviewer.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\wxARDB\src\database.cpp"
 					>
 				</File>
@@ -505,6 +509,10 @@
 			</File>
 			<File
 				RelativePath="..\wxARDB\src\cardtext.h"
+				>
+			</File>
+			<File
+				RelativePath="..\wxARDB\src\cardviewer.h"
 				>
 			</File>
 			<File
