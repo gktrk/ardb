@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>ARDB Manual</title>
+</head>
+<body>
+<h1>ARDB Manual<br>
+</h1>
+<h3><br>
+</h3>
+<h2>Card Browser window (main window)</h2>
+<br>
+Each tab in the window is a different browser.<br>
+<br>
+You start with two of them (one for the crypt, one for the library) and
+ALL cards in the browsers.
+<br>
+<br>
+The "Select", "Add" and "Remove" buttons are filters. First, use
+"Select" to focus your search. Then you can use "Add" and "Remove",
+which should be self-explanatory.
+<br>
+<br>
+There's only one search per tab. To have multiple simultaneous
+searches, click the various "New [whatever] browser" in the "Browser"
+menu.
+<br>
+<br>
+The green boxes that appear along the top border are reminders of the
+filters you've applied. They're like the stack of filters in Photoshop
+or the GIMP. The order of these filters is important : they're applied
+from left to right. You can manipulate them with a right-click which
+brings a popup menu.
+<br>
+<br>
+Left clicking the colum names of the card list allows you to sort the
+results.
+<br>
+<br>
+Typing a card's name in the "Find" textfield will highlight this card
+in the list. This "Find" function has spellchecking which allows for
+one typo.
+<br>
+<br>
+Right clicking a card in the list pops up a menu. Double clicking it
+adds this card to the current deck.<br>
+<br>
+Multiple selection of cards or filters is allowed.<br>
+<br>
+<h2>Deck Builder window</h2>
+There are 3 tabs : deck information, crypt and library.<br>
+<br>
+Deck information is simple, just fill the form.<br>
+<br>
+The crypt tab allows you to pick vampires to add in your deck. They'll
+appear in the bottom list. Before adding each vampire, you may also
+choose the vampire's edition and "Advanced" status.<br>
+<br>
+As a visual clue, some vampires in your crypt list may show up in red.
+This is because they violate the crypt grouping rule. Right clicking
+vampires in this list brings up a popup menu.<br>
+<br>
+The Happy Families calculator is located in the top right corner, and
+may serve as a deckbuilding help to good cardflow.<br>
+<br>
+Instead of the Happy Families calculator, you may opt to display the
+vampire's cardtext, useful if you're not familiar with the cards.<br>
+<br>
+The library tab allows you to add library cards for your deck. Your
+deck is displayed as a tree on the right side. Right clicking cards in
+this tree brings up a popup menu.<br>
+<br>
+As a deckbuilding help, the bottom left area may display a library
+overview of how many cards of each kind are being used, or you may
+choose to use this space as a card text reminder.<br>
+<br>
+The File menu of the Deck Builder window has all the classical file
+operations (open, save, export).<br>
+The Tools menu includes Merge Deck (use this for including pre built
+modules in your current deck), and Draw Simulator (shuffles your deck
+and simulates your first hand and uncontrolled region).<br>
+<br>
+<h2>FAQ, FGA</h2>
+Q: My deck morphed! Cards are completely random!<br>
+A: In previous releases of ARDB, a failed database update (the
+Anthelios bug for example) would lead to a messed up but functional
+database. All decks built with such a messed up database are messed up
+decks. I'm sorry about that.
+Now ARDB will cancel the changes and revert to a sane database if
+anything goes wrong during the update.<br>
+<br>
+Q: I want Master cards to be listed before everything else in my deck
+lists.<br>
+A: ARDB now comes with "Masters First" templates (*mf.xsl). Please
+tweak your ARDB.INI configuration file so that ARDB uses these new
+templates. It should be very straightforward. A graphical means of
+doing this <span style="font-style: italic;">might</span> appear in
+the future, but it's not a priority right now. <br>
+<br>
+Q: I still don't like the way ARDB exports decks.<br>
+A: Write your own template then, or tweak the existing ones. For
+example, changing colors in the HTML export template should be pretty
+easy if you know a little about HTML and CSS.<br>
+<br>
+Q: Your deckbuilder doesn't work on Windows 95/98.<br>
+A: True. ARDB is based on fairly recent technologies, like Unicode.
+Windows 95/98 don't have proper Unicode support. They're too old. Or
+they're not good enough, I don't know. Either way, they're no longer
+supported by Microsoft anyway, so I fail to see why <span
+ style="font-style: italic;">I</span> would support them. You should
+probably upgrade to a better system... May I suggest MacOS or Linux? :)<br>
+<br>
+Q: There's a bug when...<br>
+A: Please submit a proper bug report at 
+<a
+href="https://savannah.nongnu.org/bugs/?func=additem&amp;group=anarchdb">
+https://savannah.nongnu.org/bugs/?func=additem&amp;group=anarchdb
+</a><br>
+<br>
+Q: This help file... isn't very helpful. It isn't pretty either.<br>
+A: Please send your comments, questions and contributions to 
+<a href="mailto:francois.gombault@wanadoo.fr">
+francois.gombault@wanadoo.fr</a>
+<br>
+<br>
+</body>
+</html>
