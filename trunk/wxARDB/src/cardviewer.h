@@ -34,7 +34,7 @@ class CardViewer : public wxPanel
 	private:
 
 		void ChangeImage(wxSpinEvent& WXUNUSED (event));
-		void CardViewer::DisplayImage(wxString cardName);
+		void DisplayImage(wxString cardName);
 
 		enum
     {
