@@ -2,8 +2,8 @@
  *
  *  Copyright (C) 2002 Francois Gombault
  *  gombault.francois@wanadoo.fr
- *  
- *  Official project page: https://savannah.nongnu.org/projects/anarchdb/
+ *
+ *  Official project page: http://code.google.com/p/ardb/
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -128,7 +128,7 @@ CardText::DisplayCryptText(long lCardRef, wxArrayString *cardImageNames)
 
 					if (cardImageNames != NULL)
 					{
-						cardImageNames->Add(wxT ("Promo/") + cardName);
+						cardImageNames->Add(wxT ("promo/") + cardName);
 					}
 				}
 				else
@@ -137,7 +137,7 @@ CardText::DisplayCryptText(long lCardRef, wxArrayString *cardImageNames)
 
 					if (cardImageNames != NULL)
 					{
-						cardImageNames->Add(pResultSet->Item (i).Item (0) + wxT ("/") + cardName);
+						cardImageNames->Add((pResultSet->Item (i).Item (0)).Lower() + wxT ("/") + cardName);
 					}
 				}
 				WriteText (wxT (":"));
@@ -237,7 +237,7 @@ CardText::DisplayLibraryText(long lCardRef, wxArrayString *cardImageNames)
 
 					if (cardImageNames != NULL)
 					{
-						cardImageNames->Add(wxT ("Promo/") + cardName);
+						cardImageNames->Add(wxT ("promo/") + cardName);
 					}
 					
 				}
@@ -247,7 +247,7 @@ CardText::DisplayLibraryText(long lCardRef, wxArrayString *cardImageNames)
 
 					if (cardImageNames != NULL)
 					{
-						cardImageNames->Add(pResultSet->Item (i).Item (0) + wxT ("/") + cardName);
+						cardImageNames->Add((pResultSet->Item (i).Item (0)).Lower() + wxT ("/") + cardName);
 					}
 				}
 
