@@ -36,7 +36,7 @@
 
 
 #define BUILD_DATE wxT (__DATE__" "__TIME__)
-
+#define BAD_HEIGHT_OR_WIDTH_X_OR_Y -32000
 
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
@@ -254,8 +254,19 @@ BrowserFrame::~BrowserFrame ()
 	wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get ();
 	if (pConfig)
 	{
-		pConfig->Write (wxT ("BrowserWindowHeight"), GetSize ().GetHeight ());
-		pConfig->Write (wxT ("BrowserWindowWidth"), GetSize ().GetWidth ());
+		int h = GetSize().GetHeight();
+		int w = GetSize().GetWidth();
+
+		if (h != BAD_HEIGHT_OR_WIDTH_X_OR_Y)
+		{
+			pConfig->Write (wxT ("BrowserWindowHeight"), h);
+		}
+
+		if (w != BAD_HEIGHT_OR_WIDTH_X_OR_Y)
+		{
+			pConfig->Write (wxT ("BrowserWindowWidth"), w);
+		}
+
 		pConfig->Flush (TRUE);
 	}
 }
@@ -304,8 +315,16 @@ BrowserFrame::OnClose (wxCloseEvent& WXUNUSED(event))
 
 	if (pConfig)
 	{
-		pConfig->Write(sBrowserXEntry, iX);
-		pConfig->Write(sBrowserYEntry, iY);
+		if (iX != BAD_HEIGHT_OR_WIDTH_X_OR_Y)
+		{
+			pConfig->Write(sBrowserXEntry, iX);
+		}
+
+		if (iY != BAD_HEIGHT_OR_WIDTH_X_OR_Y)
+		{
+			pConfig->Write(sBrowserYEntry, iY);
+		}
+
 		pConfig->Flush(TRUE);
 	}
 
@@ -378,7 +397,7 @@ void
 BrowserFrame::OnHelpAbout (wxCommandEvent& WXUNUSED (event)) 
 {
 	wxString about;
-	about.Printf(wxT ("The Anarch Revolt Deck Builder\nVersion 2.7\r\nby Francois Gombault & Graham Smith\r\nEmail: graham.r.smith@gmail.com\r\nBuilt: %s"),BUILD_DATE);
+	about.Printf(wxT ("The Anarch Revolt Deck Builder\nVersion 2.7.1\r\nby Francois Gombault & Graham Smith\r\nEmail: graham.r.smith@gmail.com\r\nBuilt: %s"),BUILD_DATE);
 	wxMessageBox(about, wxT ("About"));
 }
 

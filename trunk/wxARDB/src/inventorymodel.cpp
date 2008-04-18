@@ -51,6 +51,11 @@
 
 InventoryModel *InventoryModel::spInstance = NULL;
 
+void ResetCryptInventory();
+void ResetLibraryInventory();
+void SetCryptInventory(wxString sName, bool bAdvanced, long have, long want, long trade);
+void SetLibraryInventory(wxString sName, long have, long want, long trade);
+
 
 InventoryModel::InventoryModel () :
 m_oCryptList (),
@@ -570,14 +575,22 @@ InventoryModel::ImportFromXML ()
 	return TRUE;
 }
 
+xmlNodePtr FindNode(xmlNodePtr startNode, char *nodeName)
+{
+	while (startNode && strcmp ((char *) startNode->name, nodeName))
+	{
+		startNode = startNode->next;
+	}
+
+	return startNode;
+}
 
 bool
 InventoryModel::ImportFromXML (wxString &sFileName)
 {
 	Database *pDatabase = Database::Instance ();
-
-	bool bMorphed = FALSE;
-	xmlChar *pString, *pStringName, *pStringSet, *pStringAdvanced, *pDatabaseID = 0, *pHave = 0, *pSpare = 0, *pWant = 0;
+	xmlChar *pString, *pStringName, *pStringSet, *pStringAdvanced, *pHave = 0, *pSpare = 0, *pWant = 0;
+	
 	xmlDocPtr doc; // the document tree
 	xmlXPathContextPtr xpathCtx; 
 	xmlXPathObjectPtr xpathObj; 
@@ -588,8 +601,8 @@ InventoryModel::ImportFromXML (wxString &sFileName)
 	int updateCount;
 	wxString xmlStringDoc;
 	wxProgressDialog progressDlg(wxT ("Importing..."),wxT("Crypt"));
-
-	xmlInitParser ();
+	
+	xmlInitParser();
 	LIBXML_TEST_VERSION;
 
 	xmlStringDoc = ReadXmlFile(sFileName,true);
@@ -619,8 +632,6 @@ InventoryModel::ImportFromXML (wxString &sFileName)
 		return 0;
 	}
 
-	// TODO: check the validity using the DTD
-
 	pDatabase->Query (wxT ("BEGIN TRANSACTION;"));
 
 	// Get the inventory's crypt
@@ -631,6 +642,7 @@ InventoryModel::ImportFromXML (wxString &sFileName)
 		xmlFreeDoc(doc); 
 		return 0;
 	}
+
 	nodes = xpathObj->nodesetval;
 	size = (nodes) ? nodes->nodeNr : 0;
 	updateCount = 0;
@@ -638,11 +650,11 @@ InventoryModel::ImportFromXML (wxString &sFileName)
 	if (size != 0)
 	{
 		updateAt = size/100;
+		ResetCryptInventory();
 	}
 
 	for(int i = 0; i < size; i++) 
 	{
-
 		if(i % updateAt == 0)
 		{
 			if (updateCount < 100)
@@ -656,139 +668,70 @@ InventoryModel::ImportFromXML (wxString &sFileName)
 		if (nodes->nodeTab[i])
 		{
 			cur = nodes->nodeTab[i];
-			pString = xmlXPathCastNodeToString (cur);
-			if (!strcmp ((char *) cur->name, "databaseID"))
-				pDatabaseID = pString;
-			else if (!strcmp ((char *) cur->name, "have"))
+			pString = xmlXPathCastNodeToString(cur);
+
+			if (!strcmp ((char *) cur->name, "have"))
 				pHave = pString;
 			else if (!strcmp ((char *) cur->name, "need"))
 				pWant = pString;
 			else if (!strcmp ((char *) cur->name, "spare"))
 				pSpare = pString;
 
-			if (pDatabaseID && pHave && pWant && pSpare)
+			if (pHave && pWant && pSpare)
 			{
-				long lID, lHave, lWant, lSpare;
-				wxString sID ((const char *) pDatabaseID, wxConvLibc), 
-					sHave ((const char *) pHave, wxConvLibc),
+				long lHave, lWant, lSpare;
+				wxString sHave ((const char *) pHave, wxConvLibc),
 					sWant ((const char *) pWant, wxConvLibc),
 					sSpare ((const char *) pSpare, wxConvLibc);
+				
+				sHave.ToLong(&lHave);
+				sWant.ToLong(&lWant);
+				sSpare.ToLong(&lSpare);
 
-				sID.ToLong (&lID);
-				sHave.ToLong (&lHave);
-				sWant.ToLong (&lWant);
-				sSpare.ToLong (&lSpare);
+				tmpnode = FindNode(cur->parent->children,"name");
 
-
-				wxString sQuery;
-				wxArrayString *pResult;
-				RecordSet oRecordSet;
-
-				// Get the name we have for this card in the DB
-				sQuery.Printf (wxT ("SELECT card_name FROM crypt_view WHERE card_ref = %d;"), lID);
-				pDatabase->Query (sQuery, &oRecordSet);
-				pResult = NULL;
-				if (oRecordSet.GetCount () > 0)
-					pResult = &(oRecordSet.Item (0));
-				// 	      else
-				// 		wxLogMessage (wxT ("card_ref not found : %d"), lID);
-
-				// Get the name we have for this card in the XML
-				tmpnode = cur->parent->children;
-				while (tmpnode && strcmp ((char *) tmpnode->name, "name")) 
-				{
-					tmpnode = tmpnode->next;
-				}
 				if (tmpnode)
 				{
-					pStringName = xmlXPathCastNodeToString (tmpnode);
+					pStringName = xmlXPathCastNodeToString(tmpnode);
+					
 					if (pStringName)
 					{
 						wxString sStringName ((const char *) pStringName, wxConvUTF8);
-						// Compare the card names
-						// ARDB Should be Set-ignorant for now
-						// if (pResult && !sStringName.Cmp (pResult->Item (0)))
-						if (0)
+
+						tmpnode = FindNode(cur->parent->children,"adv");
+
+						pStringAdvanced = NULL;
+						
+						if (tmpnode)
 						{
-							// OK these are the same names
-							SetHaveCrypt (lID, lHave);
-							SetWantCrypt (lID, lWant);
-							SetSpareCrypt (lID, lSpare);
-						}
-						else
-						{
-							// Name mismatch -> DB morphed, we'll trust the XML info
-							bMorphed = TRUE;
-
-							// Get the card set
-							tmpnode = cur->parent->children;
-							while (tmpnode && strcmp ((char *) tmpnode->name, "set")) 
+							pStringAdvanced = xmlXPathCastNodeToString(tmpnode);
+						
+							if (pStringAdvanced)
 							{
-								tmpnode = tmpnode->next;
-							}
-							pStringSet = NULL;
-							if (tmpnode)
-							{
-								pStringSet = xmlXPathCastNodeToString (tmpnode);
-							}
-
-							// Get the advanced flag
-							tmpnode = cur->parent->children;
-							while (tmpnode && strcmp ((char *) tmpnode->name, "adv")) 
-							{
-								tmpnode = tmpnode->next;
-							}
-							pStringAdvanced = NULL;
-							if (tmpnode)
-							{
-								pStringAdvanced = xmlXPathCastNodeToString (tmpnode);
-							}
-
-							if (pStringSet && pStringAdvanced)
-							{
-								wxString sStringSet ((const char *) pStringSet, wxConvUTF8);
 								wxString sStringAdv ((const char *) pStringAdvanced, wxConvUTF8);
-
-								/*
-								// ARDB Should be Set-ignorant for now
-								SetHWSCryptName (sStringName, sStringSet, sStringAdv.Length () > 0,
-								lHave, lWant, lSpare);
-								*/
-								SetHWSCryptName (sStringName, wxEmptyString, sStringAdv.Length () > 0,
-									lHave, lWant, lSpare);
-
-								free (pStringSet);
-								free (pStringAdvanced);
-								pStringSet = 0;
-								pStringAdvanced = 0;
+								
+								SetCryptInventory(sStringName, (sStringAdv.Length () > 0), lHave, lWant, lSpare);
+							
+								free(pStringAdvanced);
+								pStringAdvanced = NULL;
 							}
-							else
-							{
-								SetHWSCryptName (sStringName, wxEmptyString, FALSE,
-									lHave, lWant, lSpare);
-							}
-
 						}
+
 						free (pStringName);
-						pStringName = 0;
-					}
-					else
-					{
-						wxLogMessage (wxT ("DB/XML mismatch for ID %d, ignoring that card"), lID);
+						pStringName = NULL;
 					}
 				}
 
-				free (pDatabaseID);
 				free (pHave);
 				free (pWant);
 				free (pSpare);
-				pDatabaseID = 0;
-				pHave = 0;
-				pWant = 0;
-				pSpare = 0;
+				pHave = NULL;
+				pWant = NULL;
+				pSpare = NULL;
 			}
 		}
 	}
+
 	free (xpathObj);
 
 	// Get the inventory's library
@@ -807,6 +750,7 @@ InventoryModel::ImportFromXML (wxString &sFileName)
 	if (size != 0)
 	{
 		updateAt = size/100;
+		ResetLibraryInventory();
 	}
 
 	progressDlg.Update(updateCount,wxT("Library"));
@@ -826,124 +770,54 @@ InventoryModel::ImportFromXML (wxString &sFileName)
 		if (nodes->nodeTab[i])
 		{
 			cur = nodes->nodeTab[i];
-			pString = xmlXPathCastNodeToString (cur);
-			if (!strcmp ((char *) cur->name, "databaseID"))
-				pDatabaseID = pString;
-			else if (!strcmp ((char *) cur->name, "have"))
+			pString = xmlXPathCastNodeToString(cur);
+			
+			if (!strcmp ((char *) cur->name, "have"))
 				pHave = pString;
 			else if (!strcmp ((char *) cur->name, "need"))
 				pWant = pString;
 			else if (!strcmp ((char *) cur->name, "spare"))
 				pSpare = pString;
 
-			if (pDatabaseID && pHave && pWant && pSpare)
+			if (pHave && pWant && pSpare)
 			{
-				long lID, lHave, lWant, lSpare;
-				wxString sID ((const char *) pDatabaseID, wxConvLibc), 
-					sHave ((const char *) pHave, wxConvLibc),
+				long lHave, lWant, lSpare;
+				wxString sHave ((const char *) pHave, wxConvLibc),
 					sWant ((const char *) pWant, wxConvLibc),
 					sSpare ((const char *) pSpare, wxConvLibc);
 
-				sID.ToLong (&lID);
-				sHave.ToLong (&lHave);
-				sWant.ToLong (&lWant);
-				sSpare.ToLong (&lSpare);
+				
+				sHave.ToLong(&lHave);
+				sWant.ToLong(&lWant);
+				sSpare.ToLong(&lSpare);
 
-
-				wxString sQuery;
-				wxArrayString *pResult;
-				RecordSet oRecordSet;
-
-				// Get the name we have for this card in the DB
-				sQuery.Printf (wxT ("SELECT card_name FROM library_view WHERE card_ref = %d;"), lID);
-				pDatabase->Query (sQuery, &oRecordSet);
-				pResult = NULL;
-				if (oRecordSet.GetCount () > 0)
-					pResult = &(oRecordSet.Item (0));
-				// 	      else
-				// 		wxLogMessage (wxT ("card_ref not found : %d"), lID);
-
-				// Get the name we have for this card in the XML
-				tmpnode = cur->parent->children;
-				while (tmpnode && strcmp ((char *) tmpnode->name, "name")) 
-				{
-					tmpnode = tmpnode->next;
-				}
+				tmpnode = FindNode(cur->parent->children,"name");
+				
 				if (tmpnode)
 				{
 					pStringName = xmlXPathCastNodeToString (tmpnode);
+					
 					if (pStringName)
 					{
 						wxString sStringName ((const char *) pStringName, wxConvUTF8);
-						// Compare the card names
-						// ARDB Should be Set-ignorant for now
-						// if (pResult && !sStringName.Cmp (pResult->Item (0)))
-						if (0)
-						{
-							// OK these are the same names
-							SetHaveLibrary (lID, lHave);
-							SetWantLibrary (lID, lWant);
-							SetSpareLibrary (lID, lSpare);
-						}
-						else
-						{
-							// Name mismatch -> DB morphed, we'll trust the XML info
-							bMorphed = TRUE;
 
-							// Get the card set
-							tmpnode = cur->parent->children;
-							while (tmpnode && strcmp ((char *) tmpnode->name, "set")) 
-							{
-								tmpnode = tmpnode->next;
-							}
-							pStringSet = NULL;
-							if (tmpnode)
-							{
-								pStringSet = xmlXPathCastNodeToString (tmpnode);
-							}
+						SetLibraryInventory(sStringName, lHave, lWant, lSpare);
 
-							if (pStringSet)
-							{
-								wxString sStringSet ((const char *) pStringSet, wxConvUTF8);
-
-								/*
-								// ARDB Should be Set-ignorant for now				  
-								SetHWSLibraryName (sStringName, sStringSet,
-								lHave, lWant, lSpare);
-								*/
-								SetHWSLibraryName (sStringName, wxEmptyString,
-									lHave, lWant, lSpare);
-
-								free (pStringSet);
-								pStringSet = 0;
-							}
-							else
-							{
-								SetHWSLibraryName (sStringName, wxEmptyString,
-									lHave, lWant, lSpare);
-							}
-
-						}
-						free (pStringName);
+						free(pStringName);
 						pStringName = 0;
-					}
-					else
-					{
-						wxLogMessage (wxT ("DB/XML mismatch for ID %d, ignoring that card"), lID);
-					}
+					}				
 				}
 
-				free (pDatabaseID);
 				free (pHave);
 				free (pWant);
 				free (pSpare);
-				pDatabaseID = 0;
 				pHave = 0;
 				pWant = 0;
 				pSpare = 0;
 			}
 		}
 	}
+
 	free (xpathObj);
 
 	// free
@@ -954,11 +828,6 @@ InventoryModel::ImportFromXML (wxString &sFileName)
 	xmlCleanupParser();
 
 	pDatabase->Query (wxT ("COMMIT TRANSACTION;"));
-
-	if (bMorphed)
-	{
-		ExportWithXSL (sFileName, NULL);
-	}
 
 	return 1;
 }
@@ -991,16 +860,121 @@ InventoryModel::my_xmlNewProp (xmlNodePtr node,
 }
 
 
-void 
-InventoryModel::SetHaveCrypt (long lRef, long lAmount)
+void ResetCryptInventory()
+{
+	Database *pDatabase = Database::Instance();
+	wxString sQuery;
+
+	sQuery.Printf (wxT ("UPDATE inventory_crypt SET number_owned=0,number_to_trade=0,number_wanted=0"));
+	pDatabase->Query(sQuery);
+
+}
+
+void ResetLibraryInventory()
+{
+	Database *pDatabase = Database::Instance();
+	wxString sQuery;
+
+	sQuery.Printf (wxT ("UPDATE inventory_library SET number_owned=0,number_to_trade=0,number_wanted=0"));
+	pDatabase->Query(sQuery);
+}
+
+long FindCryptCardRef(wxString sName, bool bAdvanced)
 {
 	Database *pDatabase = Database::Instance ();
+	wxString sQuery;
+	long lCardRef = -1;
+
+	sName.Replace (wxT ("'"), wxT ("''"));
+
+	// Check wether it's an advanced vampire or not
+	if (bAdvanced)
+	{
+		// Try to find an advanced vampire
+		sQuery.Printf (wxT ("SELECT card_ref FROM crypt_view WHERE dumbitdown(card_name) LIKE dumbitdown('%s') AND advanced = 'Advanced' "), sName.c_str ());
+	}
+	else
+	{
+		// Try to find a regular vampire
+		sQuery.Printf (wxT ("SELECT card_ref FROM crypt_view WHERE dumbitdown(card_name) LIKE dumbitdown('%s') AND advanced = '' "), sName.c_str ());
+	}
+
+	sQuery <<  wxT ("ORDER BY card_ref ASC LIMIT 1");
+
+	RecordSet *pResult = pDatabase->Query(sQuery);
+
+	if (pResult && pResult->GetCount() && pResult->Item(0).GetCount())
+	{
+		pResult->Item(0).Item(0).ToLong(&lCardRef);		
+	}
+
+	return lCardRef;
+}
+
+long FindLibraryCardRef(wxString sName)
+{
+	Database *pDatabase = Database::Instance ();
+	wxString sQuery;
+	long lCardRef = -1;
+
+	sName.Replace (wxT ("'"), wxT ("''"));
+
+	// Try to find a card
+	sQuery.Printf (wxT ("SELECT card_ref FROM library_view WHERE dumbitdown(card_name) LIKE dumbitdown('%s') "), sName.c_str ());
+
+	sQuery <<  wxT ("ORDER BY card_ref ASC LIMIT 1");
+
+	RecordSet * pResult = pDatabase->Query (sQuery);
+
+	if (pResult && pResult->GetCount() && pResult->Item(0).GetCount())
+	{
+		pResult->Item(0).Item(0).ToLong(&lCardRef);
+	}
+
+	return lCardRef;
+}
+
+void SetCryptInventory(wxString sName, bool bAdvanced, long have, long want, long trade)
+{
+	Database *pDatabase = Database::Instance();
+	wxString sQuery;
+	long lRef;
+
+	lRef = FindCryptCardRef(sName,bAdvanced);
+
+	sQuery.Printf (wxT ("UPDATE inventory_crypt SET number_owned = number_owned + %d, number_to_trade = number_to_trade + %d, number_wanted = number_wanted +%d"
+		"  WHERE card_ref=%d"),
+		have,trade,want,lRef);
+	pDatabase->Query(sQuery);
+
+}
+
+void SetLibraryInventory(wxString sName, long have, long want, long trade)
+{
+	Database *pDatabase = Database::Instance();
+	wxString sQuery;
+	long lRef;
+
+	lRef = FindLibraryCardRef(sName);
+
+	sQuery.Printf (wxT ("UPDATE inventory_library SET number_owned = number_owned + %d, number_to_trade = number_to_trade + %d, number_wanted = number_wanted +%d"
+		"  WHERE card_ref=%d"),
+		have,trade,want,lRef);
+	pDatabase->Query (sQuery);
+
+}
+
+
+void 
+InventoryModel::SetHaveCrypt(long lRef, long lAmount)
+{
+	Database *pDatabase = Database::Instance();
 	wxString sQuery;
 
 	//  wxLogMessage (wxT ("avant:%d"), GetHaveCrypt (lRef));
 
 	sQuery.Printf (wxT ("UPDATE inventory_crypt "
-		"  SET number_owned=%d "
+		"  SET number_owned = %d "
 		"  WHERE card_ref=%d"),
 		lAmount,
 		lRef);
@@ -1064,7 +1038,7 @@ InventoryModel::SetSpareCrypt (long lRef, long lAmount)
 	wxString sQuery;
 
 	sQuery.Printf (wxT ("UPDATE inventory_crypt "
-		"  SET number_to_trade=%d "
+		"  SET number_to_trade = %d "
 		"  WHERE card_ref=%d"),
 		lAmount,
 		lRef);
@@ -1080,7 +1054,7 @@ InventoryModel::SetWantCrypt (long lRef, long lAmount)
 	wxString sQuery;
 
 	sQuery.Printf (wxT ("UPDATE inventory_crypt "
-		"  SET number_wanted=%d "
+		"  SET number_wanted = %d "
 		"  WHERE card_ref=%d"),
 		lAmount,
 		lRef);
@@ -1151,7 +1125,7 @@ InventoryModel::SetSpareLibrary (long lRef, long lAmount)
 	wxString sQuery;
 
 	sQuery.Printf (wxT ("UPDATE inventory_library "
-		"  SET number_to_trade=%d "
+		"  SET number_to_trade = %d "
 		"  WHERE card_ref=%d"),
 		lAmount,
 		lRef);
@@ -1167,7 +1141,7 @@ InventoryModel::SetWantLibrary (long lRef, long lAmount)
 	wxString sQuery;
 
 	sQuery.Printf (wxT ("UPDATE inventory_library "
-		"  SET number_wanted=%d "
+		"  SET number_wanted = %d "
 		"  WHERE card_ref=%d"),
 		lAmount,
 		lRef);
