@@ -65,10 +65,11 @@ EVT_TEXT (ID_FIND_TEXTCTRL, BrowserCryptTab::OnFindTextChange)
 
 EVT_SPLITTER_SASH_POS_CHANGED(ID_SPLITTER_WINDOW, BrowserCryptTab::OnSplitterMoved)
 //  EVT_SIZE (BrowserCryptTab::OnTabResize)
+
 END_EVENT_TABLE ()
 
 
-BrowserCryptTab::BrowserCryptTab (BrowserCryptModel *pModel, BrowserCryptController *pController, wxNotebook *pParent, unsigned int uiNumber) :
+BrowserCryptTab::BrowserCryptTab(BrowserCryptModel *pModel, BrowserCryptController *pController, wxNotebook *pParent, unsigned int uiNumber) :
 wxPanel (pParent, -1),
 // Initialisation of member objects and variables
 m_bDisplayInventory (FALSE),
@@ -100,7 +101,7 @@ m_uiSortColumn (0)
 }
 
 
-BrowserCryptTab::~BrowserCryptTab ()
+BrowserCryptTab::~BrowserCryptTab()
 {
 	if (m_pModel) delete m_pModel;
 	m_pModel = NULL;
@@ -114,6 +115,13 @@ BrowserCryptTab::~BrowserCryptTab ()
 	}
 }
 
+void BrowserCryptTab::SetFocus()
+{
+	if (m_pFindText != NULL)
+	{
+		m_pFindText->SetFocus();
+	}
+}
 
 void
 BrowserCryptTab::Init ()
@@ -995,6 +1003,11 @@ void
 BrowserCryptCardGrid::OnColumnClick (wxGridEvent &event)
 {
 	unsigned int uiColumn = event.GetCol ();
+	
+	if (event.ControlDown())
+	{
+		//Multi sort
+	}
 
 	if (uiColumn == m_uiSortColumn)
 	{
@@ -1007,8 +1020,13 @@ BrowserCryptCardGrid::OnColumnClick (wxGridEvent &event)
 	}
 
 	uiColumn++;
-	if (m_bReverseSortOrder) uiColumn = -uiColumn;
-	m_pModel->SetSortColumn (uiColumn);
+	
+	if (m_bReverseSortOrder) 
+	{
+		uiColumn = -uiColumn;
+	}
+
+	m_pModel->SetSortColumn(uiColumn);
 
 	m_pModel->ExecFilterList (TRUE);
 	m_pTab->FillCardList ();

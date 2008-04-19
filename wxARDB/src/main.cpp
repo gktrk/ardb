@@ -81,6 +81,9 @@ EVT_MENU (ID_INV_EXPORT_HTML, BrowserFrame::OnInventoryExportHTML)
 EVT_MENU (ID_HELP_ABOUT, BrowserFrame::OnHelpAbout)
 EVT_MENU (ID_HELP_MANUAL, BrowserFrame::OnHelpManual)
 EVT_CLOSE (BrowserFrame::OnClose)
+
+EVT_NOTEBOOK_PAGE_CHANGED(ID_BROWSER_NOTEBOOK,BrowserFrame::TabChanged)
+
 END_EVENT_TABLE ()
 
 IMPLEMENT_APP (MyApp)
@@ -187,7 +190,7 @@ m_uiLibraryBrowserCount (0)
 	m_pPapaSizer = new wxBoxSizer (wxVERTICAL);
 
 	// create Notebook
-	m_pNotebook = new wxNotebook (this, -1);
+	m_pNotebook = new wxNotebook(this, ID_BROWSER_NOTEBOOK);
 	m_pPapaSizer->Add (m_pNotebook, 3, wxEXPAND);
 
 	SetSizer (m_pPapaSizer);
@@ -268,6 +271,22 @@ BrowserFrame::~BrowserFrame ()
 		}
 
 		pConfig->Flush (TRUE);
+	}
+}
+
+void BrowserFrame::TabChanged(wxNotebookEvent &event)
+{
+	int selectedPage;
+	selectedPage = event.GetSelection();
+
+	if (m_pNotebook != NULL)
+	{
+		wxNotebookPage* pPage = m_pNotebook->GetPage(selectedPage);
+
+		if (pPage != NULL)
+		{
+			pPage->SetFocus();
+		}
 	}
 }
 

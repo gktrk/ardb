@@ -109,6 +109,13 @@ BrowserLibraryTab::~BrowserLibraryTab ()
 	}
 }
 
+void BrowserLibraryTab::SetFocus()
+{
+	if (m_pFindText != NULL)
+	{
+		m_pFindText->SetFocus();
+	}
+}
 
 void
 BrowserLibraryTab::Init ()

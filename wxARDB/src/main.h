@@ -65,6 +65,8 @@ public:
   void OnInventoryImport (wxCommandEvent& WXUNUSED (event));
   void OnInventoryOpen (wxCommandEvent& WXUNUSED (event));
   void OnInventorySave (wxCommandEvent& WXUNUSED (event));
+
+  void TabChanged(wxNotebookEvent &event);
   
   
  private:
@@ -92,7 +94,8 @@ public:
       ID_INV_SAVE,
       ID_INV_IMPORT,
       ID_INV_EXPORT_CSV,
-      ID_INV_EXPORT_HTML
+      ID_INV_EXPORT_HTML,
+	  ID_BROWSER_NOTEBOOK
     };
 
   DECLARE_EVENT_TABLE()

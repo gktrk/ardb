@@ -55,6 +55,7 @@ private:
 public:
   void Init ();
   void UpdateView ();
+  void SetFocus();
 
 private:
   bool               m_bDisplayInventory;
