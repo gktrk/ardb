@@ -55,6 +55,7 @@ private:
 public:
   void Init ();
   void UpdateView ();
+  void SetFocus();
 
 private:
   long               m_acGroupCounts[50];
