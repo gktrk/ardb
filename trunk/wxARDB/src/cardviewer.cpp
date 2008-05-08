@@ -22,9 +22,12 @@
  */
 
 #include "cardviewer.h"
+#include "importxml.h"
 
 #include <wx/file.h>
 #include <wx/dir.h>
+
+#define CONV_BUFFER_SIZE 1024
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -79,14 +82,35 @@ void CardViewer::DisplayImage(int i)
 	bool imageFound = false;
 	wxString cardName = cardImages.Item(i);
 	
+#ifndef __WXMSW__
+	int k;
+	char buffer[CONV_BUFFER_SIZE];
+#endif	
 
 	for (int j=i;j>=0;j--)
 	{
 		wxString filename = wxString::Format(wxT("%s/%s.jpg"),CARD_IMAGE_DIR,cardImages.Item(j).c_str());
 
+#ifndef __WXMSW__
+		const wxWX2MBbuf tmp_buf = filename.mb_str(wxConvISO8859_1);
+		const char* tmp_str = tmp_buf;
+
+		for(k = 0; k < strlen(tmp_str); k++) {
+		    if(tmp_str[k] < 0) {
+			buffer[k] = Unicode2Ascii((unsigned char)tmp_str[k]);
+		    }
+		    else {
+			buffer[k] = tmp_str[k];
+		    }
+		}
+		buffer[k] = '\0';
+		
+		filename = wxString(buffer, *wxConvCurrent);
+#endif
 		if (wxFile::Exists(filename))
 		{
 			m_imagePanel->SetImage(filename);				
+
 			imageFound = true;
 			break;
 		}
@@ -99,10 +123,27 @@ void CardViewer::DisplayImage(int i)
 		wxString altName = cardName.AfterFirst(wxT('/'));
 		wxString filename = wxString::Format(wxT("%s/%s.jpg"),CARD_IMAGE_DIR, altName.c_str());
 
-		if (wxFile::Exists(filename))
+#ifndef __WXMSW__
+		const wxWX2MBbuf tmp_buf2 = filename.mb_str(wxConvISO8859_1);
+                const char* tmp_str2 = tmp_buf2;
+		
+                for(k = 0; k < strlen(tmp_str2); k++) {
+                    if(tmp_str2[k] < 0) {
+                        buffer[k] = Unicode2Ascii((unsigned char)tmp_str2[k]);
+                    }
+                    else {
+                        buffer[k] = tmp_str2[k];
+                    }
+                }
+                buffer[k] = '\0';
+		
+		filename = wxString(buffer, *wxConvCurrent);
+#endif
+                if (wxFile::Exists(filename))
 		{
-			m_nextPrevImage->SetRange(0,0);
-			m_imagePanel->SetImage(filename);
+		    m_nextPrevImage->SetRange(0,0);
+		    m_imagePanel->SetImage(filename);
+
 		}
 		else // No image at all clear the viewer
 		{

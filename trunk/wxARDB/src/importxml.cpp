@@ -4,7 +4,6 @@
 
 #define BUFFER_SIZE 1024
 
-char Unicode2Ascii(int code);
 
 wxString ReadXmlFile(wxString filename, bool twoByte)
 {
