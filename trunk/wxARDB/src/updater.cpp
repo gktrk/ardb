@@ -1078,3 +1078,25 @@ wxChar Updater::MakeAscii(wxChar c)
 
 	return result;
 }
+
+// The commented out code below needs to be wrapped in a function
+// and used to provide the merged vampire details.
+//This will be added at somepoint in the future.
+/*
+  RecordSet *pRecordSet;
+
+  pRecordSet = pDatabase->Query (wxT("SELECT c2.name, c2.clan, c2.groupnumber, c2.capacity, c2.disciplines, c1.cardtext, c2.cardtext FROM crypt c1, crypt c2 WHERE c1.name = c2.name AND c1.adv = '' AND c2.adv = 'Advanced';"));
+
+  if (pRecordSet && pRecordSet->Count())
+  {
+
+  }
+
+
+    pDatabase->Query (wxT ("DROP TABLE Crypt;"));
+  pDatabase->Query (wxT ("DROP TABLE Library;"));
+
+
+  pDatabase->Query (wxT ("COMMIT TRANSACTION;"));
+  return 1;
+*/
