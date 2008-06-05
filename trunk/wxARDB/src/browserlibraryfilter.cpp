@@ -139,10 +139,12 @@ BrowserLibraryFilter::BrowserLibraryFilter(BrowserLibraryController *pController
   m_pTitleList = new wxListView (this, -1, wxDefaultPosition, wxSize (200, 75), wxLC_REPORT | wxLC_NO_HEADER);
   m_pTitleList->InsertColumn (0, wxEmptyString);
   // here we won't include any of the wildcard titles
+  
   for (unsigned int i = 0; i < pUIData->GetTitles ()->GetCount () - 2; i++)
     {
       m_pTitleList->InsertItem (i, pUIData->GetTitles ()->Item (i)[0]);
     }
+
   pTitleBox->Add (m_pTitleList, 1, wxEXPAND | wxTOP, 5);
   pTitleOtherSizer->Add (pTitleBox, 0, wxEXPAND);
 

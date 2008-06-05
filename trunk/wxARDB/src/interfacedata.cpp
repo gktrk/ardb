@@ -120,6 +120,7 @@ InterfaceData::InterfaceData () :
       pEntry2->Add (wxT ("any title"));
       pEntry2->Add (wxT ("_%"));
       m_oTitleRecord.Add (pEntry2);
+
     }
 
   // Get the disciplines

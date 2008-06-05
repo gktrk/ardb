@@ -366,14 +366,14 @@ BrowserCryptController::ProcessGroups (BrowserCryptFilter *pFilter)
 {
 	wxString sExpression, sTempString, sOperator, sSummary (wxT ("group "));
 
-	for (unsigned int i = 0; i < g_uiGroupCount; i++)
+	for (unsigned int i = 0; i <= g_uiGroupCount; i++)
 	{
 		if (pFilter->m_pGroupList->IsSelected (i))
 		{
 			sTempString.Printf (wxT ("%s%s(groupnumber = %d)"), 
-				sExpression.c_str (), sOperator.c_str (), i+1);
+				sExpression.c_str (), sOperator.c_str (), i);
 			sExpression = sTempString;
-			sTempString.Printf (wxT ("%s%d "), sSummary.c_str (), i+1);
+			sTempString.Printf (wxT ("%s%d "), sSummary.c_str (), i);
 			sSummary = sTempString;
 			sOperator.Printf (wxT (" OR "));
 		}

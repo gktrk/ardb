@@ -332,7 +332,7 @@ Updater::LoadDisciplinesFromCSV ()
   Database *pDatabase = Database::Instance ();
   wxZipInputStream oZipInputStream (m_sZipFile, wxT ("vtescrypt.csv"));
   int iZipLength = oZipInputStream.GetSize () * sizeof (char), i=0;
-  unsigned int uiCrap=11;
+  unsigned int uiCrap=12;
   char *pCopyBuffer = new char [iZipLength];
   wxString sCurrent;
 
@@ -524,6 +524,7 @@ Updater::UpdateDatabaseFromCSV ()
 			 "       flavortext TEXT,"
 			 "       edition TEXT,"
 			 "       requirement TEXT,"
+			 "       title TEXT,"
 			 "       artist TEXT,"
 			 "       edition_save TEXT);")); // this field is required to perform the multiple passes
 
@@ -538,6 +539,7 @@ Updater::UpdateDatabaseFromCSV ()
 		"       cardtext TEXT,"
 		"       edition TEXT,"
 		"       title TEXT,"
+		"       banned TEXT,"
 		"       artist TEXT,");
   for (unsigned int c=0; c<m_oDisciplinesArray.GetCount (); c++)
     {
@@ -600,6 +602,10 @@ Updater::UpdateDatabaseFromCSV ()
 
 
   int iVamps = LoadTableFromCSV (wxT ("Crypt"), wxT ("vtescrypt.csv"));
+
+  //Set any group ANY to 0
+  pDatabase->Query (wxT ("UPDATE Crypt SET groupnumber = 0 WHERE groupnumber = '*';"));
+
   int iCards = LoadTableFromCSV (wxT ("Library"), wxT ("vteslib.csv"));
   int iSets = LoadTableFromCSV (wxT ("cards_sets_unsorted"), wxT ("vtessets.csv"));
 
