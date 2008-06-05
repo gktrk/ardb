@@ -207,9 +207,9 @@ m_pCardNameText (NULL)
 #endif
 	wxString sGroupString;
 	m_pGroupList->InsertColumn (0, wxEmptyString);
-	for (unsigned int i = 0; i < g_uiGroupCount; i++)
+	for (unsigned int i = 0; i <= g_uiGroupCount; i++)
 	{
-		sGroupString.Printf (wxT ("%d"), i+1);
+		sGroupString.Printf (wxT ("%d"), i);
 		m_pGroupList->InsertItem (i, sGroupString);
 	}
 	pGroupSizer->Add (m_pGroupList, 1, wxEXPAND | wxTOP, 5);

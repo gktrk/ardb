@@ -393,7 +393,10 @@ BrowserCryptTab::FillCardList ()
 
 	m_oArrayOfNames.Clear ();
 	m_uiCapacityTotal = 0;
-	for (unsigned int i = 0; i < g_uiGroupCount + 1; i++) m_acGroupCounts[i] = 0;
+	for (unsigned int i = 0; i < 50; i++)
+	{
+		m_acGroupCounts[i] = 0;
+	}
 
 	m_pCardGrid->Freeze ();
 	m_pCardGrid->BeginBatch ();
@@ -420,12 +423,12 @@ BrowserCryptTab::FillCardList ()
 
 		}
 		// Add this vampire's capacity to the total
-		if (m_pModel->GetCardList ()->Item (iLine).Item (5).ToLong (&lCapacity))
+		if (m_pModel->GetCardList()->Item (iLine).Item (5).ToLong (&lCapacity))
 		{
 			m_uiCapacityTotal += lCapacity;
 		}
 		// Remember the vampire's group
-		if (m_pModel->GetCardList ()->Item (iLine).Item (9).ToLong (&lGroup))
+		if (m_pModel->GetCardList()->Item (iLine).Item (9).ToLong (&lGroup))
 		{
 			m_acGroupCounts[lGroup] = m_acGroupCounts[lGroup] + 1;
 		}
@@ -484,25 +487,23 @@ BrowserCryptTab::SetCardCount (unsigned int uiCount)
 
 	if (uiCount > 0 && m_uiCapacityTotal > 0) 
 	{
-		for (i = 1; i < g_uiGroupCount + 1; i++)
+		//Fix group count
+		for (i = 1; i <= g_uiGroupCount; i++)
 		{
-			if (m_acGroupCounts[i] + m_acGroupCounts [i - 1] >= 
-				m_acGroupCounts[lBestGroup] + m_acGroupCounts[lBestGroup - 1])
+			if (m_acGroupCounts[i] + m_acGroupCounts [i - 1] >= m_acGroupCounts[lBestGroup] + m_acGroupCounts[lBestGroup - 1])
+			{
 				lBestGroup = i;
+			}
 		}
+		
 		if (m_acGroupCounts[lBestGroup] + m_acGroupCounts [lBestGroup - 1] > 0)
-			sBestGroups << wxT(" (") 
-			<< m_acGroupCounts [lBestGroup-1] + m_acGroupCounts[lBestGroup] 
-		<< wxT (" in groups ") << lBestGroup - 1 
-			<< wxT ("-") << lBestGroup << wxT (")");
-
+		{
+			sBestGroups << wxT(" (") << m_acGroupCounts [lBestGroup-1] + m_acGroupCounts[lBestGroup] << wxT (" in groups ") << lBestGroup - 1 << wxT ("-") << lBestGroup << wxT (")");
+		}
 
 		fAverageCap = m_uiCapacityTotal;
 		fAverageCap /= uiCount; 
-		sLabel.Printf (wxT ("Crypt count: %d %s    Average capacity: %.2f"), 
-			uiCount, 
-			sBestGroups.c_str (),
-			fAverageCap);
+		sLabel.Printf (wxT ("Crypt count: %d %s    Average capacity: %.2f"), uiCount, sBestGroups.c_str (), fAverageCap);
 
 		// Compute best disciplines
 		Database *pDatabase = Database::Instance ();
@@ -510,8 +511,7 @@ BrowserCryptTab::SetCardCount (unsigned int uiCount)
 		wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get ();
 		if (pConfig)
 		{
-			wxString sPrimeDisciplinesMaxCards 
-				= wxT ("PrimeDisciplinesMaxCards");
+			wxString sPrimeDisciplinesMaxCards = wxT ("PrimeDisciplinesMaxCards");
 			if (!pConfig->Read (sPrimeDisciplinesMaxCards, &iMaxCards))
 			{
 				pConfig->Write (sPrimeDisciplinesMaxCards, iMaxCards);
