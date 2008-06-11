@@ -78,7 +78,7 @@ DeckWindow::DeckWindow (DeckModel *pModel, const wxPoint& pos, const wxSize& siz
   pFileMenu->Append (ID_FILE_SAVE_XML, wxT ("Save deck (xml)\tCtrl+S"));
   pFileMenu -> AppendSeparator () ;
   pFileMenu->Append (ID_FILE_EXPORT_HTML, wxT ("Export deck to HTML\tCtrl+H"));
-  pFileMenu->Append (ID_FILE_EXPORT_BBCODE, wxT ("Export deck to phpBB\tCtrl+T"));
+  pFileMenu->Append (ID_FILE_EXPORT_BBCODE, wxT ("Export deck to phpBB\tCtrl+P"));
   pFileMenu->Append (ID_FILE_EXPORT_TEXT, wxT ("Export deck to text\tCtrl+T"));
   pFileMenu->Append (ID_FILE_EXPORT_JOL, wxT ("Export deck to JOL\tCtrl+J"));
   pFileMenu -> AppendSeparator () ;
