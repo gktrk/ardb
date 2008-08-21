@@ -63,9 +63,13 @@ copy resources.tar.gz to the newly created .ardb directory (in your home directo
 tar zxvf resources.tar.gz
 }}}
 to display card images download the 60MByte zip file at
+
 [http://www.divshare.com/download/3437098-a1c]
+
 or from
+
 [http://www.powerbase-bath.com/files/cardimages.zip]
+
 copy it into your .ardb directory and unpack it:
 {{{
 unzip cardimages.zip
