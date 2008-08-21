@@ -1,5 +1,5 @@
 #labels Phase-Deploy
-#How to install RPMs under Linux.
+How to install RPMs under Linux.
 
 = Installing RPMs =
 
@@ -112,5 +112,3 @@ ARDB needs the following packages to be installed, before installing the ardb rp
   * libxml2.so.2
   * libxslt.so.1
   * libz.so.1
-
-
