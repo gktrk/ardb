@@ -1,5 +1,5 @@
+#summary How to install RPMs under Linux.
 #labels Phase-Deploy
-How to install RPMs under Linux.
 
 = Installing RPMs =
 
