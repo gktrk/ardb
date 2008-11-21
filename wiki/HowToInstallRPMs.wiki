@@ -36,7 +36,11 @@ alien -i wxARDB-X.i686.rpm
 }}}
 You might have to install alien first and use some more parameters (AFAIK alien creates Debian packages by default).
 
-At the end of this page is a list of everything that needs to be installed on your system for ARDB to work. You might have to install some of these on your system before being able to run ARDB.
+At the end of this page is a list of everything that needs to be installed on your system for ARDB to work. You might have to install some of these on your system before being able to run ARDB, e.g.:
+
+{{{
+apt-get install libwxbase2.8-0 libwxgtk2.8-0
+}}}
 
 To uninstall ARDB again, you have to enter:
 {{{
