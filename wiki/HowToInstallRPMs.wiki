@@ -3,7 +3,7 @@
 
 = Installing RPMs =
 
-This is brief How-to guide for installing RPMs on Linux systems. The focus of this guide is the installation of RPMs for OpenSuse, but using the tool 'alien', these RPMs can also be installed on other distributions as well (thanks to Salem for posting a brief description on how to do this on the newsgroup).
+This is brief How-to guide for installing RPMs on Linux systems. The focus of this guide is the installation of RPMs for OpenSuse, but using the tool 'alien', these RPMs can also be installed on other distributions as well (thanks to Salem for posting a brief description on how to do this on the newsgroup and thanks to Chris Berger for providing a Debian package and additional input).
 
 == Download ==
 
