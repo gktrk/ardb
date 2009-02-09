@@ -150,11 +150,8 @@ DeckWindow::~DeckWindow ()
 void
 DeckWindow::OnClose(wxCloseEvent& event)
 {
-	if (event.CanVeto())
-	{
-		m_pModel->ShouldSaveWarning();
-		Destroy();
-	}
+	m_pModel->ShouldSaveWarning();
+	Destroy();
 }
 
 void 
