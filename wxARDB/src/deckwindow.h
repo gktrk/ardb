@@ -13,7 +13,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -43,12 +43,12 @@ class DeckWindow : public wxFrame
   ~DeckWindow ();
 
  private:
-  DeckCryptTab    *m_pCryptTab;
-  DeckInfoTab     *m_pInfoTab;
+  DeckCryptTab	  *m_pCryptTab;
+  DeckInfoTab	  *m_pInfoTab;
   DeckLibraryTab  *m_pLibraryTab;
-  wxMenu           m_oMenu;
-  DeckModel       *m_pModel;
-  wxNotebook      *m_pNotebook;
+  wxMenu	   m_oMenu;
+  DeckModel	  *m_pModel;
+  wxNotebook	  *m_pNotebook;
 
   void OnFileClose (wxCommandEvent& event);
   void OnFileExportHTML (wxCommandEvent& event);
@@ -63,6 +63,7 @@ class DeckWindow : public wxFrame
   void OnToolsDrawSim (wxCommandEvent& event);
   void OnToolsMergeXML (wxCommandEvent& event);
   void OnToolsResize (wxCommandEvent& event);
+  void OnClose (wxCloseEvent& WXUNUSED(event));
  
   enum
     {
