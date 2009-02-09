@@ -1,9 +1,9 @@
-/*  Anarch Revolt Deck Builder - a VTES inventory manager / deck builder
+/*	Anarch Revolt Deck Builder - a VTES inventory manager / deck builder
  *
- *  Copyright (C) 2002 Francois Gombault
- *  gombault.francois@wanadoo.fr
- *  
- *  Official project page: https://savannah.nongnu.org/projects/anarchdb/
+ *	Copyright (C) 2002 Francois Gombault
+ *	gombault.francois@wanadoo.fr
+ *	
+ *	Official project page: https://savannah.nongnu.org/projects/anarchdb/
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -13,7 +13,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -70,33 +70,33 @@ public:
   
   
  private:
-  BrowserCryptModel   *m_pBrowserCryptModel;
+  BrowserCryptModel	  *m_pBrowserCryptModel;
   BrowserLibraryModel *m_pBrowserLibraryModel;
-  wxBoxSizer          *m_pPapaSizer;
-  wxNotebook          *m_pNotebook;
+  wxBoxSizer		  *m_pPapaSizer;
+  wxNotebook		  *m_pNotebook;
 
-  unsigned int         m_uiCryptBrowserCount;
-  unsigned int         m_uiLibraryBrowserCount;
+  unsigned int		   m_uiCryptBrowserCount;
+  unsigned int		   m_uiLibraryBrowserCount;
 
   enum
-    {
-      ID_BROWSER_NEW_CRYPT = wxID_HIGHEST + 1,
-      ID_BROWSER_NEW_LIBRARY,
-      ID_BROWSER_CLOSE_TAB,
-      ID_FILE_EXIT,
-      ID_FILE_DECKBUILDER,
-      ID_FILE_EDITIONS,
-      ID_FILE_PREFERENCES,
-      ID_FILE_UPDATEDB,
-      ID_HELP_MANUAL,
-      ID_HELP_ABOUT,
-      ID_INV_OPEN,
-      ID_INV_SAVE,
-      ID_INV_IMPORT,
-      ID_INV_EXPORT_CSV,
-      ID_INV_EXPORT_HTML,
+	{
+	  ID_BROWSER_NEW_CRYPT = wxID_HIGHEST + 1,
+	  ID_BROWSER_NEW_LIBRARY,
+	  ID_BROWSER_CLOSE_TAB,
+	  ID_FILE_EXIT,
+	  ID_FILE_DECKBUILDER,
+	  ID_FILE_EDITIONS,
+	  ID_FILE_PREFERENCES,
+	  ID_FILE_UPDATEDB,
+	  ID_HELP_MANUAL,
+	  ID_HELP_ABOUT,
+	  ID_INV_OPEN,
+	  ID_INV_SAVE,
+	  ID_INV_IMPORT,
+	  ID_INV_EXPORT_CSV,
+	  ID_INV_EXPORT_HTML,
 	  ID_BROWSER_NOTEBOOK
-    };
+	};
 
   DECLARE_EVENT_TABLE()
   DECLARE_NO_COPY_CLASS(BrowserFrame)

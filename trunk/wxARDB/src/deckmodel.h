@@ -127,6 +127,8 @@ class DeckModel
   void ResizeLibrary (unsigned int uiCount);
   void SetLibraryRefAmount (long lCardRef, unsigned int uiCount, bool bRefreshUI = TRUE);
 
+  void ShouldSaveWarning();
+
  private:
 
   bool                    m_bReady;
@@ -171,7 +173,7 @@ class DeckModel
 
   void ComputeLibraryStats ();
   void RefreshModel (bool bRefreshUI = FALSE);
-  void ShouldSaveWarning ();
+
   wxString StripInvalidFilename(wxString name);
 
   // XML stuff that needs wrapping

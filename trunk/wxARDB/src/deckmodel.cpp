@@ -1,9 +1,11 @@
-/*  Anarch Revolt Deck Builder - a VTES inventory manager / deck builder
+/*	Anarch Revolt Deck Builder - a VTES inventory manager / deck builder
  *
- *  Copyright (C) 2002 Francois Gombault
- *  gombault.francois@wanadoo.fr
- *  
- *  Official project page: https://savannah.nongnu.org/projects/anarchdb/
+ *	Copyright (C) 2002 Francois Gombault
+ *	gombault.francois@wanadoo.fr
+ *
+ *	Copyright (C) 2009 Graham Smith
+ *	graham.r.smith@gmail.com
+ *	
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -13,7 +15,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -55,47 +57,47 @@ wxT ("SELECT * FROM decks WHERE record_num = 0;");
 
 const wxString DeckModel::s_sLibraryViewQuery = 
 wxT ("SELECT number_used, "
-     "       card_name, "
-     "       set_name, "
-     "       card_type, "
-     "       card_ref, "
-     "       cost, "
-     "       requires, "
-     "       card_text "
-     "FROM deck_view_library "
-     "WHERE deck_ref = 0;");
+	 "		 card_name, "
+	 "		 set_name, "
+	 "		 card_type, "
+	 "		 card_ref, "
+	 "		 cost, "
+	 "		 requires, "
+	 "		 card_text "
+	 "FROM deck_view_library "
+	 "WHERE deck_ref = 0;");
 
 const wxString DeckModel::s_sCryptViewQuery = 
 wxT ("SELECT number_used, "
-     "       card_name, "
-     "       advanced, "
-     "       capacity, "
-     "       disciplines, "
-     "       title, "
-     "       card_type, "
-     "       groupnumber, "
-     "       set_name, "
-     "       card_text, "
-     "       card_ref "
-     "FROM deck_view_crypt "
-     "WHERE deck_ref = 0;");
+	 "		 card_name, "
+	 "		 advanced, "
+	 "		 capacity, "
+	 "		 disciplines, "
+	 "		 title, "
+	 "		 card_type, "
+	 "		 groupnumber, "
+	 "		 set_name, "
+	 "		 card_text, "
+	 "		 card_ref "
+	 "FROM deck_view_crypt "
+	 "WHERE deck_ref = 0;");
 
 
 DeckModel *
 DeckModel::Instance () 
 {
   if (spInstance == NULL)
-    {
-      spInstance = new DeckModel ();
+	{
+	  spInstance = new DeckModel ();
 
-      // Check if the deck model looks ok
-      if (!spInstance->m_bReady)
+	  // Check if the deck model looks ok
+	  if (!spInstance->m_bReady)
 	{
 	  // Something's wrong with the DB
 	  delete spInstance;
 	  spInstance = NULL;
 	}
-    }
+	}
   return spInstance;
 }
 
@@ -104,10 +106,10 @@ void
 DeckModel::DeleteInstance ()
 {
   if (spInstance != NULL)
-    {
-      delete spInstance;
-      spInstance = NULL;
-    }
+	{
+	  delete spInstance;
+	  spInstance = NULL;
+	}
 }
 
 
@@ -136,20 +138,20 @@ DeckModel::DeckModel () :
   int iHeight = 600, iWidth = 800;
   wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get ();
   if (pConfig)
-    {
-      wxString sDeckHeightEntry = wxT ("DeckWindowHeight"),
+	{
+	  wxString sDeckHeightEntry = wxT ("DeckWindowHeight"),
 	sDeckWidthEntry = wxT ("DeckWindowWidth");
-      if (!pConfig->Read (sDeckHeightEntry, &iHeight))
+	  if (!pConfig->Read (sDeckHeightEntry, &iHeight))
 	{
 	  pConfig->Write (sDeckHeightEntry, iHeight);
 	  pConfig->Flush (TRUE);
 	}
-      if (!pConfig->Read (sDeckWidthEntry, &iWidth))
+	  if (!pConfig->Read (sDeckWidthEntry, &iWidth))
 	{
 	  pConfig->Write (sDeckWidthEntry, iWidth);
 	  pConfig->Flush (TRUE);
 	}
-    }
+	}
   m_pView = new DeckWindow (this, wxDefaultPosition, wxSize (iWidth, iHeight));
 
   RefreshModel (TRUE);
@@ -159,10 +161,10 @@ DeckModel::DeckModel () :
 DeckModel::~DeckModel ()
 {
   if (m_pView != NULL)
-    {
-      m_pView->Close ();
-      m_pView = NULL;
-    }
+  {
+	  m_pView->Close ();
+	  m_pView = NULL;
+  }
 }
 
 
@@ -177,37 +179,37 @@ DeckModel::AddToCrypt (wxString sName, wxString sAdvanced, wxString sSet, unsign
 
   // Check wether it's an advanced vampire or not
   if (sAdvanced.Length ())
-    {
-      // Try to find an advanced vampire
-      sQuery.Printf (wxT ("SELECT card_ref FROM crypt_view WHERE dumbitdown(card_name) LIKE dumbitdown('%s') AND advanced = 'Advanced' "), sName.c_str ());
-    }
+	{
+	  // Try to find an advanced vampire
+	  sQuery.Printf (wxT ("SELECT card_ref FROM crypt_view WHERE dumbitdown(card_name) LIKE dumbitdown('%s') AND advanced = 'Advanced' "), sName.c_str ());
+	}
   else
-    {
-      // Try to find a regular vampire
-      sQuery.Printf (wxT ("SELECT card_ref FROM crypt_view WHERE dumbitdown(card_name) LIKE dumbitdown('%s') "), sName.c_str ());
-    }
+	{
+	  // Try to find a regular vampire
+	  sQuery.Printf (wxT ("SELECT card_ref FROM crypt_view WHERE dumbitdown(card_name) LIKE dumbitdown('%s') "), sName.c_str ());
+	}
   
   if (sSet.Length ())
-    {
-      sQuery << wxT ("AND set_name = '") << sSet << wxT ("' ");
-    } 
+	{
+	  sQuery << wxT ("AND set_name = '") << sSet << wxT ("' ");
+	} 
   
-  sQuery <<  wxT ("LIMIT 1");
+  sQuery <<	 wxT ("LIMIT 1");
   
   RecordSet * pResult = pDatabase->Query (sQuery);
-     
+	 
   if (pResult && pResult->GetCount () && 
-      pResult->Item (0).GetCount ())
-    {
-      // Add whatever we've found
-      pResult->Item (0).Item (0).ToLong (&lCardRef);
-      return AddToCrypt (lCardRef, uiCount, bRefreshUI);
-    }
+	  pResult->Item (0).GetCount ())
+	{
+	  // Add whatever we've found
+	  pResult->Item (0).Item (0).ToLong (&lCardRef);
+	  return AddToCrypt (lCardRef, uiCount, bRefreshUI);
+	}
   else
-    {
-      // Or display an error
-      wxLogError (wxT ("Couldn't find card %s"), sName.c_str ());
-    }
+	{
+	  // Or display an error
+	  wxLogError (wxT ("Couldn't find card %s"), sName.c_str ());
+	}
   return NULL;
 }
 
@@ -223,61 +225,61 @@ DeckModel::AddToCrypt (long lCardRef, unsigned int uiCount, bool bRefreshUI)
 
   // if there's something to do
   if (uiCount != 0)
-    {
-      sQuery = 
+	{
+	  sQuery = 
 	wxT ("SELECT number_used "
-	     "FROM decks_crypts "
-	     "WHERE deck_ref = 0 AND "
-	     "      card_ref = ");
-      sQuery << lCardRef << wxT (";");
+		 "FROM decks_crypts "
+		 "WHERE deck_ref = 0 AND "
+		 "		card_ref = ");
+	  sQuery << lCardRef << wxT (";");
 
-      pDatabase->Query (sQuery, &oResultSet);
+	  pDatabase->Query (sQuery, &oResultSet);
 
-      if (oResultSet.GetCount () == 0)
+	  if (oResultSet.GetCount () == 0)
 	{
 	  // we are adding a new card
-      
+	  
 	  sQuery.Printf (wxT ("INSERT INTO decks_crypts "
-			      "VALUES ("
-			      "       0, "  // deck_ref -> decks.record_num
-			      "       %ld, " // card_ref
-			      "       %d, " // number_used
-			      "       NULL);"),
+				  "VALUES ("
+				  "		  0, "	// deck_ref -> decks.record_num
+				  "		  %ld, " // card_ref
+				  "		  %d, " // number_used
+				  "		  NULL);"),
 			 lCardRef,
 			 uiCount);
 
 	  pDatabase->Query (sQuery);
 	}
-      else 
+	  else 
 	{
 	  // we are adding more copies of an existing card
 
 	  sQuery.Printf (wxT ("UPDATE decks_crypts "
-			      "SET number_used = number_used + %d "
-			      "WHERE deck_ref = 0 AND "
-			      "      card_ref = %ld;"),
+				  "SET number_used = number_used + %d "
+				  "WHERE deck_ref = 0 AND "
+				  "		 card_ref = %ld;"),
 			 uiCount,
 			 lCardRef);
 
 	  pDatabase->Query (sQuery);
 	}
 
-      m_bSaved = FALSE;
-    }
+	  m_bSaved = FALSE;
+	}
 
   RefreshModel (bRefreshUI);
 
   if (uiCount != 0)
-    {
-      for (unsigned int i = 0; i < m_oCryptList.GetCount (); i++)
+	{
+	  for (unsigned int i = 0; i < m_oCryptList.GetCount (); i++)
 	{
 	  if (m_oCryptList.Item (i).Item (10).ToLong (&lRef)) 
-	    {
-	      if (lRef == lCardRef) return &(m_oCryptList.Item (i));
-	    }
+		{
+		  if (lRef == lCardRef) return &(m_oCryptList.Item (i));
+		}
 	}
-      wxLogError (wxT ("Error while adding the card"));
-    }
+	  wxLogError (wxT ("Error while adding the card"));
+	}
   return NULL;
 }
 
@@ -295,26 +297,26 @@ DeckModel::AddToLibrary (wxString sName, wxString sSet, unsigned int uiCount, bo
   sQuery.Printf (wxT ("SELECT card_ref FROM library_view WHERE dumbitdown(card_name) LIKE dumbitdown('%s') "), sName.c_str ());
   
   if (sSet.Length ())
-    {
-      sQuery << wxT ("AND set_name = '") << sSet << wxT ("' ");
-    } 
+	{
+	  sQuery << wxT ("AND set_name = '") << sSet << wxT ("' ");
+	} 
   
-  sQuery <<  wxT ("LIMIT 1");
+  sQuery <<	 wxT ("LIMIT 1");
   
   RecordSet * pResult = pDatabase->Query (sQuery);
-     
+	 
   if (pResult && pResult->GetCount () && 
-      pResult->Item (0).GetCount ())
-    {
-      // Add whatever we've found
-      pResult->Item (0).Item (0).ToLong (&lCardRef);
-      return AddToLibrary (lCardRef, uiCount, bRefreshUI);
-    }
+	  pResult->Item (0).GetCount ())
+	{
+	  // Add whatever we've found
+	  pResult->Item (0).Item (0).ToLong (&lCardRef);
+	  return AddToLibrary (lCardRef, uiCount, bRefreshUI);
+	}
   else
-    {
-      // Or display an error
-      wxLogError (wxT ("Couldn't find card %s"), sName.c_str ());
-    }
+	{
+	  // Or display an error
+	  wxLogError (wxT ("Couldn't find card %s"), sName.c_str ());
+	}
   return NULL;
 }
 
@@ -329,61 +331,61 @@ DeckModel::AddToLibrary (long lCardRef, unsigned int uiCount, bool bRefreshUI)
   long lRef;
 
   if (uiCount != 0)
-    {
-      sQuery = 
+	{
+	  sQuery = 
 	wxT ("SELECT number_used "
-	     "FROM decks_libraries "
-	     "WHERE deck_ref = 0 AND "
-	     "      card_ref = ");
-      sQuery << lCardRef << wxT (";");
+		 "FROM decks_libraries "
+		 "WHERE deck_ref = 0 AND "
+		 "		card_ref = ");
+	  sQuery << lCardRef << wxT (";");
 
-      pDatabase->Query (sQuery, &oResultSet);
+	  pDatabase->Query (sQuery, &oResultSet);
 
-      if (oResultSet.GetCount () == 0)
+	  if (oResultSet.GetCount () == 0)
 	{
 	  // we are adding a new card
-      
+	  
 	  sQuery.Printf (wxT ("INSERT INTO decks_libraries "
-			      "VALUES ("
-			      "       0, "  // deck_ref -> decks.record_num
-			      "       %ld, " // card_ref
-			      "       %d, " // number_used
-			      "       NULL);"),
+				  "VALUES ("
+				  "		  0, "	// deck_ref -> decks.record_num
+				  "		  %ld, " // card_ref
+				  "		  %d, " // number_used
+				  "		  NULL);"),
 			 lCardRef,
 			 uiCount);
 
 	  pDatabase->Query (sQuery);
 	}
-      else 
+	  else 
 	{
 	  // we are adding more copies of an existing card
 
 	  sQuery.Printf (wxT ("UPDATE decks_libraries "
-			      "SET number_used = number_used + %d "
-			      "WHERE deck_ref = 0 AND "
-			      "      card_ref = %ld;"),
+				  "SET number_used = number_used + %d "
+				  "WHERE deck_ref = 0 AND "
+				  "		 card_ref = %ld;"),
 			 uiCount,
 			 lCardRef);
 
 	  pDatabase->Query (sQuery);
 	}
 
-      m_bSaved = FALSE;
-    }
+	  m_bSaved = FALSE;
+	}
 
   RefreshModel (bRefreshUI);
 
   if (uiCount != 0)
-    {
-      for (unsigned int i = 0; i < m_oLibraryList.GetCount (); i++)
+	{
+	  for (unsigned int i = 0; i < m_oLibraryList.GetCount (); i++)
 	{
 	  if (m_oLibraryList.Item (i).Item (4).ToLong (&lRef)) 
-	    {
-	      if (lRef == lCardRef) return &(m_oLibraryList.Item (i));
-	    }
+		{
+		  if (lRef == lCardRef) return &(m_oLibraryList.Item (i));
+		}
 	}
-      wxLogError (wxT ("Error while adding the card"));
-    }
+	  wxLogError (wxT ("Error while adding the card"));
+	}
   return NULL;
 }
 
@@ -394,7 +396,7 @@ DeckModel::Clear ()
   Database *pDatabase = Database::Instance ();
   wxString sNull = wxT (""), sQuery;
 
-  ShouldSaveWarning ();
+  ShouldSaveWarning();
 
   //  SetAuthor (sNull);
   SetDescription (sNull);
@@ -407,7 +409,7 @@ DeckModel::Clear ()
   sQuery.Printf (wxT ("DELETE FROM decks_crypts WHERE deck_ref = 0;"));
   pDatabase->Query (sQuery);
 
-  m_bSaved = FALSE;
+  m_bSaved = TRUE;
 
   // Mirror the database changes and update the GUI
   RefreshModel (TRUE);
@@ -433,22 +435,22 @@ DeckModel::ComputeCryptHappiness ()
   if (m_uiHappyDisciplineCount == 0 || m_lCryptCount == 0) return;
 
   for (unsigned int i = 0; i < pUIData->GetDisciplines ()->GetCount (); i++)
-    {
-      sLowerCaseDiscName = pUIData->GetDisciplines ()->Item (i)[0];
-      sLowerCaseDiscName = sLowerCaseDiscName.MakeLower ();
+	{
+	  sLowerCaseDiscName = pUIData->GetDisciplines ()->Item (i)[0];
+	  sLowerCaseDiscName = sLowerCaseDiscName.MakeLower ();
 
-      // Count disciplines
-      sQuery.Printf (wxT ("SELECT '%s ', sum(decks_crypts.number_used * cards_crypt.%s) FROM decks_crypts, cards_crypt WHERE (decks_crypts.deck_ref = 0) AND (decks_crypts.card_ref = cards_crypt.record_num);"), pUIData->GetDisciplines ()->Item (i)[0].c_str (), sLowerCaseDiscName.c_str ());
+	  // Count disciplines
+	  sQuery.Printf (wxT ("SELECT '%s ', sum(decks_crypts.number_used * cards_crypt.%s) FROM decks_crypts, cards_crypt WHERE (decks_crypts.deck_ref = 0) AND (decks_crypts.card_ref = cards_crypt.record_num);"), pUIData->GetDisciplines ()->Item (i)[0].c_str (), sLowerCaseDiscName.c_str ());
 
-      pRecordSet = pDatabase->Query (sQuery);
-      if (pRecordSet) 
+	  pRecordSet = pDatabase->Query (sQuery);
+	  if (pRecordSet) 
 	{
 	  if (pRecordSet->Item (0).Item (1).ToLong (&lCount) && lCount > 0)
-	    {
-	      m_oHappyList.Append (new HappyBucket (pRecordSet->Item (0).Item (0), lCount));
-	    }
+		{
+		  m_oHappyList.Append (new HappyBucket (pRecordSet->Item (0).Item (0), lCount));
+		}
 	}
-    }
+	}
 
   // Sort and get the top ranked disciplines
   m_oHappyList.Sort (HappyBucket::Compare);
@@ -457,18 +459,18 @@ DeckModel::ComputeCryptHappiness ()
   // And remove the extra disciplines, if any
   uiIndex = m_uiHappyDisciplineCount;
   if (m_oHappyList.GetCount () > m_uiHappyDisciplineCount)
-    {
-      pLastBucket = m_oHappyList.Item (uiIndex - 1)->GetData ();
-      while (uiIndex < m_oHappyList.GetCount () && m_oHappyList.Item (uiIndex))
+	{
+	  pLastBucket = m_oHappyList.Item (uiIndex - 1)->GetData ();
+	  while (uiIndex < m_oHappyList.GetCount () && m_oHappyList.Item (uiIndex))
 	{
 	  pBucket = m_oHappyList.Item (uiIndex)->GetData ();
 	  if (pBucket->m_uiDiscTotal == pLastBucket->m_uiDiscTotal) 
-	    {
-	      pLastBucket->m_sName << wxT ("or ") << pBucket->m_sName;
-	    }
+		{
+		  pLastBucket->m_sName << wxT ("or ") << pBucket->m_sName;
+		}
 	  m_oHappyList.DeleteNode (m_oHappyList.Item (uiIndex));
 	}
-    }
+	}
 
   // Compute the number of Master cards
   uiMasterCards = m_uiHappyLibrarySize * m_uiHappyMasterPercentage / 100;
@@ -476,10 +478,10 @@ DeckModel::ComputeCryptHappiness ()
   // Compute the fomula's divisor
   lDivisor = m_lCryptCount;
   for (unsigned int i = 0; i < m_uiHappyDisciplineCount && i < m_oHappyList.GetCount (); i++)
-    {
-      pBucket = m_oHappyList.Item (i)->GetData ();
-      lDivisor += pBucket->m_uiDiscTotal;
-    }
+	{
+	  pBucket = m_oHappyList.Item (i)->GetData ();
+	  lDivisor += pBucket->m_uiDiscTotal;
+	}
   // Add disciplineless cards
   pBucket = new HappyBucket ();
   pBucket->m_sName = wxT ("disciplineless");
@@ -489,18 +491,18 @@ DeckModel::ComputeCryptHappiness ()
   // Compute card counts
   lComputedTotal = uiMasterCards;
   for (unsigned int i = 0; i < m_oHappyList.GetCount (); i++)
-    {    
-      pBucket = m_oHappyList.Item (i)->GetData ();
-      pBucket->m_uiCardCount = (unsigned int) (((float ) pBucket->m_uiDiscTotal / lDivisor) *  (m_uiHappyLibrarySize - uiMasterCards));
-      lComputedTotal += pBucket->m_uiCardCount;
-    }
+	{	 
+	  pBucket = m_oHappyList.Item (i)->GetData ();
+	  pBucket->m_uiCardCount = (unsigned int) (((float ) pBucket->m_uiDiscTotal / lDivisor) *  (m_uiHappyLibrarySize - uiMasterCards));
+	  lComputedTotal += pBucket->m_uiCardCount;
+	}
 
   // Because counts are rounded down, there might be some gaps to fill
   for (unsigned int i = 0; i < m_uiHappyLibrarySize - lComputedTotal; i++)
-    {
-      pBucket = m_oHappyList.Item (i % m_oHappyList.GetCount ())->GetData ();
-      pBucket->m_uiCardCount++;
-    }
+	{
+	  pBucket = m_oHappyList.Item (i % m_oHappyList.GetCount ())->GetData ();
+	  pBucket->m_uiCardCount++;
+	}
 
   // Insert the Masters
   pBucket = new HappyBucket ();
@@ -552,27 +554,27 @@ DeckModel::DelFromCrypt (long lCardRef, int iCount, bool bRefreshUI)
   wxString sQuery;
 
   if (iCount > 0)
-    {
-      sQuery.Printf (wxT ("UPDATE decks_crypts "
+	{
+	  sQuery.Printf (wxT ("UPDATE decks_crypts "
 			  "SET number_used = number_used - %d "
 			  "WHERE deck_ref = 0 AND "
-			  "      card_ref = %ld;"),
-		     iCount,
-		     lCardRef);
-      pDatabase->Query (sQuery);
+			  "		 card_ref = %ld;"),
+			 iCount,
+			 lCardRef);
+	  pDatabase->Query (sQuery);
 
-      sQuery.Printf (wxT ("DELETE FROM decks_crypts "
+	  sQuery.Printf (wxT ("DELETE FROM decks_crypts "
 			  "WHERE number_used <= 0"));
-      pDatabase->Query (sQuery);
-    }
+	  pDatabase->Query (sQuery);
+	}
   else
-    {
-      sQuery.Printf (wxT ("DELETE FROM decks_crypts "
+	{
+	  sQuery.Printf (wxT ("DELETE FROM decks_crypts "
 			  "WHERE deck_ref = 0 AND "
-			  "      card_ref = %ld;"),
-		     lCardRef);
-      pDatabase->Query (sQuery);
-    }
+			  "		 card_ref = %ld;"),
+			 lCardRef);
+	  pDatabase->Query (sQuery);
+	}
 
   m_bSaved = FALSE;
 
@@ -590,27 +592,27 @@ DeckModel::DelFromLibrary (long lCardRef, int iCount, bool bRefreshUI)
   wxString sQuery;
 
   if (iCount > 0)
-    {
-      sQuery.Printf (wxT ("UPDATE decks_libraries "
+	{
+	  sQuery.Printf (wxT ("UPDATE decks_libraries "
 			  "SET number_used = number_used - %d "
 			  "WHERE deck_ref = 0 AND "
-			  "      card_ref = %ld;"),
-		     iCount,
-		     lCardRef);
-      pDatabase->Query (sQuery);
+			  "		 card_ref = %ld;"),
+			 iCount,
+			 lCardRef);
+	  pDatabase->Query (sQuery);
 
-      sQuery.Printf (wxT ("DELETE FROM decks_libraries "
+	  sQuery.Printf (wxT ("DELETE FROM decks_libraries "
 			  "WHERE number_used <= 0"));
-      pDatabase->Query (sQuery);
-    }
+	  pDatabase->Query (sQuery);
+	}
   else
-    {
-      sQuery.Printf (wxT ("DELETE FROM decks_libraries "
+	{
+	  sQuery.Printf (wxT ("DELETE FROM decks_libraries "
 			  "WHERE deck_ref = 0 AND "
-			  "      card_ref = %ld;"),
-		     lCardRef);
-      pDatabase->Query (sQuery);
-    }
+			  "		 card_ref = %ld;"),
+			 lCardRef);
+	  pDatabase->Query (sQuery);
+	}
 
   m_bSaved = FALSE;
 
@@ -628,21 +630,21 @@ DeckModel::ExportToHTML ()
   if (pDatabase == NULL) return false;
 
   sXSL << pDatabase->GetDatabaseDirectory () 
-       << wxFileName::GetPathSeparator ()
-       << wxT("deck2html_eldb.xsl");
+	   << wxFileName::GetPathSeparator ()
+	   << wxT("deck2html_eldb.xsl");
 
   sFile.Append (wxT (".html"));
 
   wxFileDialog oFileDialog (m_pView, wxT ("Export deck..."),
-			    wxT (""), sFile, wxT ("*.html"),
-			    wxSAVE | wxOVERWRITE_PROMPT);
+				wxT (""), sFile, wxT ("*.html"),
+				wxSAVE | wxOVERWRITE_PROMPT);
   if (oFileDialog.ShowModal () != wxID_OK)
-    {
-      return true;
-    }
+	{
+	  return true;
+	}
 
   sFile = oFileDialog.GetDirectory () << wxFileName::GetPathSeparator ()
-				      << oFileDialog.GetFilename ();
+					  << oFileDialog.GetFilename ();
 
   return ExportWithXSL (sFile, &sXSL);
 }
@@ -658,21 +660,21 @@ DeckModel::ExportToJOL ()
   if (pDatabase == NULL) return false;
 
   sXSL << pDatabase->GetDatabaseDirectory () 
-       << wxFileName::GetPathSeparator ()
-       << wxT("deck2jol.xsl");
+	   << wxFileName::GetPathSeparator ()
+	   << wxT("deck2jol.xsl");
 
   sFile.Append (wxT (".jol"));
   
   wxFileDialog oFileDialog (m_pView, wxT ("Export deck..."),
-			    wxT (""), sFile, wxT ("*.jol"), 
-			    wxSAVE | wxOVERWRITE_PROMPT);
+				wxT (""), sFile, wxT ("*.jol"), 
+				wxSAVE | wxOVERWRITE_PROMPT);
   if (oFileDialog.ShowModal () != wxID_OK)
-    {
-      return true;
-    }
-     
+	{
+	  return true;
+	}
+	 
   sFile = oFileDialog.GetDirectory () << wxFileName::GetPathSeparator ()
-				      << oFileDialog.GetFilename ();
+					  << oFileDialog.GetFilename ();
 
   return ExportWithXSL (sFile, &sXSL);
 }
@@ -688,21 +690,21 @@ DeckModel::ExportToPhpBB ()
   if (pDatabase == NULL) return false;
 
   sXSL << pDatabase->GetDatabaseDirectory () 
-       << wxFileName::GetPathSeparator ()
-       << wxT("deck2phpbb.xsl");
+	   << wxFileName::GetPathSeparator ()
+	   << wxT("deck2phpbb.xsl");
 
   sFile.Append (wxT ("-phpBB.txt"));
   
   wxFileDialog oFileDialog (m_pView, wxT ("Export deck..."),
-			    wxT (""), sFile, wxT ("*.txt"), 
-			    wxSAVE | wxOVERWRITE_PROMPT);
+				wxT (""), sFile, wxT ("*.txt"), 
+				wxSAVE | wxOVERWRITE_PROMPT);
   if (oFileDialog.ShowModal () != wxID_OK)
-    {
-      return true;
-    }
-     
+	{
+	  return true;
+	}
+	 
   sFile = oFileDialog.GetDirectory () << wxFileName::GetPathSeparator ()
-				      << oFileDialog.GetFilename ();
+					  << oFileDialog.GetFilename ();
 
   return ExportWithXSL (sFile, &sXSL);
 }
@@ -719,13 +721,13 @@ DeckModel::ExportToText ()
   if (pDatabase == NULL) return false;
 
   sXSL << pDatabase->GetDatabaseDirectory () 
-       << wxFileName::GetPathSeparator ()
-       << wxT("deck2text.xsl");
+	   << wxFileName::GetPathSeparator ()
+	   << wxT("deck2text.xsl");
 
   sFile.Append(wxT (".txt"));
   wxFileDialog oFileDialog (m_pView, wxT ("Export deck..."),
-			    wxT (""), sFile, wxT ("*.txt"),
-			    wxSAVE | wxOVERWRITE_PROMPT);
+				wxT (""), sFile, wxT ("*.txt"),
+				wxSAVE | wxOVERWRITE_PROMPT);
   
   if (oFileDialog.ShowModal () != wxID_OK)
   {
@@ -733,7 +735,7 @@ DeckModel::ExportToText ()
   }
   
   sFile = oFileDialog.GetDirectory () << wxFileName::GetPathSeparator ()
-				      << oFileDialog.GetFilename ();
+					  << oFileDialog.GetFilename ();
   
   return ExportWithXSL (sFile, &sXSL);
 }
@@ -747,15 +749,15 @@ DeckModel::ExportToXML ()
   sFile.Append (wxT (".xml"));
   
   wxFileDialog oFileDialog (m_pView, wxT ("Save deck..."),
-			    wxT (""), sFile, wxT ("*.xml"), 
-			    wxSAVE | wxOVERWRITE_PROMPT);
+				wxT (""), sFile, wxT ("*.xml"), 
+				wxSAVE | wxOVERWRITE_PROMPT);
   if (oFileDialog.ShowModal () != wxID_OK)
-    {
-      return true;
-    }
+	{
+	  return true;
+	}
   
   sFile = oFileDialog.GetDirectory () << wxFileName::GetPathSeparator ()
-				      << oFileDialog.GetFilename ();
+					  << oFileDialog.GetFilename ();
   
   return ExportWithXSL (sFile, NULL);
 }
@@ -767,12 +769,12 @@ DeckModel::ExportWithXSL (wxString &sFileName, wxString *pXSL)
 #ifdef LIBXML_TREE_ENABLED
 
   bool bReturnValue;
-  xmlDocPtr doc, res;                   // document pointer
+  xmlDocPtr doc, res;					// document pointer
   xmlNodePtr nRoot = NULL, node = NULL; // node pointers
-  xmlNodePtr nLibrary, nCrypt;          // more node pointers
-  xmlDtdPtr dtd = NULL;                 // DTD pointer
-  xmlNodePtr nStylesheet = NULL;        // xsl stylesheet node pointer
-  xsltStylesheetPtr cur = NULL;         // xsl stylesheet
+  xmlNodePtr nLibrary, nCrypt;			// more node pointers
+  xmlDtdPtr dtd = NULL;					// DTD pointer
+  xmlNodePtr nStylesheet = NULL;		// xsl stylesheet node pointer
+  xsltStylesheetPtr cur = NULL;			// xsl stylesheet
   wxString sCount;
 #ifdef __WXMSW__
   wxString sTemp;
@@ -783,7 +785,7 @@ DeckModel::ExportWithXSL (wxString &sFileName, wxString *pXSL)
   LIBXML_TEST_VERSION;
  
   // Creates a new document, a node and set it as a root node
-  doc = xmlNewDoc (BAD_CAST "1.0");  
+  doc = xmlNewDoc (BAD_CAST "1.0");	 
   nRoot = xmlNewNode (NULL, BAD_CAST "deck");  
   my_xmlNewProp (nRoot, wxT ("formatVersion"), wxT ("-TODO-1.0"));
   my_xmlNewProp (nRoot, wxT ("databaseVersion"), wxT ("-TODO-20040101"));
@@ -792,7 +794,7 @@ DeckModel::ExportWithXSL (wxString &sFileName, wxString *pXSL)
   
   // Creates a DTD declaration.
   dtd = xmlCreateIntSubset (doc, BAD_CAST "deck", 
- 			    NULL, BAD_CAST "AnarchRevoltDeck.dtd");
+				NULL, BAD_CAST "AnarchRevoltDeck.dtd");
 
   // Creates a default stylesheet declaration
   nStylesheet = xmlNewPI (BAD_CAST "xml-stylesheet", BAD_CAST "type=\"text/xsl\" href=\"deck2html_eldb.xsl\"");
@@ -834,50 +836,50 @@ DeckModel::ExportWithXSL (wxString &sFileName, wxString *pXSL)
   
   // Add the crypt cards
   for (unsigned int i = 0; i < m_oCryptList.GetCount (); i++)
-    {
-      /*
+	{
+	  /*
 	Reminder of the query string used to fill m_oCryptList
 	"SELECT number_used, "
-	"       card_name, "
-	"       advanced, "
-	"       capacity, "
-	"       disciplines, "
-	"       title, "
-	"       card_type, "
-	"       groupnumber, "
-	"       set_name, "
-	"       card_text, "
-	"       card_ref "	  
-      */      
+	"		card_name, "
+	"		advanced, "
+	"		capacity, "
+	"		disciplines, "
+	"		title, "
+	"		card_type, "
+	"		groupnumber, "
+	"		set_name, "
+	"		card_text, "
+	"		card_ref "	  
+	  */	  
 
-      // The card node contains mandatory props
-      node = my_xmlNewChild (nCrypt, NULL, wxT ("vampire"), wxT (""));
-      my_xmlNewProp (node, wxT ("databaseID"), 
-      		 m_oCryptList.Item (i).Item (10));
-      my_xmlNewProp (node, wxT ("count"), 
-      		 m_oCryptList.Item (i).Item (0));
+	  // The card node contains mandatory props
+	  node = my_xmlNewChild (nCrypt, NULL, wxT ("vampire"), wxT (""));
+	  my_xmlNewProp (node, wxT ("databaseID"), 
+			 m_oCryptList.Item (i).Item (10));
+	  my_xmlNewProp (node, wxT ("count"), 
+			 m_oCryptList.Item (i).Item (0));
 
-      // These are phony children nodes to help interoperabilty
-      // and allow xsl to generate pretty things
-      my_xmlNewChild (node, NULL, wxT ("name"),
+	  // These are phony children nodes to help interoperabilty
+	  // and allow xsl to generate pretty things
+	  my_xmlNewChild (node, NULL, wxT ("name"),
 		  m_oCryptList.Item (i).Item (1));
-      my_xmlNewChild (node, NULL, wxT ("adv"),
+	  my_xmlNewChild (node, NULL, wxT ("adv"),
 		  m_oCryptList.Item (i).Item (2));
-      my_xmlNewChild (node, NULL, wxT ("clan"),
+	  my_xmlNewChild (node, NULL, wxT ("clan"),
 		  m_oCryptList.Item (i).Item (6));
-      my_xmlNewChild (node, NULL, wxT ("capacity"),
+	  my_xmlNewChild (node, NULL, wxT ("capacity"),
 		  m_oCryptList.Item (i).Item (3));
-      my_xmlNewChild (node, NULL, wxT ("disciplines"),
+	  my_xmlNewChild (node, NULL, wxT ("disciplines"),
 		  m_oCryptList.Item (i).Item (4));
-      my_xmlNewChild (node, NULL, wxT ("title"),
+	  my_xmlNewChild (node, NULL, wxT ("title"),
 		  m_oCryptList.Item (i).Item (5));
-      my_xmlNewChild (node, NULL, wxT ("group"),
+	  my_xmlNewChild (node, NULL, wxT ("group"),
 		  m_oCryptList.Item (i).Item (7));
-      my_xmlNewChild (node, NULL, wxT ("set"),
+	  my_xmlNewChild (node, NULL, wxT ("set"),
 		  m_oCryptList.Item (i).Item (8));
-      my_xmlNewChild (node, NULL, wxT ("text"),
+	  my_xmlNewChild (node, NULL, wxT ("text"),
 		  m_oCryptList.Item (i).Item (9));
-    }
+	}
   
   // Add the library node
   nLibrary = my_xmlNewChild (nRoot, NULL, wxT ("library"), wxT (""));
@@ -887,81 +889,81 @@ DeckModel::ExportWithXSL (wxString &sFileName, wxString *pXSL)
   
   // Add the library cards
   for (unsigned int i = 0; i < m_oLibraryList.GetCount (); i++)
-    {
-      // Reminder of the query string used to fill m_oLibraryList
-      // "SELECT number_used, "
-      // "       card_name, "
-      // "       set_name, "
-      // "       card_type, "
-      // "       card_ref, "
-      // "       cost, "
-      // "       requires, "
-      // "       card_text "
-     
-     // The card node contains mandatory props
-      node = my_xmlNewChild (nLibrary, NULL, wxT ("card"), wxT (""));
-      my_xmlNewProp (node, wxT ("databaseID"), 
-      		 m_oLibraryList.Item (i).Item (4));
-      my_xmlNewProp (node, wxT ("count"), 
-      		 m_oLibraryList.Item (i).Item (0));
+	{
+	  // Reminder of the query string used to fill m_oLibraryList
+	  // "SELECT number_used, "
+	  // "		 card_name, "
+	  // "		 set_name, "
+	  // "		 card_type, "
+	  // "		 card_ref, "
+	  // "		 cost, "
+	  // "		 requires, "
+	  // "		 card_text "
+	 
+	 // The card node contains mandatory props
+	  node = my_xmlNewChild (nLibrary, NULL, wxT ("card"), wxT (""));
+	  my_xmlNewProp (node, wxT ("databaseID"), 
+			 m_oLibraryList.Item (i).Item (4));
+	  my_xmlNewProp (node, wxT ("count"), 
+			 m_oLibraryList.Item (i).Item (0));
 
-      // These are phony children nodes to help interoperabilty
-      // and allow xsl to generate pretty things
-      my_xmlNewChild (node, NULL, wxT ("name"),
+	  // These are phony children nodes to help interoperabilty
+	  // and allow xsl to generate pretty things
+	  my_xmlNewChild (node, NULL, wxT ("name"),
 		  m_oLibraryList.Item (i).Item (1));
-      my_xmlNewChild (node, NULL, wxT ("type"),
+	  my_xmlNewChild (node, NULL, wxT ("type"),
 		  m_oLibraryList.Item (i).Item (3));
-      my_xmlNewChild (node, NULL, wxT ("set"),
+	  my_xmlNewChild (node, NULL, wxT ("set"),
 		  m_oLibraryList.Item (i).Item (2));
-      my_xmlNewChild (node, NULL, wxT ("cost"),
+	  my_xmlNewChild (node, NULL, wxT ("cost"),
 		  m_oLibraryList.Item (i).Item (5));
-      my_xmlNewChild (node, NULL, wxT ("requirement"),
+	  my_xmlNewChild (node, NULL, wxT ("requirement"),
 		  m_oLibraryList.Item (i).Item (6));
-      my_xmlNewChild (node, NULL, wxT ("text"),
+	  my_xmlNewChild (node, NULL, wxT ("text"),
 		  m_oLibraryList.Item (i).Item (7));
-    }
+	}
 
   
   // No XSL means we save in XML format
   if (pXSL == NULL) 
-    {
-      // Write the xml tree to a file
-      bReturnValue = xmlSaveFormatFileEnc (sFileName.mb_str (wxConvLibc),
+	{
+	  // Write the xml tree to a file
+	  bReturnValue = xmlSaveFormatFileEnc (sFileName.mb_str (wxConvLibc),
 					   doc, "UTF-8", 1) >= 0;
-      m_bSaved = bReturnValue;
-    }
+	  m_bSaved = bReturnValue;
+	}
   else
-    {
-      xmlChar acXSLname[1024];
-      memcpy (acXSLname, pXSL->mb_str (wxConvLibc), 
-	      (pXSL->Length () + 1) * sizeof (wxChar));
+	{
+	  xmlChar acXSLname[1024];
+	  memcpy (acXSLname, pXSL->mb_str (wxConvLibc), 
+		  (pXSL->Length () + 1) * sizeof (wxChar));
 
-      xmlSubstituteEntitiesDefault (1);
-      xmlLoadExtDtdDefaultValue = 1;
-      cur = xsltParseStylesheetFile (acXSLname);
-      
-      if (cur != NULL) 
+	  xmlSubstituteEntitiesDefault (1);
+	  xmlLoadExtDtdDefaultValue = 1;
+	  cur = xsltParseStylesheetFile (acXSLname);
+	  
+	  if (cur != NULL) 
 	{
 	  res = xsltApplyStylesheet (cur, doc, NULL);
 	  if (res != NULL)
-	    {
-	      bReturnValue = xsltSaveResultToFilename (sFileName.mb_str (wxConvLibc), res, cur, 0) >= 0;
-	      xmlFreeDoc (res);
-	    }
+		{
+		  bReturnValue = xsltSaveResultToFilename (sFileName.mb_str (wxConvLibc), res, cur, 0) >= 0;
+		  xmlFreeDoc (res);
+		}
 	  else
-	    {
-	      bReturnValue = FALSE;
-	    }
+		{
+		  bReturnValue = FALSE;
+		}
 	  xsltFreeStylesheet (cur);
 	}
-      else
+	  else
 	{
 	  bReturnValue = FALSE;
 	  wxLogError (wxT ("Can't open XSL file %s"), pXSL->c_str ());
 	}
 
-      xsltCleanupGlobals ();
-    }
+	  xsltCleanupGlobals ();
+	}
 
   // Free the document
   xmlFreeDoc (doc);
@@ -1031,18 +1033,18 @@ DeckModel::ImportFromELD ()
   Clear ();
 
   sFile = oFileDialog.GetDirectory () 
-    << wxFileName::GetPathSeparator () << oFileDialog.GetFilename ();
-      
+	<< wxFileName::GetPathSeparator () << oFileDialog.GetFilename ();
+	  
   wxFileInputStream oInput (sFile);
   Updater::decodeCSV (&oInput, '§', '"', -1, &iNumFields, &oArray, FALSE);
 
   for (unsigned int i = 0; i < oArray.GetCount (); i++) 
-    {
-      // Remove unnecessary quotes
-      oArray.Item (i).Replace (wxT ("\""), wxT (""));
-      // Replace ticks with apostrophes
-      oArray.Item (i).Replace (wxT ("`"), wxT ("'"));
-    }
+	{
+	  // Remove unnecessary quotes
+	  oArray.Item (i).Replace (wxT ("\""), wxT (""));
+	  // Replace ticks with apostrophes
+	  oArray.Item (i).Replace (wxT ("`"), wxT ("'"));
+	}
 
   SetName (oArray.Item (iIndex++));
   SetAuthor (oArray.Item (iIndex++));
@@ -1054,30 +1056,30 @@ DeckModel::ImportFromELD ()
   oArray.Item (iIndex++).ToLong (&lCount);
   // Import crypt
   for (long c = 0; c < lCount; c++) 
-    {
-      wxString& sItem = oArray.Item (iIndex++);
-      
-      // Check wether it's an advanced vampire or not
-      if (sItem.Replace (wxT (" (ADV)"), wxT ("")))
+	{
+	  wxString& sItem = oArray.Item (iIndex++);
+	  
+	  // Check wether it's an advanced vampire or not
+	  if (sItem.Replace (wxT (" (ADV)"), wxT ("")))
 	{
 	  // Try to find an advanced vampire
 	  AddToCrypt (sItem, wxT ("Advanced"), wxT (""), 1, FALSE);
 	}
-      else
+	  else
 	{
 	  // Try to find a regular vampire
 	  AddToCrypt (sItem, wxT (""), wxT (""), 1, FALSE);
 	}
-    }
+	}
 
   // Get library count
   oArray.Item (iIndex++).ToLong (&lCount);
   // Import library
   for (long c = 0; c < lCount; c++) 
-    {
-      wxString& sItem = oArray.Item (iIndex++);
-      AddToLibrary (sItem, wxT (""), 1, FALSE);
-    }
+	{
+	  wxString& sItem = oArray.Item (iIndex++);
+	  AddToLibrary (sItem, wxT (""), 1, FALSE);
+	}
 
   pDatabase->Query (wxT ("COMMIT TRANSACTION;"));
 
@@ -1096,19 +1098,20 @@ DeckModel::ImportFromXML ()
 
   wxFileDialog oFileDialog (m_pView, wxT ("Open deck..."), wxT (""), wxT (""), wxT ("*.xml"), wxOPEN);
   if (oFileDialog.ShowModal () == wxID_OK)
-    {
-      // Clear the current deck
-      Clear ();
+	{
+	  // Clear the current deck
+	  Clear ();
 
-      sFile = oFileDialog.GetDirectory () 
+	  sFile = oFileDialog.GetDirectory () 
 	<< wxFileName::GetPathSeparator () << oFileDialog.GetFilename ();
-      
-      if (!ImportFromXML (sFile))
+	  
+	  if (!ImportFromXML (sFile))
 	{
 	  wxLogError (wxT ("An error occured while opening %s"), sFile.c_str ());
 	  return FALSE;
 	}
-    }
+	}
+  m_bSaved = TRUE;
   return TRUE;
 }
 
@@ -1136,14 +1139,14 @@ DeckModel::ImportFromXML (wxString &sFileName, bool bImportAll)
 	doc = xmlParseDoc((xmlChar *)xmlStringDoc.c_str());
 	if (doc == NULL)
 	{
-	    xmlStringDoc = ReadXmlFile(sFileName,false);
-	    
-	    doc = xmlParseDoc((xmlChar *)xmlStringDoc.c_str());
-	    
-	    if (doc == NULL)
-	    {
+		xmlStringDoc = ReadXmlFile(sFileName,false);
+		
+		doc = xmlParseDoc((xmlChar *)xmlStringDoc.c_str());
+		
+		if (doc == NULL)
+		{
 		return 0;
-	    }
+		}
 	}
 #else
 	doc = xmlParseFile (sFileName.mb_str (wxConvLibc));
@@ -1464,21 +1467,21 @@ DeckModel::MergeFromXML ()
 
   wxFileDialog oFileDialog (NULL, wxT ("Merge deck..."), wxT (""), wxT (""), wxT ("*.xml"), wxOPEN | wxCHANGE_DIR);
   if (oFileDialog.ShowModal () == wxID_OK)
-    {
+	{
 #ifdef __WXMSW__
-      sFile = oFileDialog.GetDirectory () 
+	  sFile = oFileDialog.GetDirectory () 
 	<< wxT ("\\") << oFileDialog.GetFilename ();
 #else
-      sFile = oFileDialog.GetDirectory () 
+	  sFile = oFileDialog.GetDirectory () 
 	<< wxT ("/") << oFileDialog.GetFilename ();
 #endif
-      
-      if (!ImportFromXML (sFile, FALSE))
+	  
+	  if (!ImportFromXML (sFile, FALSE))
 	{
 	  wxLogError (wxT ("An error occured while opening %s"), sFile.c_str ());
 	  return FALSE;
 	}
-    }
+	}
   return TRUE;
 }
 
@@ -1504,8 +1507,8 @@ DeckModel::my_xmlNewProp (xmlNodePtr node,
 {
 #ifdef LIBXML_TREE_ENABLED
   return xmlNewProp (node, 
-		     BAD_CAST (const char *) sName.mb_str (wxConvUTF8), 
-		     BAD_CAST (const char *) sValue.mb_str (wxConvUTF8));
+			 BAD_CAST (const char *) sName.mb_str (wxConvUTF8), 
+			 BAD_CAST (const char *) sValue.mb_str (wxConvUTF8));
 #endif
 }
 
@@ -1520,48 +1523,48 @@ DeckModel::RefreshModel (bool bRefreshUI)
   // update this model's info
   pDatabase->Query (s_sDeckInfoQuery, &oResultSet);
   if (oResultSet.GetCount () != 0 &&
-      oResultSet.Item (0).GetCount () > 2)
-    {
-      m_sName = oResultSet.Item (0).Item (0);
-      m_sAuthor = oResultSet.Item (0).Item (1);
-      m_sDescription = oResultSet.Item (0).Item (2);
-    }
+	  oResultSet.Item (0).GetCount () > 2)
+	{
+	  m_sName = oResultSet.Item (0).Item (0);
+	  m_sAuthor = oResultSet.Item (0).Item (1);
+	  m_sDescription = oResultSet.Item (0).Item (2);
+	}
 
   // update this model's vampire list
   pDatabase->Query (s_sCryptViewQuery, &m_oCryptList);
   
   // get the crypt stats
   sQuery.Printf (wxT ("SELECT SUM(number_used), "
-		      "       MIN(capacity), "
-		      "       MAX(capacity), "
-		      "       SUM(1.0 * capacity * number_used) / SUM(number_used) "
-		      "FROM deck_view_crypt "
-		      "WHERE deck_ref = 0;"));
+			  "		  MIN(capacity), "
+			  "		  MAX(capacity), "
+			  "		  SUM(1.0 * capacity * number_used) / SUM(number_used) "
+			  "FROM deck_view_crypt "
+			  "WHERE deck_ref = 0;"));
   pDatabase->Query (sQuery, &oResultSet);
   if (oResultSet.GetCount () != 0 &&
-      oResultSet.Item (0).GetCount () != 0)
-    {
-      oResultSet.Item (0).Item (0).ToLong (&m_lCryptCount);
-      oResultSet.Item (0).Item (1).ToLong (&m_lCryptMin);
-      oResultSet.Item (0).Item (2).ToLong (&m_lCryptMax);
-      oResultSet.Item (0).Item (3).ToDouble (&m_lCryptAvg);
-      //m_lCryptAvg = roundf (m_lCryptAvg * 100) / 100;
+	  oResultSet.Item (0).GetCount () != 0)
+	{
+	  oResultSet.Item (0).Item (0).ToLong (&m_lCryptCount);
+	  oResultSet.Item (0).Item (1).ToLong (&m_lCryptMin);
+	  oResultSet.Item (0).Item (2).ToLong (&m_lCryptMax);
+	  oResultSet.Item (0).Item (3).ToDouble (&m_lCryptAvg);
+	  //m_lCryptAvg = roundf (m_lCryptAvg * 100) / 100;
 	  m_lCryptAvg = (m_lCryptAvg * 100) / 100;
-    }
+	}
 
   // update this model's cardlist
   pDatabase->Query (s_sLibraryViewQuery, &m_oLibraryList);
   
   // count the cards
   sQuery.Printf (wxT ("SELECT SUM(number_used) "
-		      "FROM decks_libraries "
-		      "WHERE deck_ref = 0;"));
+			  "FROM decks_libraries "
+			  "WHERE deck_ref = 0;"));
   pDatabase->Query (sQuery, &oResultSet);
   if (oResultSet.GetCount () != 0 &&
-      oResultSet.Item (0).GetCount () != 0)
-    {
-      oResultSet.Item (0).Item (0).ToLong (&m_lLibraryCount);
-    }
+	  oResultSet.Item (0).GetCount () != 0)
+	{
+	  oResultSet.Item (0).Item (0).ToLong (&m_lLibraryCount);
+	}
 
   // compute library stats
   ComputeLibraryStats ();
@@ -1570,10 +1573,10 @@ DeckModel::RefreshModel (bool bRefreshUI)
   ComputeCryptHappiness ();
 
   if (bRefreshUI)
-    {
-      // update the view
-      m_pView->UpdateView ();
-    }
+	{
+	  // update the view
+	  m_pView->UpdateView ();
+	}
 }
 
 
@@ -1585,14 +1588,14 @@ DeckModel::ResizeLibrary (unsigned int uiCount)
   long lNewTotal = 0;
 
   do 
-    {
-      float fTheoreticalTotal = 0, fFudge = 0, fRatio = (float) uiCount / GetLibraryCount ();
-      lNewTotal = 0;
-      sSummary = wxT ("Changes\n");
+	{
+	  float fTheoreticalTotal = 0, fFudge = 0, fRatio = (float) uiCount / GetLibraryCount ();
+	  lNewTotal = 0;
+	  sSummary = wxT ("Changes\n");
 
-      pDatabase->Query (wxT ("BEGIN TRANSACTION;"));
-      
-      for (unsigned int c=0; c < GetLibraryList ()->GetCount (); c++)
+	  pDatabase->Query (wxT ("BEGIN TRANSACTION;"));
+	  
+	  for (unsigned int c=0; c < GetLibraryList ()->GetCount (); c++)
 	{
 	  long lOldAmount;
 	  GetLibraryList ()->Item (c)[0].ToLong (&lOldAmount);
@@ -1611,9 +1614,9 @@ DeckModel::ResizeLibrary (unsigned int uiCount)
 	  long lCardRef;
 	  GetLibraryList ()->Item (c)[4].ToLong (&lCardRef);
 	  sQuery.Printf (wxT ("UPDATE decks_libraries "
-			      "SET number_used = %d "
-			      "WHERE deck_ref = 0 AND "
-			      "      card_ref = %ld;"),
+				  "SET number_used = %d "
+				  "WHERE deck_ref = 0 AND "
+				  "		 card_ref = %ld;"),
 			 uiNewAmount,
 			 lCardRef);
 	  pDatabase->Query (sQuery);
@@ -1622,16 +1625,16 @@ DeckModel::ResizeLibrary (unsigned int uiCount)
 	  fTheoreticalTotal += fNewAmount;
 	  fFudge = (lNewTotal - fTheoreticalTotal) / 5;
 	  
-	  //      printf ("%.3f %d %s fudge:%.3f\n", fNewAmount, uiNewAmount, GetLibraryList ()->Item (c)[1].c_str (), fFudge);
+	  //	  printf ("%.3f %d %s fudge:%.3f\n", fNewAmount, uiNewAmount, GetLibraryList ()->Item (c)[1].c_str (), fFudge);
 	}
-      
-      if (lNewTotal != uiCount) pDatabase->Query (wxT ("ROLLBACK TRANSACTION;"));
-    } 
+	  
+	  if (lNewTotal != uiCount) pDatabase->Query (wxT ("ROLLBACK TRANSACTION;"));
+	} 
   while (lNewTotal != uiCount);
 
   sQuery.Printf (wxT ("DELETE FROM decks_libraries "
-		      "WHERE deck_ref = 0 AND "
-			  "      number_used = 0;"));
+			  "WHERE deck_ref = 0 AND "
+			  "		 number_used = 0;"));
   pDatabase->Query (sQuery);
   
   pDatabase->Query (wxT ("END TRANSACTION;"));
@@ -1657,8 +1660,8 @@ DeckModel::SetAuthor (wxString &sAuthor)
   sEscapedValue.Replace (wxT ("'"), wxT ("''"));
 
   sQuery.Printf (wxT ("UPDATE decks "
-		      "SET deck_creator = '%s' "
-		      "WHERE record_num = 0"),
+			  "SET deck_creator = '%s' "
+			  "WHERE record_num = 0"),
 		 sEscapedValue.c_str ());
 
   pDatabase->Query (sQuery, &oResultSet);
@@ -1674,15 +1677,15 @@ DeckModel::SetCryptRefAmount (long lCardRef, unsigned int uiCount, bool bRefresh
   wxString sQuery;
 
   if (uiCount == 0) 
-    {
-      DelFromCrypt (lCardRef, -1, bRefreshUI);
-      return;
-    }
+	{
+	  DelFromCrypt (lCardRef, -1, bRefreshUI);
+	  return;
+	}
 
   sQuery.Printf (wxT ("UPDATE decks_crypts "
-		      "SET number_used = %d "
-		      "WHERE deck_ref = 0 AND "
-		      "      card_ref = %ld;"),
+			  "SET number_used = %d "
+			  "WHERE deck_ref = 0 AND "
+			  "		 card_ref = %ld;"),
 		 uiCount,
 		 lCardRef);
 
@@ -1705,8 +1708,8 @@ DeckModel::SetDescription (wxString &sDescription)
   sEscapedValue.Replace (wxT ("'"), wxT ("''"));
 
   sQuery.Printf (wxT ("UPDATE decks "
-		      "SET deck_desc = '%s' "
-		      "WHERE record_num = 0"),
+			  "SET deck_desc = '%s' "
+			  "WHERE record_num = 0"),
 		 sEscapedValue.c_str ());
 
   pDatabase->Query (sQuery, &oResultSet);
@@ -1722,15 +1725,15 @@ DeckModel::SetLibraryRefAmount (long lCardRef, unsigned int uiCount, bool bRefre
   wxString sQuery;
 
   if (uiCount == 0) 
-    {
-      DelFromLibrary (lCardRef, -1, bRefreshUI);
-      return;
-    }
+	{
+	  DelFromLibrary (lCardRef, -1, bRefreshUI);
+	  return;
+	}
 
   sQuery.Printf (wxT ("UPDATE decks_libraries "
-		      "SET number_used = %d "
-		      "WHERE deck_ref = 0 AND "
-		      "      card_ref = %ld;"),
+			  "SET number_used = %d "
+			  "WHERE deck_ref = 0 AND "
+			  "		 card_ref = %ld;"),
 		 uiCount,
 		 lCardRef);
 
@@ -1753,8 +1756,8 @@ DeckModel::SetName (wxString &sName)
   sEscapedValue.Replace (wxT ("'"), wxT ("''"));
 
   sQuery.Printf (wxT ("UPDATE decks "
-		      "SET deck_name = '%s' "
-		      "WHERE record_num = 0"),
+			  "SET deck_name = '%s' "
+			  "WHERE record_num = 0"),
 		 sEscapedValue.c_str ());
 
   pDatabase->Query (sQuery, &oResultSet);
@@ -1767,14 +1770,15 @@ void
 DeckModel::ShouldSaveWarning ()
 {
   if (!m_bSaved)
-    {
-      wxMessageDialog oWarningDialog (NULL, wxT ("Do you want to save this deck before proceeding ?"), wxT ("Save deck ?"), wxYES | wxNO | wxICON_QUESTION);
-      
-      if (oWarningDialog.ShowModal () == wxID_YES)
-	{
-	  ExportToXML ();
-	}
-    }
+  {
+	  wxMessageDialog oWarningDialog (NULL, wxT ("Do you want to save this deck before proceeding ?"), wxT ("Save deck ?"), wxYES | wxNO | wxICON_QUESTION);
+	  
+	  if (oWarningDialog.ShowModal () == wxID_YES)
+	  {
+		  ExportToXML ();
+	  }
+	  m_bSaved = TRUE;
+  }
 }
 
 wxString DeckModel::StripInvalidFilename(wxString name)

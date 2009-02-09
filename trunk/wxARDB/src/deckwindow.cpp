@@ -13,7 +13,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -44,7 +44,7 @@ BEGIN_EVENT_TABLE (DeckWindow, wxFrame)
   EVT_MENU (ID_TOOLS_DRAWSIM, DeckWindow::OnToolsDrawSim)
   EVT_MENU (ID_TOOLS_MERGE, DeckWindow::OnToolsMergeXML)
   EVT_MENU (ID_TOOLS_RESIZE, DeckWindow::OnToolsResize)
-  //  EVT_CLOSE (DeckWindow::OnClose)
+  EVT_CLOSE (DeckWindow::OnClose)
   //  EVT_SIZE (DeckWindow::OnResize)
 END_EVENT_TABLE ()
 
@@ -147,12 +147,23 @@ DeckWindow::~DeckWindow ()
   DeckModel::DeleteInstance ();
 }
 
+void
+DeckWindow::OnClose(wxCloseEvent& event)
+{
+	if (event.CanVeto())
+	{
+		m_pModel->ShouldSaveWarning();
+		Destroy();
+	}
+}
 
 void 
 DeckWindow::OnFileClose (wxCommandEvent& WXUNUSED (event))
 {
-  Close ();
+	m_pModel->ShouldSaveWarning();
+	Close ();
 }
+
  
 
 void 
