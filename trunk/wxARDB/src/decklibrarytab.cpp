@@ -1,9 +1,9 @@
-/*  Anarch Revolt Deck Builder - a VTES inventory manager / deck builder
+/*	Anarch Revolt Deck Builder - a VTES inventory manager / deck builder
  *
- *  Copyright (C) 2002 Francois Gombault
- *  gombault.francois@wanadoo.fr
- *  
- *  Official project page: https://savannah.nongnu.org/projects/anarchdb/
+ *	Copyright (C) 2002 Francois Gombault
+ *	gombault.francois@wanadoo.fr
+ *	
+ *	Official project page: https://savannah.nongnu.org/projects/anarchdb/
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -13,7 +13,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -45,8 +45,8 @@ BEGIN_EVENT_TABLE (DeckLibraryTab, wxPanel)
 
   const wxString DeckLibraryTab::s_sCardNamesQuery = 
 wxT ("SELECT DISTINCT card_name "
-     "FROM library_view "
-     "ORDER BY dumbitdown(card_name) ASC");
+	 "FROM library_view "
+	 "ORDER BY dumbitdown(card_name) ASC");
 
 DeckLibraryTab::DeckLibraryTab (DeckModel *pModel, wxNotebook *pParent) :
   wxPanel (pParent, -1),
@@ -78,6 +78,7 @@ DeckLibraryTab::DeckLibraryTab (DeckModel *pModel, wxNotebook *pParent) :
   wxNotebook *pNotebook;
   wxPanel *pCardTextPanel, *pDeckInfoPanel;
   wxStaticText *pFindLabel;
+  m_bShowPercentage = FALSE;
 
   m_pParent->AddPage (this, wxT ("Library"), FALSE, -1);
 
@@ -158,10 +159,11 @@ DeckLibraryTab::~DeckLibraryTab ()
 
 
 wxTreeItemId
-DeckLibraryTab::AddOrUpdateTreeItem (wxTreeItemId oParent, wxString& sLabel, long lNumber, long lCardRef, bool bExpand)
+DeckLibraryTab::AddOrUpdateTreeItem (wxTreeItemId oParent, wxString& sLabel, long lNumber, float fHandPre, long lCardRef, bool bExpand)
 {
 	bool bSearch = TRUE, bFound = FALSE;
 	wxString sLabelCount = wxT (""), sLabelWhat;
+	wxString sDrawPre = wxT(" ");
 	wxTreeItemId oSearchId, oMatchId;
 	wxTreeItemIdValue cookie;
 	long lCount;
@@ -170,6 +172,14 @@ DeckLibraryTab::AddOrUpdateTreeItem (wxTreeItemId oParent, wxString& sLabel, lon
 	{
 		wxLogError (wxT ("AddOrUpdateTreeItem : Invalid parent item"));
 		return m_oRootId;
+	}
+
+	if (fHandPre != -1.0)
+	{
+		if (m_bShowPercentage)
+		{
+			sDrawPre.Printf(wxT("(%.2f) "),fHandPre);
+		}
 	}
 
 	if (m_pTree->ItemHasChildren (oParent))
@@ -200,21 +210,26 @@ DeckLibraryTab::AddOrUpdateTreeItem (wxTreeItemId oParent, wxString& sLabel, lon
 			sLabelCount = m_pTree->GetItemText (oMatchId).BeforeFirst (' ');
 			sLabelCount.ToLong (&lCount);
 			lCount += lNumber;
-			sLabelCount.Printf (wxT ("%ld "), lCount);
+			
+			sLabelCount.Printf (wxT ("%ld"), lCount);
+			sLabelCount << sDrawPre;
+	
 			// Change the text
 			m_pTree->SetItemText (oMatchId, sLabelCount + sLabel);
 		}
 		else
 		{ 
 			sLabelCount.Empty ();
-			sLabelCount << lNumber << wxT (" ");
+			sLabelCount << lNumber << sDrawPre;
+
 			oMatchId = m_pTree->AppendItem (oParent, sLabelCount << sLabel);
 		}
 	}
 	else
 	{
 		sLabelCount.Empty ();
-		sLabelCount << lNumber << wxT (" ");
+		sLabelCount << lNumber << sDrawPre;
+
 		oMatchId = m_pTree->AppendItem (oParent, sLabelCount << sLabel);
 	}
 
@@ -258,25 +273,25 @@ DeckLibraryTab::AddToDeck ()
 
   pMyRecord = (wxArrayString *) m_pSetPicker->GetClientData (m_pSetPicker->GetSelection ());
   if (pMyRecord != NULL)
-    {
-      if (pMyRecord->Item (2).ToLong (&lCardRef))
- 	{
- 	  pModelsRecord = m_pModel->AddToLibrary (lCardRef, m_lAmount, FALSE);
+	{
+	  if (pMyRecord->Item (2).ToLong (&lCardRef))
+	{
+	  pModelsRecord = m_pModel->AddToLibrary (lCardRef, m_lAmount, FALSE);
 	  if (pModelsRecord != NULL)
-	    {
-	      pModelsRecord->Item (4).ToLong(&m_lSelectedCard);
-	      m_sSelectedCardName = pModelsRecord->Item (1);
-	      pModelsRecord->Item (0).ToLong(&m_lSelectedCardAmount);
-	      Update ();
-	    }
- 	}
-    }
+		{
+		  pModelsRecord->Item (4).ToLong(&m_lSelectedCard);
+		  m_sSelectedCardName = pModelsRecord->Item (1);
+		  pModelsRecord->Item (0).ToLong(&m_lSelectedCardAmount);
+		  Update ();
+		}
+	}
+	}
 }
 
 
 void
 DeckLibraryTab::AddToTree (wxString sType, wxString sName, wxString sSet, 
-			   long lNumber, long lCardRef)
+			   long lNumber, long lCardRef, float fHandPre)
 {
   wxTreeItemId oItemId;
 
@@ -284,9 +299,9 @@ DeckLibraryTab::AddToTree (wxString sType, wxString sName, wxString sSet,
   oItemId = AddOrUpdateTreeItem (m_oRootId, sType, lNumber);
   m_pTree->SetItemBold (oItemId, TRUE);
   // Add the card name
-  oItemId = AddOrUpdateTreeItem (oItemId, sName, lNumber);
+  oItemId = AddOrUpdateTreeItem (oItemId, sName, lNumber, fHandPre);
   // Add the card set
-  oItemId = AddOrUpdateTreeItem (oItemId, sSet, lNumber, lCardRef, FALSE);
+  oItemId = AddOrUpdateTreeItem (oItemId, sSet, lNumber, -1.0, lCardRef, FALSE);
 }
 
 
@@ -301,10 +316,10 @@ DeckLibraryTab::DeleteBranch (wxTreeItemId oItemId, bool bFirstCall)
   m_bNoEvents = TRUE;
 
   if (!oItemId.IsOk ())
-    {
-      wxLogError (wxT ("DeleteBranch : Bad Item ID"));
-      return NULL;
-    }
+	{
+	  wxLogError (wxT ("DeleteBranch : Bad Item ID"));
+	  return NULL;
+	}
 
   // For foolproofness, we don't allow deleting the whole tree this way
   //if (oItemId == m_oRootId)
@@ -316,43 +331,43 @@ DeckLibraryTab::DeleteBranch (wxTreeItemId oItemId, bool bFirstCall)
   pData = (MyTreeItemData *) m_pTree->GetItemData (oItemId);
 
   if (pData != NULL)
-    {
-      lCardRef = pData->GetValue ();
-      if (lCardRef >= 0)
+	{
+	  lCardRef = pData->GetValue ();
+	  if (lCardRef >= 0)
 	{
 	  // Remember the card to remove, actual deleting will be later
 	  pRefArray->Add (lCardRef);
 	}
-    }
-      
+	}
+	  
   // Recursively process the children
   wxTreeItemId oChildId = m_pTree->GetFirstChild (oItemId, cookie);
   while (oChildId.IsOk ())
-    {
-      pOtherArray = DeleteBranch (oChildId, FALSE);
-      if (pOtherArray != NULL)
+	{
+	  pOtherArray = DeleteBranch (oChildId, FALSE);
+	  if (pOtherArray != NULL)
 	{
 	  WX_APPEND_ARRAY (*pRefArray, *pOtherArray);
 	  delete pOtherArray;
 	}
-      oChildId = m_pTree->GetNextChild (oItemId, cookie);
-    }
+	  oChildId = m_pTree->GetNextChild (oItemId, cookie);
+	}
 
   // after all the recursive processing has taken place, 
   // update the view
   if (bFirstCall)
-    {
-      // Actually delete the cards
-      for (unsigned int i = 0; i < pRefArray->Count (); i++)
+	{
+	  // Actually delete the cards
+	  for (unsigned int i = 0; i < pRefArray->Count (); i++)
 	{
 	  m_pModel->DelFromLibrary (pRefArray->Item (i), -1, FALSE);
 	}
 
-      m_bNoEvents = FALSE;
-      Update ();
-      delete pRefArray;
-      return NULL;
-    }
+	  m_bNoEvents = FALSE;
+	  Update ();
+	  delete pRefArray;
+	  return NULL;
+	}
   return pRefArray;
 }
 
@@ -366,15 +381,15 @@ DeckLibraryTab::FillCardPicker ()
 
   m_pCardPicker->Freeze ();
   for (unsigned int i = 0; i < m_oNameList.GetCount (); i++)
-    {
-      m_pCardPicker->Append (m_oNameList.Item (i).Item (0).c_str ());
+	{
+	  m_pCardPicker->Append (m_oNameList.Item (i).Item (0).c_str ());
 
-      // associated data is a pointer to the corresponding Record
-      m_pCardPicker->SetClientData (i, &m_oNameList.Item (i));
+	  // associated data is a pointer to the corresponding Record
+	  m_pCardPicker->SetClientData (i, &m_oNameList.Item (i));
 
-      // Fill the other name array for "speling"
-      m_oArrayOfNames.Add (m_oNameList.Item (i).Item (0));
-    }
+	  // Fill the other name array for "speling"
+	  m_oArrayOfNames.Add (m_oNameList.Item (i).Item (0));
+	}
 
   m_pCardPicker->Thaw ();
 }
@@ -398,30 +413,30 @@ DeckLibraryTab::MoreOfAnItem (wxTreeItemId oItemId, long lCount)
 
   MyTreeItemData * pData = (MyTreeItemData *) m_pTree->GetItemData (oItemId);
   if (pData != NULL)
-    {
-      // we know what to modify
-      lCardRef = pData->GetValue ();
-      if (lCardRef >= 0)
+	{
+	  // we know what to modify
+	  lCardRef = pData->GetValue ();
+	  if (lCardRef >= 0)
 	{
 	  if (lCount > 0)
-	    {
-	      m_pModel->AddToLibrary (lCardRef, lCount, TRUE);
-	    }
+		{
+		  m_pModel->AddToLibrary (lCardRef, lCount, TRUE);
+		}
 	  else
-	    {
-	      m_pModel->DelFromLibrary (lCardRef, -lCount, TRUE);
-	    }
+		{
+		  m_pModel->DelFromLibrary (lCardRef, -lCount, TRUE);
+		}
 	}
-    }
+	}
   else
-    {
-      // We don't know what to modify, so we'll try with a child
-      oChild = m_pTree->GetFirstChild (oItemId, cookie);
-      if (oChild.IsOk ())
+	{
+	  // We don't know what to modify, so we'll try with a child
+	  oChild = m_pTree->GetFirstChild (oItemId, cookie);
+	  if (oChild.IsOk ())
 	{
 	  MoreOfAnItem (oChild, lCount);
 	}
-    }
+	}
 }
 
 
@@ -443,74 +458,74 @@ DeckLibraryTab::OnCardInputChanged (wxCommandEvent& WXUNUSED (event))
   if (m_bNoEvents || !m_pCardInput || !m_pCardPicker) return;
 
   if (m_pCardInput->GetValue ().Find (' ') &&
-      m_pCardInput->GetValue ().BeforeFirst (' ').ToLong (&m_lAmount))
-    {
-      CardName = m_pCardInput->GetValue ().AfterFirst (' ');
-    }
+	  m_pCardInput->GetValue ().BeforeFirst (' ').ToLong (&m_lAmount))
+	{
+	  CardName = m_pCardInput->GetValue ().AfterFirst (' ');
+	}
   else
-    {
-      m_lAmount = 1;
-      CardName = m_pCardInput->GetValue ();
-    }
+	{
+	  m_lAmount = 1;
+	  CardName = m_pCardInput->GetValue ();
+	}
   iStringLength = CardName.Len ();
 
   if (iStringLength <= 0) 
-    {
-      return;
-    }
+	{
+	  return;
+	}
 
   m_iCycleLowerValue = -1;
   m_iCycleUpperValue = -1;
 
   // search for the first card that meets the description
   while (bSearchLower)
-    {
-      // Here we search card names
-      bSearchLower = CardName.CmpNoCase (m_pCardPicker->GetString (iIndex).Left (iStringLength).c_str ()) != 0;
-      if (!bSearchLower)
+	{
+	  // Here we search card names
+	  bSearchLower = CardName.CmpNoCase (m_pCardPicker->GetString (iIndex).Left (iStringLength).c_str ()) != 0;
+	  if (!bSearchLower)
 	{
 	  m_iCycleLowerValue = iIndex;
 	}
-      iIndex++;
-      if (iIndex >= m_pCardPicker->GetCount ())
+	  iIndex++;
+	  if (iIndex >= m_pCardPicker->GetCount ())
 	{
 	  bSearchLower = FALSE;
 	}
-    }
+	}
   if (m_iCycleLowerValue >= 0)
-    {
-      // search for the last card that meets the description
-      while (bSearchUpper)
+	{
+	  // search for the last card that meets the description
+	  while (bSearchUpper)
 	{
 	  // Here we search card names
 	  bSearchUpper = CardName.CmpNoCase (m_pCardPicker->GetString (iIndex).Left (iStringLength).c_str ()) == 0;
 	  if (!bSearchUpper)
-	    {
-	      m_iCycleUpperValue = iIndex;
-	    }
+		{
+		  m_iCycleUpperValue = iIndex;
+		}
 	  iIndex++;
 	  if (iIndex >= m_pCardPicker->GetCount ())
-	    {
-	      bSearchUpper = FALSE;
-	      m_iCycleUpperValue = iIndex;
-	    }
+		{
+		  bSearchUpper = FALSE;
+		  m_iCycleUpperValue = iIndex;
+		}
 	}
-    }
+	}
 
   // If we have found something
   if (m_iCycleLowerValue != -1)
-    {
-      m_iCycleCounter = 0;
+	{
+	  m_iCycleCounter = 0;
 
-      m_pCardPicker->SetSelection (m_iCycleLowerValue);
-      m_pCardPicker->SetFirstItem (m_iCycleLowerValue);
-    }
+	  m_pCardPicker->SetSelection (m_iCycleLowerValue);
+	  m_pCardPicker->SetFirstItem (m_iCycleLowerValue);
+	}
   else 
-    // Use our phat speling powaz
-    {
-      int iRet;
-      wxString sVal (CardName);
-      if ((iRet = check_speling (sVal, m_oArrayOfNames)) >= 0)
+	// Use our phat speling powaz
+	{
+	  int iRet;
+	  wxString sVal (CardName);
+	  if ((iRet = check_speling (sVal, m_oArrayOfNames)) >= 0)
 	{
 	  m_iCycleCounter = 0;
 	  m_iCycleLowerValue = iRet;
@@ -518,7 +533,7 @@ DeckLibraryTab::OnCardInputChanged (wxCommandEvent& WXUNUSED (event))
 	  m_pCardPicker->SetSelection (iRet);
 	  m_pCardPicker->SetFirstItem (iRet);
 	}
-    }
+	}
 
 // Force a call here since the selection event doesn't seem to be triggered
   wxCommandEvent oEvt;
@@ -557,15 +572,15 @@ DeckLibraryTab::OnCardPickerSelection (wxCommandEvent& WXUNUSED (event))
   sTemp.Replace (wxT ("'"), wxT ("''"));
 
   sQuery.Printf (wxT ("SELECT library_view_with_proxy.card_name, "
-		      "       library_view_with_proxy.set_name, "
-		      "       library_view_with_proxy.card_ref, "
-		      "       library_view_with_proxy.card_type, "
-		      "       cards_sets.full_name, "
-		      "       cards_sets.release_date "
-		      "FROM library_view_with_proxy, cards_sets "
-		      "WHERE library_view_with_proxy.set_ref = cards_sets.record_num "
-		      "      AND card_name = '%s' "
-		      "ORDER BY cards_sets.release_date DESC ;"),
+			  "		  library_view_with_proxy.set_name, "
+			  "		  library_view_with_proxy.card_ref, "
+			  "		  library_view_with_proxy.card_type, "
+			  "		  cards_sets.full_name, "
+			  "		  cards_sets.release_date "
+			  "FROM library_view_with_proxy, cards_sets "
+			  "WHERE library_view_with_proxy.set_ref = cards_sets.record_num "
+			  "		 AND card_name = '%s' "
+			  "ORDER BY cards_sets.release_date DESC ;"),
 		 sTemp.c_str ());
 
   pDatabase->Query (sQuery.c_str (), &m_oCardList);
@@ -577,12 +592,12 @@ DeckLibraryTab::OnCardPickerSelection (wxCommandEvent& WXUNUSED (event))
   m_pCardText->DisplayLibraryText(lCardRef,NULL);
 
   for (unsigned int i = 0; i < m_oCardList.GetCount (); i++)
-    {
-      // associated data is a pointer to the record
-      m_pSetPicker->Append (m_oCardList.Item (i).Item (4),
-			    (void *) &m_oCardList.Item (i));
-      m_pSetPicker->SetSelection (0);
-    }
+	{
+	  // associated data is a pointer to the record
+	  m_pSetPicker->Append (m_oCardList.Item (i).Item (4),
+				(void *) &m_oCardList.Item (i));
+	  m_pSetPicker->SetSelection (0);
+	}
 
   m_pSetPicker->Thaw ();
 }
@@ -660,10 +675,10 @@ DeckLibraryTab::OnTreeItemActivate (wxTreeEvent & WXUNUSED (event))
   AmountDialog * pDialog = new AmountDialog (&oArrayName, &oArrayCount);
   
   if (pDialog->ShowModal ())
-    {
-      m_pModel->SetLibraryRefAmount (m_lSelectedCard, oArrayCount.Item (0));
-      m_lSelectedCardAmount = oArrayCount.Item (0);
-    }
+	{
+	  m_pModel->SetLibraryRefAmount (m_lSelectedCard, oArrayCount.Item (0));
+	  m_lSelectedCardAmount = oArrayCount.Item (0);
+	}
   
   delete pDialog;
 #endif
@@ -677,31 +692,31 @@ DeckLibraryTab::OnTreeKeyDown (wxTreeEvent &event)
 
   if (m_bNoEvents || !m_pTree) return;
   switch (oKeyEvent.GetKeyCode ())
-    {
-      // Keys to delete cards
-    case WXK_BACK: // backspace
-    case WXK_DELETE: // delete
-      DeleteBranch (m_pTree->GetSelection ());
-      break;
-    case WXK_F5:
-      LessOfAnItem (m_pTree->GetSelection (), 5);
-      break;
-    case WXK_F6:
-      LessOfAnItem (m_pTree->GetSelection (), 1);
-      break;
-    case WXK_F7:
-      MoreOfAnItem (m_pTree->GetSelection (), 1);
-      break;
-    case WXK_F8:
-      MoreOfAnItem (m_pTree->GetSelection (), 5);
-      break;
-    default:
-      //       wxString sMessage = "Pressed key #";
-      //       sMessage << oKeyEvent.GetKeyCode ();
-      //       wxLogMessage (sMessage);
-      //       event.Skip ();
-      break;
-    }
+	{
+	  // Keys to delete cards
+	case WXK_BACK: // backspace
+	case WXK_DELETE: // delete
+	  DeleteBranch (m_pTree->GetSelection ());
+	  break;
+	case WXK_F5:
+	  LessOfAnItem (m_pTree->GetSelection (), 5);
+	  break;
+	case WXK_F6:
+	  LessOfAnItem (m_pTree->GetSelection (), 1);
+	  break;
+	case WXK_F7:
+	  MoreOfAnItem (m_pTree->GetSelection (), 1);
+	  break;
+	case WXK_F8:
+	  MoreOfAnItem (m_pTree->GetSelection (), 5);
+	  break;
+	default:
+	  //	   wxString sMessage = "Pressed key #";
+	  //	   sMessage << oKeyEvent.GetKeyCode ();
+	  //	   wxLogMessage (sMessage);
+	  //	   event.Skip ();
+	  break;
+	}
 }
 
 
@@ -717,7 +732,7 @@ DeckLibraryTab::OnTreeRightClicked (wxTreeEvent &event)
 void
 DeckLibraryTab::OnTreeSelect (wxTreeEvent &event)
 {
-  wxTreeItemIdValue  cookie;
+  wxTreeItemIdValue	 cookie;
   long lCount;
   MyTreeItemData *pData = NULL;
   wxString sName;
@@ -731,45 +746,45 @@ DeckLibraryTab::OnTreeSelect (wxTreeEvent &event)
   pData = (MyTreeItemData *) m_pTree->GetItemData (oItem);
   m_bFuzzySelect = FALSE;
   if (pData == NULL) 
-    {
-      oParentItem = oItem;
-      oItem = m_pTree->GetFirstChild (oItem, cookie);
-      if (oItem.IsOk ())
+	{
+	  oParentItem = oItem;
+	  oItem = m_pTree->GetFirstChild (oItem, cookie);
+	  if (oItem.IsOk ())
 	{
 	  pData = (MyTreeItemData *) m_pTree->GetItemData (oItem);
 	}
-      m_bFuzzySelect = TRUE;
-    } 
+	  m_bFuzzySelect = TRUE;
+	} 
   
   if (m_bFuzzySelect)
-    {
-      sName = m_pTree->GetItemText (oParentItem).AfterFirst (' ');
-      m_pTree->GetItemText (oParentItem).BeforeFirst (' ').ToLong (&lCount);
-    }
+	{
+	  sName = m_pTree->GetItemText (oParentItem).AfterFirst (' ');
+	  m_pTree->GetItemText (oParentItem).BeforeFirst (' ').ToLong (&lCount);
+	}
   else
-    {
-      sName = m_pTree->GetItemText (oItem).AfterFirst (' ');
-      m_pTree->GetItemText (oItem).BeforeFirst (' ').ToLong (&lCount);
-    }
+	{
+	  sName = m_pTree->GetItemText (oItem).AfterFirst (' ');
+	  m_pTree->GetItemText (oItem).BeforeFirst (' ').ToLong (&lCount);
+	}
 
   if (pData != NULL) 
-    {
-      m_lSelectedCard =  pData->GetValue ();
-      m_sSelectedCardName = sName;
-      m_lSelectedCardAmount = lCount;
+	{
+	  m_lSelectedCard =	 pData->GetValue ();
+	  m_sSelectedCardName = sName;
+	  m_lSelectedCardAmount = lCount;
 
-      m_pCardInput->Clear ();
-      m_pCardInput->AppendText (sName);
-    }
+	  m_pCardInput->Clear ();
+	  m_pCardInput->AppendText (sName);
+	}
 }
 
 
 void
 DeckLibraryTab::Update ()
 {
-  UpdateCardList ();
-  UpdateTotalCardCount ();
-  UpdateStats ();
+  UpdateCardList();
+  UpdateTotalCardCount();
+  UpdateStats();
 }
 
 
@@ -778,17 +793,17 @@ DeckLibraryTab::UpdateTotalCardCount ()
 {
   wxString sCardCount;
 
-  switch (m_pModel->GetLibraryCount ())
-    {
-    case 0:
-      sCardCount = wxT ("Empty library");
-      break;
-    case 1:
-      sCardCount = wxT ("1 card");
-      break;
-    default:
-      sCardCount.Printf (wxT ("%d cards"), m_pModel->GetLibraryCount ());
-    }
+  switch (m_pModel->GetLibraryCount())
+	{
+	case 0:
+	  sCardCount = wxT ("Empty library");
+	  break;
+	case 1:
+	  sCardCount = wxT ("1 card");
+	  break;
+	default:
+	  sCardCount.Printf (wxT ("%d cards"), m_pModel->GetLibraryCount ());
+	}
 
   m_pTree->SetItemText (m_oRootId, sCardCount);
 }
@@ -806,25 +821,23 @@ DeckLibraryTab::UpdateCardList ()
   m_pTree->Freeze ();
   m_pTree->DeleteChildren (m_oRootId);
 
-  for (unsigned int i = 0; i < pCardList->GetCount (); i++)
-    {
-      /* remember the view query is :
+  for (unsigned int i = 0; i < pCardList->GetCount(); i++)
+  {
+	  /* remember the view query is :
 	 "SELECT number_used, "
-	 "       card_name, "
-	 "       set_name, "
-	 "       card_type, "
-	 "       card_ref "
-      */
-      if (pCardList->Item (i).Item (0).ToLong (&lNumber)
-	  && pCardList->Item (i).Item (4).ToLong (&lCardRef))
-	{
-	  
-	  AddToTree ( pCardList->Item (i).Item (3),
-		      pCardList->Item (i).Item (1),
-		      pCardList->Item (i).Item (2), 
-		      lNumber, lCardRef);
-	}
-    }
+	 "		 card_name, "
+	 "		 set_name, "
+	 "		 card_type, "
+	 "		 card_ref "
+	  */
+	  if (pCardList->Item(i).Item(0).ToLong(&lNumber) && pCardList->Item(i).Item(4).ToLong(&lCardRef))
+	  {
+		  AddToTree ( pCardList->Item(i).Item(3),
+					  pCardList->Item(i).Item(1),
+					  pCardList->Item(i).Item(2), 
+					  lNumber, lCardRef,HandPercentage(m_pModel->GetLibraryCount(),lNumber));
+	  }	
+  }	
   
   //  m_pTree->SortChildren (m_oRootId);
   m_pTree->Thaw ();
@@ -832,6 +845,28 @@ DeckLibraryTab::UpdateCardList ()
   m_bNoEvents = FALSE;
 }
 
+// Calculates the percentage chance of having card in hand
+float
+DeckLibraryTab::HandPercentage(long deckCount, long lNumber)
+{
+	double p = 0;
+	double fracs[7];
+	int n;
+	int i;
+	int s = deckCount;
+	int c = lNumber;
+
+	n = s-c;
+
+	for(i=0;i<7;i++)
+	{
+		fracs[i] = (double)(n-i)/(s-i);
+	}
+
+	p = 1-(fracs[0] * fracs[1] * fracs[2] * fracs[3] * fracs[4] * fracs[5] * fracs[6]);
+	
+	return (p*100.0);
+}
 
 void
 DeckLibraryTab::UpdateStats ()
@@ -865,95 +900,110 @@ DeckLibraryTab::UpdateStats ()
 
   pRecordSet = m_pModel->GetLibStatsDiscisplines ();
   if (pRecordSet && pRecordSet->GetCount () > 0) 
-    {
-      oFont.SetWeight (wxBOLD);
-      m_pStatsText->SetDefaultStyle (wxTextAttr (wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOW), oFont));
-      m_pStatsText->WriteText (wxT ("Disciplines\n\n"));
-      oFont.SetWeight (wxNORMAL);
-      m_pStatsText->SetDefaultStyle (wxTextAttr (wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOW), oFont));
-      
-      sSummary.Clear ();
-      for (unsigned int i = 0; i < pRecordSet->GetCount (); i++)
+	{
+	  oFont.SetWeight (wxBOLD);
+	  m_pStatsText->SetDefaultStyle (wxTextAttr (wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOW), oFont));
+	  m_pStatsText->WriteText (wxT ("Disciplines\n\n"));
+	  oFont.SetWeight (wxNORMAL);
+	  m_pStatsText->SetDefaultStyle (wxTextAttr (wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOW), oFont));
+	  
+	  sSummary.Clear ();
+	  for (unsigned int i = 0; i < pRecordSet->GetCount (); i++)
 	{
 	  if (!pRecordSet->Item (i).Item (1).IsEmpty ())
-	    {
-	      sSummary << pRecordSet->Item (i).Item (0);
-	      if (!pRecordSet->Item (i).Item (0).Cmp (wxT ("1")))
+		{
+		  sSummary << pRecordSet->Item (i).Item (0);
+		  if (!pRecordSet->Item (i).Item (0).Cmp (wxT ("1")))
 		{
 		  sSummary << wxT (" card requires ");
 		}
-	      else
+		  else
 		{
 		  sSummary << wxT (" cards require ");
 		}
-	      sSummary << pRecordSet->Item (i).Item (1) << wxT ("\n");
-	    }
+		  sSummary << pRecordSet->Item (i).Item (1) << wxT ("\n");
+		}
 	}
-      m_pStatsText->WriteText (sSummary);
-      m_pStatsText->WriteText (wxT ("\n"));
-    }
+	  m_pStatsText->WriteText (sSummary);
+	  m_pStatsText->WriteText (wxT ("\n"));
+	}
 
   pRecordSet = m_pModel->GetLibStatsClans ();
   if (pRecordSet && pRecordSet->GetCount () > 0) 
-    {
-      oFont.SetWeight (wxBOLD);
-      m_pStatsText->SetDefaultStyle (wxTextAttr (wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOW), oFont));
-      m_pStatsText->WriteText (wxT ("Clans\n\n"));
-      oFont.SetWeight (wxNORMAL);
-      m_pStatsText->SetDefaultStyle (wxTextAttr (wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOW), oFont));
+	{
+	  oFont.SetWeight (wxBOLD);
+	  m_pStatsText->SetDefaultStyle (wxTextAttr (wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOW), oFont));
+	  m_pStatsText->WriteText (wxT ("Clans\n\n"));
+	  oFont.SetWeight (wxNORMAL);
+	  m_pStatsText->SetDefaultStyle (wxTextAttr (wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOW), oFont));
 
-      sSummary.Clear ();
-      for (unsigned int i = 0; i < pRecordSet->GetCount (); i++)
+	  sSummary.Clear ();
+	  for (unsigned int i = 0; i < pRecordSet->GetCount (); i++)
 	{
 	  if (!pRecordSet->Item (i).Item (1).IsEmpty ())
-	    {
-	      sSummary << pRecordSet->Item (i).Item (0);
-	      if (!pRecordSet->Item (i).Item (0).Cmp (wxT ("1")))
+		{
+		  sSummary << pRecordSet->Item (i).Item (0);
+		  if (!pRecordSet->Item (i).Item (0).Cmp (wxT ("1")))
 		{
 		  sSummary << wxT (" card requires ");
 		}
-	      else
+		  else
 		{
 		  sSummary << wxT (" cards require ");
 		}
-	      sSummary << pRecordSet->Item (i).Item (1) << wxT ("\n");
-	    }
+		  sSummary << pRecordSet->Item (i).Item (1) << wxT ("\n");
+		}
 	}
-      m_pStatsText->WriteText (sSummary);
-      m_pStatsText->WriteText (wxT ("\n"));
-    }
+	  m_pStatsText->WriteText (sSummary);
+	  m_pStatsText->WriteText (wxT ("\n"));
+	}
 
   pRecordSet = m_pModel->GetLibStatsRequirements ();
   if (pRecordSet && pRecordSet->GetCount () > 0) 
-    {
-      oFont.SetWeight (wxBOLD);
-      m_pStatsText->SetDefaultStyle (wxTextAttr (wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOW), oFont));
-      m_pStatsText->WriteText (wxT ("Miscellaneous\n\n"));
-      oFont.SetWeight (wxNORMAL);
-      m_pStatsText->SetDefaultStyle (wxTextAttr (wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOW), oFont));
+	{
+	  oFont.SetWeight (wxBOLD);
+	  m_pStatsText->SetDefaultStyle (wxTextAttr (wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOW), oFont));
+	  m_pStatsText->WriteText (wxT ("Miscellaneous\n\n"));
+	  oFont.SetWeight (wxNORMAL);
+	  m_pStatsText->SetDefaultStyle (wxTextAttr (wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOW), oFont));
 
-      sSummary.Clear ();
-      for (unsigned int i = 0; i < pRecordSet->GetCount (); i++)
+	  sSummary.Clear ();
+	  for (unsigned int i = 0; i < pRecordSet->GetCount (); i++)
 	{
 	  if (!pRecordSet->Item (i).Item (1).IsEmpty ())
-	    {
-	      sSummary << pRecordSet->Item (i).Item (0);
-	      if (!pRecordSet->Item (i).Item (0).Cmp (wxT ("1")))
+		{
+		  sSummary << pRecordSet->Item (i).Item (0);
+		  if (!pRecordSet->Item (i).Item (0).Cmp (wxT ("1")))
 		{
 		  sSummary << wxT (" card requires ");
 		}
-	      else
+		  else
 		{
 		  sSummary << wxT (" cards require ");
 		}
-	      sSummary << pRecordSet->Item (i).Item (1) << wxT ("\n");
-	    }
+		  sSummary << pRecordSet->Item (i).Item (1) << wxT ("\n");
+		}
 	}
-      m_pStatsText->WriteText (sSummary);
-      m_pStatsText->WriteText (wxT ("\n"));
-    }
+	  m_pStatsText->WriteText (sSummary);
+	  m_pStatsText->WriteText (wxT ("\n"));
+	}
 
   m_pStatsText->Thaw ();
+}
+
+void
+DeckLibraryTab::ShowPercentage()
+{
+	if (m_bShowPercentage)
+	{
+		m_bShowPercentage = FALSE;
+	}
+	else
+	{
+		m_bShowPercentage = TRUE;
+	}
+
+	UpdateCardList();
 }
 
 
