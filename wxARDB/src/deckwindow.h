@@ -63,6 +63,7 @@ class DeckWindow : public wxFrame
   void OnToolsDrawSim (wxCommandEvent& event);
   void OnToolsMergeXML (wxCommandEvent& event);
   void OnToolsResize (wxCommandEvent& event);
+  void OnDrawPercentage(wxCommandEvent& event);
   void OnClose (wxCloseEvent& WXUNUSED(event));
  
   enum
@@ -80,7 +81,8 @@ class DeckWindow : public wxFrame
       ID_FILE_CLOSE,
       ID_TOOLS_DRAWSIM,
       ID_TOOLS_RESIZE,
-      ID_TOOLS_MERGE
+      ID_TOOLS_MERGE,
+	  ID_TOOLS_DRAWPER
     };
   
   DECLARE_EVENT_TABLE()

@@ -49,10 +49,12 @@ private:
 public:
 
   void Update ();
+  void ShowPercentage();
 
 private:
   bool            m_bFuzzySelect;
   bool            m_bNoEvents;
+  bool			  m_bShowPercentage;
   
   // the cycling boundaries
   int             m_iCycleCounter;
@@ -85,9 +87,9 @@ private:
   static const wxString s_sCardNamesQuery;
 
 
-  wxTreeItemId AddOrUpdateTreeItem (wxTreeItemId oParent, wxString& sLabel, long lNumber = 1, long lCardRef = -1, bool bExpand = TRUE);
+  wxTreeItemId AddOrUpdateTreeItem (wxTreeItemId oParent, wxString& sLabel, long lNumber = 1, float fHandPre = -1.0, long lCardRef = -1, bool bExpand = TRUE);
   void AddToDeck ();
-  void AddToTree (wxString sType, wxString sName, wxString sSet, long lNumber, long lCardRef);
+  void AddToTree (wxString sType, wxString sName, wxString sSet, long lNumber, long lCardRef, float fHandPre);
   wxArrayLong * DeleteBranch (wxTreeItemId oItemId, bool bFirstCall = TRUE);
 
   void FillCardPicker ();
@@ -112,7 +114,9 @@ private:
 
   void UpdateTotalCardCount ();
   void UpdateCardList ();
+  float HandPercentage(long deckCount, long lNumber);
   void UpdateStats ();
+  
 
 
   enum

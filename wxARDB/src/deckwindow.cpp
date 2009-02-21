@@ -44,6 +44,7 @@ BEGIN_EVENT_TABLE (DeckWindow, wxFrame)
   EVT_MENU (ID_TOOLS_DRAWSIM, DeckWindow::OnToolsDrawSim)
   EVT_MENU (ID_TOOLS_MERGE, DeckWindow::OnToolsMergeXML)
   EVT_MENU (ID_TOOLS_RESIZE, DeckWindow::OnToolsResize)
+  EVT_MENU (ID_TOOLS_DRAWPER, DeckWindow::OnDrawPercentage)		  
   EVT_CLOSE (DeckWindow::OnClose)
   //  EVT_SIZE (DeckWindow::OnResize)
 END_EVENT_TABLE ()
@@ -91,6 +92,7 @@ DeckWindow::DeckWindow (DeckModel *pModel, const wxPoint& pos, const wxSize& siz
   pToolsMenu->Append (ID_TOOLS_DRAWSIM, wxT ("Draw Simulator\tCtrl+Shift+D"));
   pToolsMenu->Append (ID_TOOLS_MERGE, wxT ("Merge deck\tCtrl+Shift+M"));
   pToolsMenu->Append (ID_TOOLS_RESIZE, wxT ("Resize library\tCtrl+Shift+R"));
+  pToolsMenu->AppendCheckItem (ID_TOOLS_DRAWPER, wxT ("Show/Hide Percentage\tCtrl+Shift+P"));
   
   
 //   pFileMenu -> Append ( wxH_FILEE_XIT, wxT ("E&xit"), wxT ("") );
@@ -158,7 +160,7 @@ void
 DeckWindow::OnFileClose (wxCommandEvent& WXUNUSED (event))
 {
 	m_pModel->ShouldSaveWarning();
-	Close ();
+	Close();
 }
 
  
@@ -262,7 +264,7 @@ DeckWindow::OnToolsMergeXML (wxCommandEvent& WXUNUSED (event))
 void
 DeckWindow::OnToolsResize (wxCommandEvent& WXUNUSED (event))
 {
-#if 0
+
   unsigned int uiOldCount = m_pModel->GetLibraryCount ();
   wxArrayInt oArrayCount;
   wxArrayString oArrayText;
@@ -280,7 +282,13 @@ DeckWindow::OnToolsResize (wxCommandEvent& WXUNUSED (event))
     }
   
   delete pDialog;
-#endif
+
+}
+
+void
+DeckWindow::OnDrawPercentage(wxCommandEvent& WXUNUSED (event))
+{
+	m_pLibraryTab->ShowPercentage();
 }
 
 
