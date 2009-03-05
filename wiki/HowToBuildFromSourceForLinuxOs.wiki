@@ -8,6 +8,7 @@ This program requires the following packages for build:
  * libsqlite2-dev - SQLite development files
  * libwxgtk2.8-dev *WITH UNICODE SUPPORT* - wxWidgets Cross-platform C++ GUI toolkit (GTK+ development)
  * tofrodos - Converts DOS <-> Unix text files, alias tofromdos
+ * wx-common
 
 _Some linux distribution packaging system could name those libs differently. Rpm based linux (fedora, mandriva) uses the "-devel" postfix for developments packages_
 
