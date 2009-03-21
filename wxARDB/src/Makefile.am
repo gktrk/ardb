@@ -10,8 +10,6 @@ INCLUDES = $(SQLITE_CFLAGS)
 
 if USE_WINDOWS
 RESOURCE_FILES = ardb_resource.o
-# wx-config doesn't include these, so here's a workaround for this bug
-IMGLDFLAGS=-lwxjpeg-2.6-i586-mingw32msvc -lwxpng-2.6-i586-mingw32msvc -lwxtiff-2.6-i586-mingw32msvc
 endif
 
 bin_PROGRAMS = ardb
@@ -45,7 +43,8 @@ ardb_SOURCES = \
 	imagePanel.cpp \
 	ardb_db_edition_filter.cpp \
 	importxml.cpp \
-	cardviewer.cpp
+	cardviewer.cpp \
+	deckupload.cpp
 
 ardb_resource.o: ardb.rc
 	$(RESCOMP) -i$(srcdir)/ardb.rc -o ardb_resource.o \
