@@ -74,6 +74,8 @@ SLLoginDialog::SLLoginDialog(bool saveDetails, wxString &username, wxString &pas
 	m_sdbSizer2->AddButton( m_sdbSizer2Cancel );
 	m_sdbSizer2->Realize();
 	bSizer1->Add( m_sdbSizer2, 1, wxEXPAND, 2 );
+
+	m_sdbSizer2OK->SetDefault();
 	
 	this->SetSizer( bSizer1 );
 	this->Layout();
