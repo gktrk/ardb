@@ -212,13 +212,41 @@ DeckWindow::OnFileExportSecretLibrary(wxCommandEvent& WXUNUSED (event))
 {
 	wxString username = wxT("");
 	wxString password = wxT("");
+	wxString sSaveDetails = wxT("SaveSLDetails");
+	wxString sSlUserName = wxT("SlUserName");
+	wxString sSlPassword = wxT("SlPassword");
+	bool saveDetails;
+
+	wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get();
+
+	if (pConfig)
+	{
+		if (pConfig->Read(sSaveDetails, &saveDetails, FALSE))
+		{
+			if (saveDetails)
+			{
+				pConfig->Read(sSlUserName, &username, wxT(""));
+				pConfig->Read(sSlPassword, &password, wxT(""));				
+			}			
+		}
+	}
+	
 	//Prompt for Username and Password
-	SLLoginDialog *pDialog = new SLLoginDialog();
+	SLLoginDialog *pDialog = new SLLoginDialog(saveDetails,username,password);
 
 	if (pDialog->ShowModal())
 	{
 		username = pDialog->Username();
 		password = pDialog->Password();
+		saveDetails = pDialog->SaveDetails();
+
+		if (saveDetails)
+		{
+			pConfig->Write(sSaveDetails, &saveDetails);
+			pConfig->Write(sSlUserName, username);
+			pConfig->Write(sSlPassword, password);
+			pConfig->Flush(TRUE);
+		}
 	}
 
 	delete pDialog;
