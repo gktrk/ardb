@@ -96,11 +96,25 @@ bool DeckUpload::Upload(wxString &sCrypt, wxString &sLibrary, wxString &sTitle, 
 	if (httpPost.GetError() == wxPROTO_NOERR)
 	{
 		wxString res;
+		int idx;
+		
 		wxStringOutputStream out_stream(&res);
 		httpStream->Read(out_stream);
 
+		idx = res.Find(wxT(':'));
 
-		wxMessageBox(res);
+		if (idx != wxNOT_FOUND)
+		{
+			if (res.BeforeFirst(wxT(':')) == wxT('0'))
+			{
+				wxMessageBox(res.Mid(idx+1),wxT("Deck Uploaded"));
+			}
+			else
+			{
+				wxMessageBox(res.Mid(idx+1),wxT("Secret Library Error"));
+			}
+		}
+		
 		result = TRUE;
 	}
 	

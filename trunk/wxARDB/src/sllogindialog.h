@@ -44,7 +44,7 @@ class SLLoginDialog : public wxDialog
 		wxButton* m_sdbSizer2Cancel;
 	
 	public:
-		SLLoginDialog();
+		SLLoginDialog(bool saveDetails, wxString &username, wxString &password);
 		~SLLoginDialog();
 
 		wxString Username()
@@ -55,6 +55,11 @@ class SLLoginDialog : public wxDialog
 		wxString Password()
 		{
 			return m_PasswordEditBox->GetValue();
+		}
+
+		bool SaveDetails()
+		{
+			return m_SaveDetailscheckBox->IsChecked();
 		}
 
 		enum

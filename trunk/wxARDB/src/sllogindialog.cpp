@@ -31,7 +31,7 @@ END_EVENT_TABLE()
 
 ///////////////////////////////////////////////////////////////////////////
 
-SLLoginDialog::SLLoginDialog() :
+SLLoginDialog::SLLoginDialog(bool saveDetails, wxString &username, wxString &password) :
    wxDialog( 0, -1, wxT("Login"), wxDefaultPosition, wxSize( 224,165 ) )
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
@@ -50,6 +50,7 @@ SLLoginDialog::SLLoginDialog() :
 	
 	m_usernameEditbox = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer3->Add( m_usernameEditbox, 0, wxALL, 5 );
+	m_usernameEditbox->SetValue(username);
 	
 	m_staticText3 = new wxStaticText( this, wxID_ANY, wxT("Password"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText3->Wrap( -1 );
@@ -57,8 +58,10 @@ SLLoginDialog::SLLoginDialog() :
 	
 	m_PasswordEditBox = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD );
 	fgSizer3->Add( m_PasswordEditBox, 0, wxALL, 5 );
+	m_PasswordEditBox->SetValue(password);
 	
 	m_SaveDetailscheckBox = new wxCheckBox( this, wxID_ANY, wxT("Save Details"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_SaveDetailscheckBox->SetValue(saveDetails);
 	
 	fgSizer3->Add( m_SaveDetailscheckBox, 0, wxALL, 5 );
 	
