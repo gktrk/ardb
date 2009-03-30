@@ -28,6 +28,8 @@
 #include "interfacedata.h"
 #include "updater.h"
 #include "importxml.h"
+#include "deckupload.h"
+#include "sllogindialog.h"
 
 #ifdef __WXMAC__
 // required for some reason by libxslt on macOS X
@@ -619,7 +621,6 @@ DeckModel::DelFromLibrary (long lCardRef, int iCount, bool bRefreshUI)
   RefreshModel (bRefreshUI);
 }
 
-
 bool
 DeckModel::ExportToHTML ()
 {
@@ -760,6 +761,279 @@ DeckModel::ExportToXML ()
 					  << oFileDialog.GetFilename ();
   
   return ExportWithXSL (sFile, NULL);
+}
+
+bool
+DeckModel::ExportToSecretLibrary(wxString &sUsername, wxString &sPassword)
+{
+	bool result;
+	Database *pDatabase = Database::Instance ();
+	wxString sCryptXSL;
+	wxString sLibraryXSL;
+	wxString sTitleXSL;
+	wxString sAuthorXSL;
+	wxString sDescXSL;
+	
+	wxString sCrypt = wxT("");
+	wxString sLibrary = wxT("");
+	wxString sTitle = wxT("");
+	wxString sAuthor = wxT("");
+	wxString sDesc = wxT("");
+
+	if (pDatabase == NULL) return false;
+
+	sCryptXSL << pDatabase->GetDatabaseDirectory () 
+			<< wxFileName::GetPathSeparator ()
+			<< wxT("crypt2text.xsl");
+
+	sLibraryXSL << pDatabase->GetDatabaseDirectory () 
+			<< wxFileName::GetPathSeparator ()
+			<< wxT("library2text.xsl");
+
+	sTitleXSL  << pDatabase->GetDatabaseDirectory () 
+			<< wxFileName::GetPathSeparator ()
+			<< wxT("title2text.xsl");
+
+	sAuthorXSL  << pDatabase->GetDatabaseDirectory () 
+			<< wxFileName::GetPathSeparator ()
+			<< wxT("author2text.xsl");
+
+	sDescXSL  << pDatabase->GetDatabaseDirectory () 
+			<< wxFileName::GetPathSeparator ()
+			<< wxT("desc2text.xsl");
+
+	result = XmlToXslt(sCrypt, &sCryptXSL);
+
+	if (result)
+	{
+		result = XmlToXslt(sLibrary, &sLibraryXSL);
+	}
+
+	if (result)
+	{
+		result = XmlToXslt(sTitle, &sTitleXSL);
+	}
+
+	if (result)
+	{
+		result = XmlToXslt(sAuthor, &sAuthorXSL);
+	}
+
+	if (result)
+	{
+		result = XmlToXslt(sDesc, &sDescXSL);
+	}
+
+	if (result)
+	{
+		result = DeckUpload::Upload(sCrypt,sLibrary, sTitle, sAuthor, sDesc, sUsername, sPassword);
+	}
+
+	return result;
+
+}
+
+bool
+DeckModel::XmlToXslt(wxString &sResult, wxString *pXSL)
+{
+	bool bReturnValue;
+	xmlDocPtr doc, res;					// document pointer
+	xmlNodePtr nRoot = NULL, node = NULL; // node pointers
+	xmlNodePtr nLibrary, nCrypt;			// more node pointers
+	xmlDtdPtr dtd = NULL;					// DTD pointer
+	xmlNodePtr nStylesheet = NULL;		// xsl stylesheet node pointer
+	xsltStylesheetPtr cur = NULL;			// xsl stylesheet
+	wxString sCount;
+	xmlChar *resstr;
+	int reslen;
+#ifdef __WXMSW__
+	wxString sTemp;
+#endif
+
+	LIBXML_TEST_VERSION;
+
+  // Creates a new document, a node and set it as a root node
+	doc = xmlNewDoc (BAD_CAST "1.0");	 
+	nRoot = xmlNewNode (NULL, BAD_CAST "deck");  
+	my_xmlNewProp (nRoot, wxT ("formatVersion"), wxT ("-TODO-1.0"));
+	my_xmlNewProp (nRoot, wxT ("databaseVersion"), wxT ("-TODO-20040101"));
+	my_xmlNewProp (nRoot, wxT ("generator"), wxT ("Anarch Revolt Deck Builder"));
+	xmlDocSetRootElement (doc, nRoot);
+
+  // Creates a DTD declaration.
+	dtd = xmlCreateIntSubset (doc, BAD_CAST "deck", 
+							  NULL, BAD_CAST "AnarchRevoltDeck.dtd");
+
+  // Creates a default stylesheet declaration
+	nStylesheet = xmlNewPI (BAD_CAST "xml-stylesheet", BAD_CAST "type=\"text/xsl\" href=\"deck2html_eldb.xsl\"");
+	xmlAddPrevSibling (nRoot, nStylesheet);
+
+  // Add the deck's information nodes
+	my_xmlNewChild (nRoot, NULL, wxT ("name"), m_sName);
+	my_xmlNewChild (nRoot, NULL, wxT ("date"), wxNow ());
+	my_xmlNewChild (nRoot, NULL, wxT ("author"), m_sAuthor);
+  // TODO: //author/@contact
+#ifdef __WXMSW__
+  // Under windows, this text needs CRLF reformating
+	sTemp = m_sDescription;
+	sTemp.Replace (wxT ("\n"), wxT ("\r\n")); 
+	my_xmlNewChild (nRoot, NULL, wxT ("description"), sTemp);
+#else
+	my_xmlNewChild (nRoot, NULL, wxT ("description"), m_sDescription);
+#endif
+
+  // Add a misc attributes node
+	node = my_xmlNewChild (nRoot, NULL, wxT ("attributes"), wxT (""));
+	my_xmlNewProp (node, wxT ("in_use"), wxT ("-TODO-yes"));
+	my_xmlNewProp (node, wxT ("contains_proxy"), wxT ("-TODO-yes"));
+
+  // Add the crypt node
+	nCrypt = my_xmlNewChild (nRoot, NULL, wxT ("crypt"), wxT (""));
+	sCount = wxT (""); 
+	sCount << m_lCryptCount;
+	my_xmlNewProp (nCrypt, wxT("size"), sCount);
+	sCount = wxT (""); 
+	sCount << m_lCryptMin;
+	my_xmlNewProp (nCrypt, wxT("min"), sCount);
+	sCount = wxT (""); 
+	sCount << m_lCryptMax;
+	my_xmlNewProp (nCrypt, wxT("max"), sCount);
+	sCount = wxT (""); 
+	sCount << m_lCryptAvg;
+	my_xmlNewProp (nCrypt, wxT("avg"), sCount);
+
+  // Add the crypt cards
+	for (unsigned int i = 0; i < m_oCryptList.GetCount (); i++)
+	{
+	  /*
+	Reminder of the query string used to fill m_oCryptList
+	"SELECT number_used, "
+	"		card_name, "
+	"		advanced, "
+	"		capacity, "
+	"		disciplines, "
+	"		title, "
+	"		card_type, "
+	"		groupnumber, "
+	"		set_name, "
+	"		card_text, "
+	"		card_ref "	  
+	  */	  
+
+	  // The card node contains mandatory props
+		node = my_xmlNewChild (nCrypt, NULL, wxT ("vampire"), wxT (""));
+		my_xmlNewProp (node, wxT ("databaseID"), 
+					   m_oCryptList.Item (i).Item (10));
+		my_xmlNewProp (node, wxT ("count"), 
+					   m_oCryptList.Item (i).Item (0));
+
+	  // These are phony children nodes to help interoperabilty
+	  // and allow xsl to generate pretty things
+		my_xmlNewChild (node, NULL, wxT ("name"),
+						m_oCryptList.Item (i).Item (1));
+		my_xmlNewChild (node, NULL, wxT ("adv"),
+						m_oCryptList.Item (i).Item (2));
+		my_xmlNewChild (node, NULL, wxT ("clan"),
+						m_oCryptList.Item (i).Item (6));
+		my_xmlNewChild (node, NULL, wxT ("capacity"),
+						m_oCryptList.Item (i).Item (3));
+		my_xmlNewChild (node, NULL, wxT ("disciplines"),
+						m_oCryptList.Item (i).Item (4));
+		my_xmlNewChild (node, NULL, wxT ("title"),
+						m_oCryptList.Item (i).Item (5));
+		my_xmlNewChild (node, NULL, wxT ("group"),
+						m_oCryptList.Item (i).Item (7));
+		my_xmlNewChild (node, NULL, wxT ("set"),
+						m_oCryptList.Item (i).Item (8));
+		my_xmlNewChild (node, NULL, wxT ("text"),
+						m_oCryptList.Item (i).Item (9));
+	}
+
+  // Add the library node
+	nLibrary = my_xmlNewChild (nRoot, NULL, wxT ("library"), wxT (""));
+	sCount = wxT (""); 
+	sCount << m_lLibraryCount;
+	my_xmlNewProp (nLibrary, wxT ("size"), sCount);
+
+  // Add the library cards
+	for (unsigned int i = 0; i < m_oLibraryList.GetCount (); i++)
+	{
+	  // Reminder of the query string used to fill m_oLibraryList
+	  // "SELECT number_used, "
+	  // "		 card_name, "
+	  // "		 set_name, "
+	  // "		 card_type, "
+	  // "		 card_ref, "
+	  // "		 cost, "
+	  // "		 requires, "
+	  // "		 card_text "
+
+	 // The card node contains mandatory props
+		node = my_xmlNewChild (nLibrary, NULL, wxT ("card"), wxT (""));
+		my_xmlNewProp (node, wxT ("databaseID"), 
+					   m_oLibraryList.Item (i).Item (4));
+		my_xmlNewProp (node, wxT ("count"), 
+					   m_oLibraryList.Item (i).Item (0));
+
+	  // These are phony children nodes to help interoperabilty
+	  // and allow xsl to generate pretty things
+		my_xmlNewChild (node, NULL, wxT ("name"),
+						m_oLibraryList.Item (i).Item (1));
+		my_xmlNewChild (node, NULL, wxT ("type"),
+						m_oLibraryList.Item (i).Item (3));
+		my_xmlNewChild (node, NULL, wxT ("set"),
+						m_oLibraryList.Item (i).Item (2));
+		my_xmlNewChild (node, NULL, wxT ("cost"),
+						m_oLibraryList.Item (i).Item (5));
+		my_xmlNewChild (node, NULL, wxT ("requirement"),
+						m_oLibraryList.Item (i).Item (6));
+		my_xmlNewChild (node, NULL, wxT ("text"),
+						m_oLibraryList.Item (i).Item (7));
+	}
+
+  	xmlChar acXSLname[1024];
+	memcpy (acXSLname, pXSL->mb_str (wxConvLibc), (pXSL->Length () + 1) * sizeof (wxChar));
+
+	xmlSubstituteEntitiesDefault(1);
+	xmlLoadExtDtdDefaultValue = 1;
+	cur = xsltParseStylesheetFile(acXSLname);
+
+	if (cur != NULL) 
+	{
+		res = xsltApplyStylesheet(cur, doc, NULL);
+		if (res != NULL)
+		{
+			bReturnValue = xsltSaveResultToString(&resstr, &reslen, res, cur) >= 0;
+			xmlFreeDoc(res);
+
+			if (bReturnValue)
+			{
+				//Convert resstr to wxString
+				sResult = resstr;
+			}
+		}
+		else
+		{
+			bReturnValue = FALSE;
+		}
+		
+		xsltFreeStylesheet(cur);
+	}
+	else
+	{
+		bReturnValue = FALSE;
+		wxLogError (wxT ("Can't open XSL file %s"), pXSL->c_str ());
+	}
+
+	xsltCleanupGlobals();
+
+	// Free the document
+	xmlFreeDoc(doc);
+
+	// Free the global variables that may have been allocated by the parser.
+	xmlCleanupParser();
+
+	return bReturnValue;
 }
 
 

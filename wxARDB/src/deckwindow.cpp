@@ -26,6 +26,7 @@
 #include "deckmodel.h"
 #include "drawsimulator.h"
 #include "interfacedata.h"
+#include "sllogindialog.h"
 
 #include <wx/confbase.h>
 #include <wx/fileconf.h>
@@ -39,6 +40,7 @@ BEGIN_EVENT_TABLE (DeckWindow, wxFrame)
   EVT_MENU (ID_FILE_EXPORT_BBCODE, DeckWindow::OnFileExportPhpBB)
   EVT_MENU (ID_FILE_EXPORT_TEXT, DeckWindow::OnFileExportText)
   EVT_MENU (ID_FILE_EXPORT_JOL, DeckWindow::OnFileExportJOL)
+  EVT_MENU (ID_FILE_EXPORT_SL, DeckWindow::OnFileExportSecretLibrary)		  
   EVT_MENU (ID_FILE_IMPORT_ELD, DeckWindow::OnFileImportELD)
   EVT_MENU (ID_FILE_CLOSE, DeckWindow::OnFileClose)
   EVT_MENU (ID_TOOLS_DRAWSIM, DeckWindow::OnToolsDrawSim)
@@ -82,6 +84,7 @@ DeckWindow::DeckWindow (DeckModel *pModel, const wxPoint& pos, const wxSize& siz
   pFileMenu->Append (ID_FILE_EXPORT_BBCODE, wxT ("Export deck to phpBB\tCtrl+P"));
   pFileMenu->Append (ID_FILE_EXPORT_TEXT, wxT ("Export deck to text\tCtrl+T"));
   pFileMenu->Append (ID_FILE_EXPORT_JOL, wxT ("Export deck to JOL\tCtrl+J"));
+  pFileMenu->Append (ID_FILE_EXPORT_SL, wxT ("Export deck to Secret Library\tCtrl+L"));
   pFileMenu -> AppendSeparator () ;
   pFileMenu->Append (ID_FILE_IMPORT_ELD, wxT ("Import ELD deck\tCtrl+E"));
   pFileMenu -> AppendSeparator () ;
@@ -203,7 +206,28 @@ DeckWindow::OnFileExportText (wxCommandEvent& WXUNUSED (event))
       wxLogError (wxT ("An error occured while saving"));
     }
 }
-  
+
+void
+DeckWindow::OnFileExportSecretLibrary(wxCommandEvent& WXUNUSED (event))
+{
+	wxString username = wxT("");
+	wxString password = wxT("");
+	//Prompt for Username and Password
+	SLLoginDialog *pDialog = new SLLoginDialog();
+
+	if (pDialog->ShowModal())
+	{
+		username = pDialog->Username();
+		password = pDialog->Password();
+	}
+
+	delete pDialog;
+	
+	if (!m_pModel->ExportToSecretLibrary(username,password))
+	{
+		wxLogError (wxT ("An error occured while uploading"));
+	}
+}
 
 void 
 DeckWindow::OnFileImportELD (wxCommandEvent& WXUNUSED (event))

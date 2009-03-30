@@ -29,7 +29,7 @@
 class DeckUpload
 {
 	public:
-		static bool Upload(wxString &sCrypt, wxString &sLibrary);
+		static bool Upload(wxString &sCrypt, wxString &sLibrary, wxString &sTitle, wxString &sAuthor, wxString &sDesc, wxString &sUserName, wxString &sPassword);
 
 	private:
 		static wxString UriEncode(const wxString &sSrc);
