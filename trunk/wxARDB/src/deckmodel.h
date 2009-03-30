@@ -75,7 +75,9 @@ class DeckModel
   bool ExportToPhpBB ();
   bool ExportToText ();
   bool ExportToXML ();
+  bool ExportToSecretLibrary(wxString &sUsername, wxString &sPassword);
   bool ExportWithXSL (wxString &sFileName, wxString *pXSL);
+  bool XmlToXslt(wxString &sResult, wxString *pXSL);
   bool ImportFromELD ();
   bool ImportFromXML ();
   bool ImportFromXML (wxString &sFileName, bool bImportAll = TRUE);

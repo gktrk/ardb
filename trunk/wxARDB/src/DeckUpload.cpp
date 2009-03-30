@@ -52,42 +52,44 @@ const char SAFE[256] =
 };
 
 // Uploads a deck to secret library
-bool DeckUpload::Upload(wxString &sCrypt, wxString &sLibrary)
+bool DeckUpload::Upload(wxString &sCrypt, wxString &sLibrary, wxString &sTitle, wxString &sAuthor, wxString &sDesc, wxString &sUserName, wxString &sPassword)
 {
+	bool result = FALSE;
 	wxHTTP httpPost;
 	wxString postBuffer = wxT("");
-	wxString encCrypt;
-	wxString encLibrary;
+	int timeoutCount = 0;
 	
 	httpPost.SetHeader(wxT("Content-type"), wxT("application/x-www-form-urlencoded"));
 	httpPost.SetTimeout(10); // 10 seconds of timeout instead of 10 minutes ...
 
-	encCrypt = UriEncode(sCrypt);
-	encLibrary = UriEncode(sLibrary);
-
 	postBuffer += wxT("sl_deck_submit=1&");
 	postBuffer += wxT("sl_user_agent=ardb&");
 	postBuffer += wxT("sl_agent_version=2.9.0&");
-	postBuffer += wxT("username=graham&");
-	postBuffer += wxT("password=clare1&");
-	postBuffer += wxT("title=Test+Deck&");
-	postBuffer += wxT("author=Graham+Smith&");
-	postBuffer += wxT("description=Description+of+the+deck&");
+	postBuffer += wxT("username=") + sUserName + wxT("&");
+	postBuffer += wxT("password=") + sPassword + wxT("&");
+	postBuffer += wxT("title=") + UriEncode(sTitle) + wxT("&");
+	postBuffer += wxT("author=") + UriEncode(sAuthor) + wxT("&");
+	postBuffer += wxT("description=") + UriEncode(sDesc) + wxT("&");
 	postBuffer += wxT("public=1&");
 	postBuffer += wxT("crypt=");
-	postBuffer += encCrypt;
+	postBuffer += UriEncode(sCrypt);
 	postBuffer += wxT("&");
 	postBuffer += wxT("library=");
-	postBuffer += encLibrary;
+	postBuffer += UriEncode(sLibrary);
 
 	httpPost.SetPostBuffer(postBuffer);
 
-	httpPost.Connect(wxT("www.secretlibrary.info"));
-	
-	//while (!httpPost.Connect(wxT("www.secretlibrary.info/api.php"))) // only the server, no pages here yet ...
-	//{
-		//wxSleep(5);
-	//}
+	while (!httpPost.Connect(wxT("www.secretlibrary.info"))) // only the server, no pages here yet ...
+	{
+		wxSleep(5);
+		timeoutCount++;
+
+		if (timeoutCount > 4)
+		{
+			
+			break;
+		}
+	}
 
 	wxInputStream *httpStream = httpPost.GetInputStream(wxT("/api.php"));
 
@@ -99,9 +101,10 @@ bool DeckUpload::Upload(wxString &sCrypt, wxString &sLibrary)
 
 
 		wxMessageBox(res);
+		result = TRUE;
 	}
 	
-	return TRUE;
+	return result;
 
 }
 
