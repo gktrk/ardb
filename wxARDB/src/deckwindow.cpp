@@ -234,7 +234,7 @@ DeckWindow::OnFileExportSecretLibrary(wxCommandEvent& WXUNUSED (event))
 	//Prompt for Username and Password
 	SLLoginDialog *pDialog = new SLLoginDialog(saveDetails,username,password);
 
-	if (pDialog->ShowModal())
+	if (pDialog->ShowModal() == 1)
 	{
 		username = pDialog->Username();
 		password = pDialog->Password();
@@ -247,14 +247,15 @@ DeckWindow::OnFileExportSecretLibrary(wxCommandEvent& WXUNUSED (event))
 			pConfig->Write(sSlPassword, password);
 			pConfig->Flush(TRUE);
 		}
+
+		if (!m_pModel->ExportToSecretLibrary(username,password))
+		{
+			wxLogError (wxT ("An error occured while uploading"));
+		}
 	}
 
 	delete pDialog;
-	
-	if (!m_pModel->ExportToSecretLibrary(username,password))
-	{
-		wxLogError (wxT ("An error occured while uploading"));
-	}
+
 }
 
 void 
