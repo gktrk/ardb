@@ -28,7 +28,7 @@
 #include "interfacedata.h"
 #include "updater.h"
 #include "importxml.h"
-#include "deckupload.h"
+#include "DeckUpload.h"
 #include "sllogindialog.h"
 
 #ifdef __WXMAC__
