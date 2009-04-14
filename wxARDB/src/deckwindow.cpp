@@ -234,7 +234,7 @@ DeckWindow::OnFileExportSecretLibrary(wxCommandEvent& WXUNUSED (event))
 	//Prompt for Username and Password
 	SLLoginDialog *pDialog = new SLLoginDialog(saveDetails,username,password);
 
-	if (pDialog->ShowModal() == 1)
+	if (pDialog->ShowModal() == wxID_OK)
 	{
 		username = pDialog->Username();
 		password = pDialog->Password();

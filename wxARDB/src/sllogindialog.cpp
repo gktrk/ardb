@@ -23,12 +23,6 @@
 
 #include "sllogindialog.h"
 
-BEGIN_EVENT_TABLE(SLLoginDialog, wxDialog)
-EVT_BUTTON (ID_OK_BUTTON, SLLoginDialog::OnOKButtonClick)
-EVT_BUTTON (ID_CANCEL_BUTTON, SLLoginDialog::OnCancelButtonClick)
-END_EVENT_TABLE()
-
-
 ///////////////////////////////////////////////////////////////////////////
 
 SLLoginDialog::SLLoginDialog(bool saveDetails, wxString &username, wxString &password) :
@@ -83,15 +77,4 @@ SLLoginDialog::SLLoginDialog(bool saveDetails, wxString &username, wxString &pas
 
 SLLoginDialog::~SLLoginDialog()
 {
-}
-
-void SLLoginDialog::OnOKButtonClick (wxCommandEvent&  WXUNUSED (event))
-{
-	EndModal (1);
-}
-
-
-void SLLoginDialog::OnCancelButtonClick (wxCommandEvent&  WXUNUSED (event))
-{
-	EndModal (0);
 }

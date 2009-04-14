@@ -29,8 +29,6 @@
 class SLLoginDialog : public wxDialog 
 {
 	private:
-		void OnCancelButtonClick (wxCommandEvent& WXUNUSED (event));
-		void OnOKButtonClick (wxCommandEvent& WXUNUSED (event));
 
 	
 	protected:
@@ -67,11 +65,6 @@ class SLLoginDialog : public wxDialog
 			ID_OK_BUTTON = wxID_HIGHEST + 1,
 			ID_CANCEL_BUTTON
 		};
-
-
-		DECLARE_EVENT_TABLE()
-		
-	
 };
 
 #endif //__noname__
