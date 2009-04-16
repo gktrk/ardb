@@ -167,12 +167,8 @@ AC_ARG_WITH(sqlite-prefix,
 		*) sqlite_path=$withval ;;
 	esac
 ])
-if test "x$sqlite_path" = "x"; then
-	PKG_CHECK_MODULES(SQLITE, sqlite)
-else	
 	SQLITE_CFLAGS="-I $sqlite_path/include"
 	SQLITE_LIBS="$sqlite_path/lib/libsqlite.a"
-fi	
 
 AM_CONDITIONAL(USE_WINDOWS, test $use_windows = yes)
 AM_CONDITIONAL(USE_MACOS,   test $use_mac     = yes)
