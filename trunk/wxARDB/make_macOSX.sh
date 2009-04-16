@@ -97,3 +97,13 @@ fi
 echo "Running make"
 make clean
 make -j 4 -l 4
+rm -rf ardb.app
+mkdir ardb.app
+mkdir ardb.app/Contents
+mkdir ardb.app/Contents/MacOS
+mkdir ardb.app/Contents/Resources
+cp src/Info.plist ardb.app/Contents
+cp src/ardb ardb.app/Contents/MacOS
+cp -r resources/*.* ardb.app/Contents/Resources
+cp -r resources/* ardb.app/Contents/Resources
+
