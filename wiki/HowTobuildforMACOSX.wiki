@@ -15,28 +15,28 @@ Install XCode
 Open a terminal window
 In the terminal window build and install wxWidgets following instructions in install-mac.txt.  Use ../configure --disable-shared to disable shared libraries.
 In the terminal window checkout sqlite 2 using the commands:
-{{{
+<pre>
 cvs -d :pserver:anonymous@www.sqlite.org:/sqlite login
 cvs -d :pserver:anonymous@www.sqlite.org:/sqlite checkout sqlite
-}}}
+</pre>
 
 When the first command prompts you for a password, enter "anonymous". Then
-{{{
+<pre>
 cd sqlite
 cvs update -r version_2
 ./configure --disable-shared
 make
 sudo make install
-}}}
+</pre>
 
 In the terminal window checkout and build ardb using:
 
-{{{
+<pre>
 svn checkout http://ardb.googlecode.com/svn/trunk/ ardb-read-only
 cd ardb
 cd wxArdb
 ./make_macOSX.sh
-}}}
+</pre>
 
 This will create the ardb.app.  You will want to update the database using File|Update Database
 
