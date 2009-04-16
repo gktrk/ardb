@@ -31,7 +31,7 @@ make
 sudo make install
 }}}
 
-In the terminal window checkout ardb using:
+In the terminal window checkout and build ardb using:
 
 {{{
 svn checkout http://ardb.googlecode.com/svn/trunk/ ardb-read-only
@@ -40,11 +40,6 @@ cd wxArdb
 ./make_macOSX.sh
 }}}
 
+This will create the ardb.app.  You will want to update the database using File|Update Database
 
-
-
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+You can add card image support by downloading the cardimages zip file from  http://www.powerbase-bath.com/files/cardimages.zip.  Extract the cardimages.zip file to $HOME/.ardb.
