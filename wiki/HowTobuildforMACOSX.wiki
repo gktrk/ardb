@@ -40,4 +40,4 @@ cd wxArdb
 
 This will create the ardb.app.  You will want to update the database using File|Update Database
 
-You can add card image support by downloading the cardimages zip file from  http://www.powerbase-bath.com/files/cardimages.zip.  Extract the cardimages.zip file to $HOME/.ardb.
+You can add card image support by downloading the cardimages zip file from  http://www.powerbase-bath.com/files/cardimages.zip.  Extract the cardimages.zip file to ardb.app/Contents/Resources.
