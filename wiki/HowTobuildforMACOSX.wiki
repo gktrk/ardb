@@ -6,10 +6,10 @@ This page describes how to build Ardb from source for MAC OS X 10.5.x.
 
 = Requirements =
 
-XCode 3.1.1 or 3.1.2 from  http://developer.apple.com/mac/
-wxWidgets 2.8.10 from http://prdownloads.sourceforge.net/wxwindows/wxMac-2.8.10.tar.gz
-sqlite 2 from http://www.sqlite.org/download.html
-ardb source code from http://code.google.com/p/ardb/source/checkout
+* XCode 3.1.1 or 3.1.2 from  http://developer.apple.com/mac/
+* wxWidgets 2.8.10 from http://prdownloads.sourceforge.net/wxwindows/wxMac-2.8.10.tar.gz
+* sqlite 2 from http://www.sqlite.org/download.html
+* ardb source code from http://code.google.com/p/ardb/source/checkout
 
 = Details =
 
