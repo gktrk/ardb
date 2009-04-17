@@ -33,8 +33,9 @@ In the terminal window checkout and build ardb using:
 
 <pre>
 svn checkout http://ardb.googlecode.com/svn/trunk/ ardb-read-only
-cd ardb
+cd ardb-read-only
 cd wxArdb
+chmod +x make_macOSX.sh
 ./make_macOSX.sh
 </pre>
 
