@@ -1009,7 +1009,7 @@ DeckModel::XmlToXslt(wxString &sResult, wxString *pXSL)
 			if (bReturnValue)
 			{
 				//Convert resstr to wxString
-				sResult = resstr;
+				sResult = wxString((const char*)resstr,wxConvUTF8);
 			}
 		}
 		else
