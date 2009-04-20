@@ -29,7 +29,7 @@ fi
 if test ! -f /local/lib/libsqlite.la
 then
      echo "You must build sqlite first. Do:"
-     echo "cd ../sqlite; ./configure --disable-shared --prefix=/local; make install"
+     echo "cd sqlite; ./configure --disable-shared --prefix=/local; make install"
      exit 1
 fi
 
