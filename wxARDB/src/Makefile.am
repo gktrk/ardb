@@ -44,7 +44,7 @@ ardb_SOURCES = \
 	ardb_db_edition_filter.cpp \
 	importxml.cpp \
 	cardviewer.cpp \
-	deckupload.cpp \
+	DeckUpload.cpp \
 	sllogindialog.cpp
 
 ardb_resource.o: ardb.rc
