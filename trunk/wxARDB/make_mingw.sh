@@ -26,12 +26,12 @@ then
     exit 1
 fi
 
-if test ! -f /local/lib/libsqlite.la
-then
-     echo "You must build sqlite first. Do:"
-     echo "cd sqlite; ./configure --disable-shared --prefix=/local; make install"
-     exit 1
-fi
+# if test ! -f ../sqlite/.libs/libsqlite.la
+# then
+#     echo "You must build sqlite first. Do:"
+#     echo "    cd ../sqlite; ./configure; make"
+#     exit 1
+# fi
 
 #if test ! -f aclocal.m4 
 #then
@@ -94,7 +94,7 @@ then
 fi
 
 echo "Running ./configure"
-if (./configure --enable-debug --with-wx-config=$WX_CONFIG $* --with-sqlite-prefix=/local/)
+if (./configure --enable-debug --with-wx-config=$WX_CONFIG $* --with-sqlite-prefix='/local/')
 then 
     echo "OK"
 else
