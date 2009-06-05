@@ -296,7 +296,7 @@
 
                 <td><span class="tablevalue"><xsl:call-template name="count-vampires"><xsl:with-param name="myname" select="string(name)" /><xsl:with-param name="myadv" select="string(adv)" /></xsl:call-template>x</span></td>
 
-                <td><span class="tablevalue"><a><xsl:attribute name='href'>http://http://www.secretlibrary.info/?crypt=<xsl:value-of select="name"/
+                <td><span class="tablevalue"><a><xsl:attribute name='href'>http://www.secretlibrary.info/?crypt=<xsl:value-of select="name"/
 ><xsl:if test="adv!=''"> (Adv)</xsl:if></xsl:attribute><xsl:value-of select="name"/></a></span></td>
 
                 <td><span class="tablevalue"><xsl:value-of select="adv"/></span></td>
