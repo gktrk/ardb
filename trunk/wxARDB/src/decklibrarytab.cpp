@@ -94,7 +94,7 @@ DeckLibraryTab::DeckLibraryTab (DeckModel *pModel, wxNotebook *pParent) :
   m_pCardInput = new wxTextCtrl (this, ID_CARD_INPUT, wxT (""), 
 				 wxDefaultPosition, wxDefaultSize,
 				 wxTE_PROCESS_ENTER | wxTE_PROCESS_TAB);
-  m_pCardInput->SetToolTip (wxT ("Type in the name of a card, ENTER adds to deck\nYou can also type things like '10 Blur'"));
+  m_pCardInput->SetToolTip (wxT ("Type in the name of a card, ENTER adds to deck."));
   pFindSizer->Add (m_pCardInput, 1);
   pPickerSizer->Add (pFindSizer, 0, wxEXPAND);
 
@@ -457,22 +457,15 @@ DeckLibraryTab::OnCardInputChanged (wxCommandEvent& WXUNUSED (event))
 
   if (m_bNoEvents || !m_pCardInput || !m_pCardPicker) return;
 
-  if (m_pCardInput->GetValue ().Find (' ') &&
-	  m_pCardInput->GetValue ().BeforeFirst (' ').ToLong (&m_lAmount))
-	{
-	  CardName = m_pCardInput->GetValue ().AfterFirst (' ');
-	}
-  else
-	{
-	  m_lAmount = 1;
-	  CardName = m_pCardInput->GetValue ();
-	}
+  m_lAmount = 1;
+  CardName = m_pCardInput->GetValue ();
+
   iStringLength = CardName.Len ();
 
   if (iStringLength <= 0) 
-	{
-	  return;
-	}
+    {
+      return;
+    }
 
   m_iCycleLowerValue = -1;
   m_iCycleUpperValue = -1;
