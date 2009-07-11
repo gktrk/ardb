@@ -56,8 +56,7 @@
 	    <xsl:for-each select="/deck/crypt/vampire[name=$xname and not(adv=preceding-sibling::vampire[name=$xname]/adv)]">
               <tr>
                 <td nowrap="1" width="30"><xsl:call-template name="count-vampires"><xsl:with-param name="myname" select="string(name)" /><xsl:with-param name="myadv" select="string(adv)" /></xsl:call-template>x</td>
-                <td nowrap="1"><a><xsl:attribute name='href'>http://www.secretlibrary.info/?crypt=<xsl:value-of select="name"/
-><xsl:if test="adv!=''"> (Adv)</xsl:if></xsl:attribute><xsl:value-of select="substring(name,1,23)"/>
+                <td nowrap="1"><a><xsl:attribute name='href'>http://www.secretlibrary.info/?crypt=<xsl:value-of select="name"/><xsl:if test="adv!=''"> (Adv)</xsl:if></xsl:attribute><xsl:value-of select="substring(name,1,23)"/>
 		<xsl:if test="adv!=''"> (Adv)</xsl:if></a>
 		</td>
                 <td nowrap="1"><xsl:value-of select="disciplines"/></td>
