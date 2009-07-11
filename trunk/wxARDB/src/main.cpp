@@ -103,7 +103,6 @@ MyApp::OnInit ()
 
 	::wxInitAllImageHandlers();
 	g_pIcon = new wxIcon (wxICON(icon));
-	// new stuff which doesn't quite work  g_pSplashBitmap = new wxBitmap (wxBITMAP (ardbsplash));
 	g_pSplashBitmap = new wxBitmap (ardbsplash_xpm);
 
 	// Init database
