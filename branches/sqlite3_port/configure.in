@@ -1,0 +1,197 @@
+@dnl Process this file with autoconf to produce a configure script.
+AC_INIT(aclocal.m4)
+
+AC_CANONICAL_SYSTEM
+
+dnl cross-compiling support: we're cross compiling if the build system is
+dnl different from the target one (assume host and target be always the same)
+if test "$build" != "$host" ; then
+    CC=$host_alias-gcc
+    CXX=$host_alias-c++
+    AR=$host_alias-ar
+    RANLIB=$host_alias-ranlib
+    DLLTOOL=$host_alias-dlltool
+    LD=$host_alias-ld
+    NM=$host_alias-nm
+    STRIP=$host_alias-strip
+fi
+RESCOMP=$host_alias-windres
+
+AM_INIT_AUTOMAKE(ardb, '0.0.1', avoid_defining_package_and_version)
+
+AM_OPTIONS_WXCONFIG
+
+AC_ARG_ENABLE(debug, [  --enable-debug          Enable debugging information],
+              USE_DEBUG="$enableval", USE_DEBUG="no")
+AC_ARG_ENABLE(debug, [  --enable-debug          Enable debugging information],
+              USE_DEBUG="$enableval", USE_DEBUG="no")
+
+AC_MSG_CHECKING(for install location)
+case "$prefix" in
+NONE)	AC_CACHE_VAL(m_cv_prefix,m_cv_prefix=$ac_default_prefix);;
+*)	m_cv_prefix=$prefix ;;
+esac
+AC_MSG_RESULT($m_cv_prefix)
+case "$m_cv_prefix" in /*) ;; *)
+	AC_MSG_WARN([--prefix=$prefix must be an absolute path name, using $ac_default_prefix])
+	m_cv_prefix=$ac_default_prefix
+esac
+prefix=$m_cv_prefix
+
+
+dnl Checks for programs.
+AC_PROG_AWK
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_RANLIB
+AC_PROG_CXX
+AC_PROG_CXXCPP
+dnl check for the exe suffix
+AC_EXEEXT
+
+dnl Check for libxml2 and its features.
+AC_ARG_WITH(libxml2-config,
+[  --with-libxml2-config=PATH   location of xml2-config],
+[
+	case "$withval" in
+		n|no|y|ye|yes) ;; dnl Do nothing, we need it.
+
+		*) libxml2_path=$withval ;;
+	esac
+])
+
+libxml2_path=`echo $libxml2_path | sed -e "s/\/xml2-config//"`
+
+AC_PATH_PROG([XML2_CONFIG], [xml2-config], [no],
+	[$libxml2_path:$PATH:$prefix/bin])
+
+if test "$XML2_CONFIG" != "no" ; then
+	XML2_LIBS="`$XML2_CONFIG --libs`"
+	XML2_FLAGS="`$XML2_CONFIG --cflags`"
+else
+	echo "*** Can't find xml2-config. Make sure you have libxml2 installed."
+	echo "*** If you do, try using --with-libxml2=PREFIX."
+	echo "*** If not, download it from http://xmlsoft.org/."
+	exit 1
+fi
+
+dnl Check for libxslt
+AC_ARG_WITH(libxslt-config,
+[  --with-xslt-config=PATH   location of xslt-config],
+[
+	case "$withval" in
+		n|no|y|ye|yes) ;; dnl Do nothing, we need it.
+
+		*) libxslt_path=$withval ;;
+	esac
+])
+
+libxslt_path=`echo $libxslt_path | sed -e "s/\/xslt-config//"`
+
+AC_PATH_PROG([XSLT_CONFIG], [xslt-config], [no],
+	[$libxslt_path:$PATH:$prefix/bin])
+
+if test "$XSLT_CONFIG" != "no" ; then
+	XSLT_LIBS="`$XSLT_CONFIG --libs`"
+	XSLT_FLAGS="`$XSLT_CONFIG --cflags`"
+else
+	echo "*** Can't find xslt-config. Make sure you have libxslt installed."
+	echo "*** If you do, try using --with-libxslt=PREFIX."
+	echo "*** If not, download it from http://xmlsoft.org/."
+	exit 1
+fi
+
+
+dnl debug flags or not
+case "$USE_DEBUG" in
+yes)	CXXFLAGS="-g -W -Wall"
+	WX_CONFIG_NAME="wxgtkd-2.8-config"
+    ;;    
+*)	CXXFLAGS="-O3 -W -Wall"
+    ;;
+esac
+
+
+AM_PATH_WXCONFIG(2.8.0, WXFOUND=1)
+
+if test "$WXFOUND" != 1; then
+    AC_MSG_ERROR([
+        Please check that wx-config is in path, the directory
+        where wxWindows libraries are installed (returned by
+        'wx-config --libs' command) is in LD_LIBRARY_PATH or
+        equivalent variable and wxWindows is version 2.8.0 or above.
+    ])
+fi
+
+if $WX_CONFIG_NAME --cxxflags | grep -q WXMSW; then
+    use_windows=yes
+dnl remove stupid pthread requirement
+    XSLT_LIBS=`echo $XSLT_LIBS | sed -e "s/-lpthread//"`
+    
+    changequote(<<,>>)
+    RC_WX_INCLUDES=`echo " $WX_CPPFLAGS $CXXFLAGS" | sed -e 's/ -[^I][^ ]*//g' | sed -e 's/ -I\([^ ]*\)/ --include-dir \1/g'`
+    changequote([,])
+
+else
+    use_windows=no
+fi
+
+ARDB_WX_LIBS="$WX_LIBS"
+
+AFTERBUILD=""
+if $WX_CONFIG_NAME --cxxflags | grep -q WXMAC; then
+   use_mac=yes
+   AFTERBUILD="`$WX_CONFIG_NAME --rezflags` ./ardb && /Developer/Tools/SetFile -a avBstClinmed ./ardb"
+ if (ls /usr/lib/libxml2.dylib); then
+   echo Dynamic Linking for OS X 10.3+
+ else
+   dnl statically link libiconv, libxml2 and libxslt because OSX < 10.3 haven't got them.
+   changequote(<<,>>)
+   MYLIBDIR=`echo "$XML2_LIBS" | sed -e 's|-L\([^ ]*\) .*|\1|'`
+   changequote([,])
+   XML2_LIBS=`echo $XML2_LIBS | sed -e "s|-lxml2|$MYLIBDIR/libxml2.a |" -e "s|-liconv|$MYLIBDIR/libiconv.a|"`
+   XSLT_LIBS=`echo $XSLT_LIBS | sed -e "s|-lxslt|$MYLIBDIR/libxslt.a |" -e "s| -lxml2||g" -e "s|-liconv|$MYLIBDIR/libiconv.a|"`
+   ARDB_WX_LIBS=`echo $ARDB_WX_LIBS | sed -e "s|-liconv|$MYLIBDIR/libiconv.a|"`
+ fi
+else
+   use_mac=no
+fi
+
+dnl find sqlite
+AC_ARG_WITH(sqlite-prefix,
+[  --with-sqlite-prefix=PATH   location of libsqlite, eg. /usr/local],
+[
+	case "$withval" in
+		n|no|y|ye|yes) ;; dnl Do nothing, we need it.
+
+		*) sqlite_path=$withval ;;
+	esac
+])
+	SQLITE_CFLAGS="-I $sqlite_path/include"
+	SQLITE_LIBS="$sqlite_path/lib/libsqlite.a"
+
+AM_CONDITIONAL(USE_WINDOWS, test $use_windows = yes)
+AM_CONDITIONAL(USE_MACOS,   test $use_mac     = yes)
+
+
+
+AC_SUBST(SQLITE_CFLAGS)
+AC_SUBST(SQLITE_LIBS)
+CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS $XML2_FLAGS $XSLT_FLAGS \"-DARDB_PREFIX=\\\"$prefix\\\"\" "
+
+AC_SUBST(LDFLAGS)
+AC_SUBST(CXXFLAGS)
+AC_SUBST(RESCOMP)
+AC_SUBST(WX_CONFIG_NAME)
+AC_SUBST(ARDB_WX_LIBS)
+AC_SUBST(RC_WX_INCLUDES)
+AC_SUBST(XML2_LIBS)
+AC_SUBST(XSLT_LIBS)
+AC_SUBST(AFTERBUILD)
+
+
+AC_OUTPUT([
+         Makefile
+         src/Makefile
+         ])
+
