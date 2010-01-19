@@ -60,7 +60,6 @@ AmountDialog::AmountDialog (wxArrayString *pNameArray, wxArrayInt *pAmountArray)
   pGridSizer->Add (m_pOKButton);
   m_pCancelButton = new wxButton (this, ID_CANCEL_BUTTON, wxT ("Cancel"));
   pGridSizer->Add (m_pCancelButton);
-
   pGridSizer->Fit (this);
 }
 
