@@ -2,7 +2,7 @@
  *
  *  Copyright (C) 2002 Francois Gombault
  *  gombault.francois@wanadoo.fr
- *  
+ *
  *  Official project page: https://savannah.nongnu.org/projects/anarchdb/
  *
  *
@@ -18,13 +18,21 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  
+ * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
 #include "updater.h"
 #include <wx/mstream.h>
 #include <wx/confbase.h>
 #include <wx/fileconf.h>
+#include <wx/filesys.h>
+#include <wx/sstream.h>
+#include <wx/url.h>
+#include <wx/protocol/http.h>
+#include <wx/dynlib.h>
+#include <wx/datetime.h>
+
+
 
 Updater *Updater::spInstance = NULL;
 
@@ -91,7 +99,7 @@ Updater::decodeCSV(wxInputStream *file, char sep, char quote, int maxrecords, in
 	if (bSkipFirstLine)
 	{
 		// Skip first line (column names)
-		while (!file->Eof () && c != 10) 
+		while (!file->Eof () && c != 10)
 			c = file->GetC ();
 	}
 
@@ -170,7 +178,7 @@ Updater::decodeCSV(wxInputStream *file, char sep, char quote, int maxrecords, in
 				recs++;
 				if ((recs>maxrecords)&&(maxrecords!=-1)) {
 					break;
-				}   
+				}
 			}
 		} else if (c==13) {
 			if (inquotemode){
@@ -190,7 +198,7 @@ Updater::decodeCSV(wxInputStream *file, char sep, char quote, int maxrecords, in
 
 
 
-void 
+void
 Updater::DeleteInstance ()
 {
   if (spInstance != NULL)
@@ -202,7 +210,7 @@ Updater::DeleteInstance ()
 
 
 Updater *
-Updater::Instance () 
+Updater::Instance ()
 {
   if (spInstance == NULL)
     {
@@ -219,61 +227,143 @@ Updater::DoUpdate ()
 
   m_pStatusLabel->Clear ();
   m_pOKButton->Disable ();
-  
+
   if (m_bUpdating)
     {
       return -1;
     }
 
-  wxMessageDialog oPermissionDialog (NULL, wxT ("To update the database, I must download a file (about 200 KBytes) from White Wolf's website.\nPlease make sure that you are connected to the Internet, and then click OK.\n\nTo update from a local 'vtescsv.zip' file, click Cancel."), wxT ("Internet connection request"), wxOK | wxCANCEL | wxICON_QUESTION);
+  Log (wxT ("Checking dates of databases..."));
 
-  Show ();
-  wxYield ();
-  if (oPermissionDialog.ShowModal () == wxID_OK)
-    {
+
+  wxFileName vtesdatabase(wxT("vtescsv.zip"));
+
+  wxDateTime test1=vtesdatabase.GetModificationTime();
+
+  test1=test1.ToUTC();
+
+
+
+  wxString sServer (wxT ("www.white-wolf.com")),
+  sFile (wxT("/VTES/downloads/vtescsv.zip"));
+
+  wxString time1=test1.Format(_T("%A, %d %b %Y %H:%M:%S"));
+  time1+=(_T(" GMT"));
+
+
+  Log (wxT ("\n"));
+  Log (wxT ("Offline Datebase: "));
+  Log (time1);
+  Log (wxT ("\n"));
+
+  wxURL url(wxT("http://www.white-wolf.com/vtes/downloads/vtescsv.zip"));
+
+
+
+
+  if(url.GetError()==wxURL_NOERR)  {
+  wxInputStream *data=url.GetInputStream();
+  wxHTTP* p=wxDynamicCast(&url.GetProtocol(),wxHTTP);
+  wxString time2=p->GetHeader(wxT("Last-Modified"));
+
+  Log (wxT ("Online Datebase: "));
+  Log(time2);
+
+  Log (wxT ("\n"));
+  wxDateTime test2;
+  test2.ParseDate(time2);
+
+
+  if (test1.IsLaterThan(test2)==TRUE)
+  //if (test2.IsLaterThan(test1)==TRUE)
+  {
+   wxString header(wxT("Your database is up to date."));
+     wxMessageDialog oUpdateDialog (NULL,header,wxT ("Internet connection request"), wxOK | wxCANCEL | wxICON_QUESTION);
+     if (oUpdateDialog.ShowModal () == wxID_OK)
+     {
+     }
+
+      else
+      {
+      }
+
+    }
+
+  else
+  {
+  wxString header(wxT("Your database is not up to date and there is a newer version online. Do you wish to update? If you wish to update hit the OK button. If not hit the CANCEL button"));
+  wxMessageDialog oUpdateDialog (NULL,header,wxT ("Internet connection request"), wxOK | wxCANCEL | wxICON_QUESTION);
+  if (oUpdateDialog.ShowModal () == wxID_OK)
+   {
+
+
+    wxMessageDialog oPermissionDialog (NULL, wxT ("To update the database, I must download a file (about 200 KBytes) from White Wolf's website.\nPlease make sure that you are connected to the Internet, and then click OK.\n\nTo update from a local 'vtescsv.zip' file, click Cancel."), wxT ("Internet connection request"), wxOK | wxCANCEL | wxICON_QUESTION);
+
+    Show ();
+    wxYield ();
+
+
+   if (oPermissionDialog.ShowModal () == wxID_OK)
+     {
       Log (wxT ("Downloading..."));
       m_bUpdating = true;
       wxSafeYield (this);
-      
+
       iResult = FetchCSVFiles ();
       if (iResult < 0)
-	{
-	  Log (wxT ("Failed.\n"));
-	}
-    }
-  else
-    {
-      iResult = -1;
-    }
+	  {
+      Log (wxT ("Failed.\n"));
+	  }
+     }
+     else
+     {
+       iResult = -1;
+     }
 
-  if (iResult >= 0)
-    {
-      Log (wxT ("\n"));
-      UpdateDatabaseFromCSV ();
-    }
-  else
-    {
-      wxFileDialog oFileDialog (NULL, wxT ("Please locate vtescsv.zip"), wxT (""), wxT ("vtescsv.zip"), wxT ("*.zip"), wxOPEN);
-      if (oFileDialog.ShowModal () != wxID_OK)
-	{
-	  Hide ();
-	  return -1;
-	}
-      m_bUpdating = true;
-      m_sZipFile = oFileDialog.GetDirectory () 
-	<< wxFileName::GetPathSeparator () << oFileDialog.GetFilename ();
+    if (iResult >= 0)
+     {
+       Log (wxT ("\n"));
+       UpdateDatabaseFromCSV ();
+     }
+    else
+     {
+       wxFileDialog oFileDialog (NULL, wxT ("Please locate vtescsv.zip"), wxT (""), wxT ("vtescsv.zip"), wxT ("*.zip"), wxOPEN);
+        if (oFileDialog.ShowModal () != wxID_OK)
+     {
+	   Hide ();
+	   return -1;
+	 }
+        m_bUpdating = true;
+        m_sZipFile = oFileDialog.GetDirectory ()
+	    << wxFileName::GetPathSeparator () << oFileDialog.GetFilename ();
 
-      Log (wxT ("Opening "));
-      Log (m_sZipFile);
-      Log (wxT ("\n"));
-      UpdateDatabaseFromCSV ();
-    }
+        Log (wxT ("Opening "));
+        Log (m_sZipFile);
+        Log (wxT ("\n"));
+        UpdateDatabaseFromCSV ();
+     }
 
-  Log (wxT ("Database update has ended.\n"
-	    "You may need to restart ARDB.\n"));
+   Log (wxT ("Database update has ended.\n"
+   "You may need to restart ARDB.\n"));
+   }
 
-  m_bUpdating = false;
-  //  Hide ();
+   else
+   {
+   }
+
+  }
+  }
+
+
+
+
+
+  Show ();
+  wxYield ();
+  Log (wxT ("Database update has ended.\n"));
+
+  //m_bUpdating = false;
+  //Hide ();
 
   m_pOKButton->Enable ();
 
@@ -284,6 +374,8 @@ Updater::DoUpdate ()
 int
 Updater::FetchCSVFiles ()
 {
+
+
   wxString sServer (wxT ("www.white-wolf.com")),
     sFile (wxT ("/VTES/downloads/vtescsv.zip"));
 
@@ -304,6 +396,8 @@ Updater::FetchCSVFiles ()
 	}
     }
 
+
+
   wxHTTP oHTTPCtrl;
   if (!oHTTPCtrl.Connect(sServer))
     {
@@ -311,12 +405,23 @@ Updater::FetchCSVFiles ()
       return -1;
     }
 
+
+
   wxInputStream *pInputStream = oHTTPCtrl.GetInputStream(sFile);
+
+
+
+
   if (!pInputStream)
     {
       wxMessageBox(wxString (wxT ("Failed to get :\nhttp://")) << sServer << sFile, wxT ("HTTP Error"), wxICON_ERROR | wxOK);
       return -1;
     }
+
+
+
+
+
 
   //   wxFileOutputStream oFileStream (wxT ("vtescsv2.zip")); // for testing purposes
   wxFileOutputStream oFileStream (wxT ("vtescsv.zip"));
@@ -355,17 +460,17 @@ Updater::LoadDisciplinesFromCSV ()
 	 i < iZipLength - 1);
   // add the last discipline
   if (sCurrent.Length () > 1) m_oDisciplinesArray.Add (sCurrent);
-  
+
   delete pCopyBuffer;
 
-  
-  
+
+
   // make sure we have something
   if (m_oDisciplinesArray.GetCount () > uiCrap)
     {
       wxString sQuery;
       pDatabase->Query (wxT ("BEGIN TRANSACTION;"));
-      
+
       // Drop the first items which are not disciplines
       m_oDisciplinesArray.RemoveAt (0, uiCrap);
 
@@ -421,19 +526,19 @@ Updater::LoadTableFromCSV (wxString sTable, wxString sCSVFile, int iNulls = 1)
 
   //can not operate on an empty result
   if (iNumFields==0) return 0;
-    
+
   //declare local variables we will need before the rollback jump
   int rowNum = 0;
   int colNum = 0;
-  
+
   sNulls.Clear ();
   for (int i=0; i < iNulls; i++) sNulls.Append (wxT (", NULL"));
 
   //now lets import all data, one row at a time
-  for (unsigned int i = 0; i < oList.GetCount (); i++) 
+  for (unsigned int i = 0; i < oList.GetCount (); i++)
   {
 	  wxString& sItem = oList.Item (i);
-	  if (colNum == 0) 
+	  if (colNum == 0)
 	  {
 		  sQuery = wxT ("INSERT INTO ");
 		  sQuery.Append (sTable);
@@ -452,7 +557,7 @@ Updater::LoadTableFromCSV (wxString sTable, wxString sCSVFile, int iNulls = 1)
 		  sQuery.Append (sNulls);
 		  sQuery.Append (wxT(");"));
 
-		  // Tweak : replace every occurences of 'Promo-xx' by 'Promo:xx', 
+		  // Tweak : replace every occurences of 'Promo-xx' by 'Promo:xx',
 		  // it's easier to parse
 		  sQuery.Replace (wxT ("Promo-"), wxT ("Promo:"));
 
@@ -472,7 +577,7 @@ Updater::LoadTableFromCSV (wxString sTable, wxString sCSVFile, int iNulls = 1)
 			  return -1;
 		  }
 		  rowNum++;
-		  if (!(rowNum % 100)) 
+		  if (!(rowNum % 100))
 		  {
 			  Log (wxT ("."));
 		  }
@@ -598,7 +703,7 @@ Updater::UpdateDatabaseFromCSV ()
 			 "       full_name STRING,"
 			 "       company STRING,"
 			 "       unused STRING);"));
-   
+
 
 
   int iVamps = LoadTableFromCSV (wxT ("Crypt"), wxT ("vtescrypt.csv"));
@@ -631,7 +736,7 @@ Updater::UpdateDatabaseFromCSV ()
   pDatabase->Query (wxT ("UPDATE cards_names SET card_table = 'cards_library';"));
   pDatabase->Query (wxT ("INSERT INTO cards_names SELECT DISTINCT name, NULL, NULL FROM Crypt ORDER BY name ASC;"));
   pDatabase->Query (wxT ("UPDATE cards_names SET card_table = 'cards_crypt' WHERE card_table ISNULL;"));
-  
+
   /* Tweak a few things in the import tables */
   pDatabase->Query (wxT ("UPDATE Library SET bloodcost = bloodcost || ' blood' WHERE bloodcost != ''"));
   pDatabase->Query (wxT ("UPDATE Library SET poolcost = poolcost || ' pool ' WHERE poolcost != ''"));
@@ -645,7 +750,7 @@ Updater::UpdateDatabaseFromCSV ()
   pDatabase->Query (wxT ("UPDATE cards_texts SET card_table = 'cards_library';"));
   pDatabase->Query (wxT ("INSERT INTO cards_texts SELECT DISTINCT cardtext, NULL, NULL FROM Crypt ORDER BY cardtext ASC;"));
   pDatabase->Query (wxT ("UPDATE cards_texts SET card_table = 'cards_crypt' WHERE card_table ISNULL;"));
-  
+
   pDatabase->Query (wxT ("DELETE FROM cards_types;"));
   pDatabase->Query (wxT ("INSERT INTO cards_types SELECT DISTINCT type, NULL, NULL FROM Library ORDER BY type ASC;"));
   pDatabase->Query (wxT ("UPDATE cards_types SET card_table = 'cards_library';"));
@@ -665,7 +770,7 @@ Updater::UpdateDatabaseFromCSV ()
   pDatabase->Query (wxT ("UPDATE Crypt SET edition_save = edition;"));
 
   // this loop inserts the promo cards into the cards_sets_unsorted table
-  for (int iLoop = 0; iLoop < iSets; iLoop++) 
+  for (int iLoop = 0; iLoop < iSets; iLoop++)
     {
       pDatabase->Query (wxT ("INSERT OR IGNORE INTO cards_sets_unsorted "
 			     "SELECT before (edition, ':') || after (before (edition, ','), ':'),"
@@ -698,9 +803,9 @@ Updater::UpdateDatabaseFromCSV ()
 			     "        NULL "
 			     "FROM Crypt "
 			     "WHERE edition NOTNULL;"));
-      
+
       pDatabase->Query (wxT ("UPDATE Crypt SET edition = after (edition, ' ');"));
-    
+
       Log (wxT ("."));
     }
 
@@ -709,9 +814,9 @@ Updater::UpdateDatabaseFromCSV ()
 
   Log (wxT ("50%"));
 
-  // Sort the sets 
+  // Sort the sets
   pDatabase->Query (wxT ("DELETE FROM cards_sets"));
-  
+
   pDatabase->Query (wxT ("INSERT INTO cards_sets "
 			 "SELECT set_name,"
 			 "       release_date,"
@@ -732,7 +837,7 @@ Updater::UpdateDatabaseFromCSV ()
   pDatabase->Query (wxT ("UPDATE Crypt SET edition = edition_save;"));
 
   // This loop fills the cards_*_unsorted tables
-  for (int iLoop = 0; iLoop < iSets; iLoop++) 
+  for (int iLoop = 0; iLoop < iSets; iLoop++)
     {
       /* tweak the Promo:XX editions so they'll be like PromoXX:XX */
       pDatabase->Query (wxT ("UPDATE Library "
@@ -745,9 +850,9 @@ Updater::UpdateDatabaseFromCSV ()
 			     "              || before(after(edition, 'Promo:'), ',') "
 			     "              || ':' || after(edition, 'Promo:') "
 			     "WHERE edition LIKE 'Promo%';"));
-      
+
       pDatabase->Query (wxT ("INSERT INTO cards_library_unsorted "
-			     "SELECT" 
+			     "SELECT"
 			     "       cards_names.record_num,"
 			     "       cards_types.record_num,"
 			     "       Library.poolcost || Library.bloodcost || Library.convictioncost,"
@@ -996,7 +1101,7 @@ Updater::UpdateDatabaseFromCSV ()
 
   // Clean up the mess with titles
   pDatabase->Query (wxT ("UPDATE cards_crypt SET title = after (title, ':');"));
-  
+
 
   // Fix errata'ed cards which have -none- as a requirement
   pDatabase->Query (wxT ("UPDATE cards_library SET clan = NULL WHERE clan like '%none%';"));

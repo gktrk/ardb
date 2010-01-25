@@ -2,7 +2,7 @@
  *
  *  Copyright (C) 2002 Francois Gombault
  *  gombault.francois@wanadoo.fr
- *  
+ *
  *  Official project page: https://savannah.nongnu.org/projects/anarchdb/
  *
  *
@@ -18,13 +18,13 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  
+ * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
 #ifndef _updater_h
 #define _updater_h
 
-/* 
+/*
 ** This updater requires the CSV files found on White-Wolf's website
 ** http://www.white-wolf.com/VTES/downloads/vtescsv.zip
 **
@@ -47,6 +47,7 @@
 #define BUFFER_SIZE 1000
 
 
+
 class Updater : public wxDialog
 {
  public:
@@ -54,10 +55,11 @@ class Updater : public wxDialog
   static Updater *Instance ();
   static void DeleteInstance ();
 
+
   int DoUpdate ();
   static void decodeCSV (wxInputStream *file, char sep, char quote, int maxrecords, int *numfields, wxArrayString *pResult, bool bSkipFirstLine);
 
- protected:
+  protected:
   // Constructor & destructor
   Updater ();
   ~Updater ();
@@ -73,6 +75,7 @@ class Updater : public wxDialog
   wxSizer          *m_pScrolledSizer;
   wxTextCtrl       *m_pStatusLabel;
   wxString          m_sZipFile;
+
 
   int FetchCSVFiles ();
   int LoadDisciplinesFromCSV ();

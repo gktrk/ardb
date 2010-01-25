@@ -5,11 +5,11 @@
 *
 *  Copyright (C) 2007 Graham Smith
 *  graham.r.smith@gmail.com
-*  
+*
 *  contributors:
 *    meshee.knight@gmail.com
 *	 afri@afri.cz
-*  
+*
 *  Official project page: http://code.google.com/p/ardb/
 *
 * This program is free software; you can redistribute it and/or modify
@@ -24,7 +24,7 @@
 *
 * You should have received a copy of the GNU General Public License
 * along with this program; if not, write to the Free Software Foundation,
-* Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  
+* Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
 // For compilers that support precompilation, includes "wx.h".
@@ -49,6 +49,8 @@
 #include <wx/tooltip.h>
 #include <wx/confbase.h>
 #include <wx/fileconf.h>
+
+
 
 class BrowserFrame ;
 
@@ -161,13 +163,19 @@ MyApp::OnInit ()
 
 	wxToolTip::SetDelay (2000);
 
-	g_pMainWindow = new BrowserFrame (wxT ("Anarch Revolt - Card Browser"),
-		wxPoint(iX,iY), 
+	g_pMainWindow = new BrowserFrame (wxT ("Robert's Test App - Card Browser"),
+		wxPoint(iX,iY),
 		wxSize (iWidth, iHeight));
 	SetTopWindow (g_pMainWindow);
 
 	//reset edition filter
 	//ardb_db_ef_reset();
+
+    //Runs Updater on Startup
+	Updater *pUpdater = Updater::Instance ();
+	pUpdater->DoUpdate ();
+
+
 
 	if (pSplash != NULL) delete pSplash;
 
@@ -202,17 +210,17 @@ m_uiLibraryBrowserCount (0)
 	pBrowserMenu->AppendSeparator ();
 	pBrowserMenu->Append (ID_BROWSER_CLOSE_TAB, wxT ("Kill current browser\tCtrl+Shift+K"), wxT (""));
 
-	wxMenu *pFileMenu = new wxMenu (); 
+	wxMenu *pFileMenu = new wxMenu ();
 	//   pFileMenu->Append (ID_FILE_PREFERENCES, wxT ("Preferences"), wxT (""));
 	//   pFileMenu->AppendSeparator () ;
 	pFileMenu->Append (ID_FILE_DECKBUILDER, wxT ("Deck Builder\tCtrl+D"), wxT (""));
 	pFileMenu->AppendSeparator () ;
-	//pFileMenu->Append (ID_FILE_EDITIONS, wxT ("VTES Sets..."), wxT (""));
+	//   pFileMenu->Append (ID_FILE_EDITIONS, wxT ("VTES Sets..."), wxT (""));
 	pFileMenu->Append (ID_FILE_UPDATEDB, wxT ("Update Database"), wxT (""));
 	pFileMenu->AppendSeparator () ;
 	pFileMenu->Append (ID_FILE_EXIT, wxT ("Quit\tCtrl+Q"), wxT (""));
 
-	wxMenu *pInventoryMenu = new wxMenu (); 
+	wxMenu *pInventoryMenu = new wxMenu ();
 	pInventoryMenu->Append (ID_INV_OPEN, wxT ("Open"), wxT (""));
 	pInventoryMenu->Append (ID_INV_IMPORT, wxT ("Import from (F)ELDB"), wxT (""));
 	pInventoryMenu->AppendSeparator () ;
@@ -220,7 +228,7 @@ m_uiLibraryBrowserCount (0)
 	pInventoryMenu->Append (ID_INV_EXPORT_HTML, wxT ("Export to HTML"), wxT (""));
 	pInventoryMenu->Append (ID_INV_EXPORT_CSV, wxT ("Export for (F)ELDB"), wxT (""));
 
-	wxMenu *pHelpMenu = new wxMenu (); 
+	wxMenu *pHelpMenu = new wxMenu ();
 	//  pHelpMenu->Append (ID_HELP_MANUAL, wxT ("Manual"), wxT (""));
 	pHelpMenu -> Append (ID_HELP_ABOUT, wxT ("About"), wxT (""));
 
@@ -228,7 +236,7 @@ m_uiLibraryBrowserCount (0)
 
 	pMenuBar->Append (pFileMenu, wxT ("File"));
 
-#if 0	
+#if 0
 	//Opening extra browser windows does not work
 	//under windows.
 	pMenuBar->Append (pBrowserMenu, wxT ("Browser"));
@@ -237,7 +245,7 @@ m_uiLibraryBrowserCount (0)
 	pMenuBar->Append (pInventoryMenu, wxT("Inventory"));
 	pMenuBar->Append (pHelpMenu, wxT ("Help"));
 
-	SetMenuBar (pMenuBar); 
+	SetMenuBar (pMenuBar);
 
 	// Add Crypt Browser
 	m_pBrowserCryptModel = new BrowserCryptModel (m_pNotebook, m_uiCryptBrowserCount++);
@@ -362,21 +370,21 @@ BrowserFrame::OnClose (wxCloseEvent& WXUNUSED(event))
 
 
 void
-BrowserFrame::OnFileExit (wxCommandEvent& WXUNUSED (event)) 
+BrowserFrame::OnFileExit (wxCommandEvent& WXUNUSED (event))
 {
 	Close ();
 }
 
 
 void
-BrowserFrame::OnFileDeckBuilder (wxCommandEvent& WXUNUSED (event)) 
+BrowserFrame::OnFileDeckBuilder (wxCommandEvent& WXUNUSED (event))
 {
 	DeckModel::Instance ();
 }
 
 /*
 void
-BrowserFrame::OnFileEditions (wxCommandEvent& WXUNUSED (event)) 
+BrowserFrame::OnFileEditions (wxCommandEvent& WXUNUSED (event))
 {
 EditionsDialog *pDialog = EditionsDialog::Instance ();
 if (pDialog) pDialog->Show ();
@@ -386,14 +394,14 @@ m_pBrowserLibraryModel->Reset ();
 */
 
 void
-BrowserFrame::OnFilePreferences (wxCommandEvent& WXUNUSED (event)) 
+BrowserFrame::OnFilePreferences (wxCommandEvent& WXUNUSED (event))
 {
-	//Respond to menu here 
+	//Respond to menu here
 }
 
 
 void
-BrowserFrame::OnFileUpdateDatabase (wxCommandEvent& WXUNUSED (event)) 
+BrowserFrame::OnFileUpdateDatabase (wxCommandEvent& WXUNUSED (event))
 {
 	Updater *pUpdater = Updater::Instance ();
 	pUpdater->DoUpdate ();
@@ -404,15 +412,15 @@ BrowserFrame::OnFileUpdateDatabase (wxCommandEvent& WXUNUSED (event))
 
 
 void
-BrowserFrame::OnHelpManual (wxCommandEvent& WXUNUSED (event)) 
+BrowserFrame::OnHelpManual (wxCommandEvent& WXUNUSED (event))
 {
-	//Respond to menu here 
+	//Respond to menu here
 }
 
 
 
 void
-BrowserFrame::OnHelpAbout (wxCommandEvent& WXUNUSED (event)) 
+BrowserFrame::OnHelpAbout (wxCommandEvent& WXUNUSED (event))
 {
 	wxString about;
 	about.Printf(wxT ("The Anarch Revolt Deck Builder\nVersion 2.9.1\r\nby Francois Gombault & Graham Smith\r\nEmail: graham.r.smith@gmail.com\r\nBuilt: %s"),BUILD_DATE);
@@ -443,7 +451,7 @@ BrowserFrame::OnInventoryImport (wxCommandEvent& WXUNUSED (event))
 {
 	InventoryModel *pInv = InventoryModel::Instance ();
 
-	if (pInv) 
+	if (pInv)
 	{
 		if (pInv->ImportFromCSV ())
 		{
@@ -459,7 +467,7 @@ BrowserFrame::OnInventoryOpen (wxCommandEvent& WXUNUSED (event))
 {
 	InventoryModel *pInv = InventoryModel::Instance ();
 
-	if (pInv) 
+	if (pInv)
 	{
 		if (pInv->ImportFromXML ())
 		{
