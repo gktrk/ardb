@@ -2,7 +2,7 @@
  *
  *  Copyright (C) 2007 Graham Smith
  *  graham.r.smith@gmail.com
- *  
+ *
  *  Official project page: http://code.google.com/p/ardb/
  *
  *
@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  
+ * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
 #ifndef _imagepanel_h
@@ -47,7 +47,7 @@
 ImagePanel::ImagePanel(wxWindow *parent) :
     wxPanel(parent)
 {
-	m_pParent = parent;
+    m_pParent = parent;
 }
 
 // --------------------------------------------------------
@@ -56,10 +56,9 @@ ImagePanel::ImagePanel(wxWindow *parent) :
 /// Deletes the stored image
 ImagePanel::~ImagePanel()
 {
-    if (image.IsOk())
-	{
-		image.Destroy();
-	}
+    if (image.IsOk()) {
+        image.Destroy();
+    }
 }
 
 //mod to take a bitmap
@@ -70,17 +69,15 @@ ImagePanel::~ImagePanel()
  */
 void ImagePanel::SetImage(wxString fileName)
 {
-	if (image.IsOk())
-	{
-		image.Destroy();
-	}
-	
-	if (wxFile::Exists(fileName))
-	{
-		m_fileName = fileName;
-		image.LoadFile(m_fileName);
-		Refresh();
-	}
+    if (image.IsOk()) {
+        image.Destroy();
+    }
+
+    if (wxFile::Exists(fileName)) {
+        m_fileName = fileName;
+        image.LoadFile(m_fileName);
+        Refresh();
+    }
 }
 
 /**
@@ -89,87 +86,80 @@ void ImagePanel::SetImage(wxString fileName)
 */
 void ImagePanel::Clear()
 {
-	m_fileName = wxT("");
-	image.Destroy();
-	Refresh();
+    m_fileName = wxT("");
+    image.Destroy();
+    Refresh();
 }
 
 void ImagePanel::OnSize(wxSizeEvent &event)
 {
-	if (!image.IsOk()) // || event.GetEventObject() != imagePanel)
-	{
-		event.Skip();
-		return;
-	}
+    if (!image.IsOk()) { // || event.GetEventObject() != imagePanel)
+        event.Skip();
+        return;
+    }
 
-	Refresh();
+    Refresh();
 }
 
 void ImagePanel::Click(wxMouseEvent &event)
 {
-	ImageDialog dialog;
+    ImageDialog dialog;
 
-	if (wxFile::Exists(m_fileName))
-	{
-		dialog.SetImage(m_fileName);
-		dialog.CentreOnParent ();
-		dialog.ShowModal();
-	}
+    if (wxFile::Exists(m_fileName)) {
+        dialog.SetImage(m_fileName);
+        dialog.CentreOnParent ();
+        dialog.ShowModal();
+    }
 }
 
 /// Draw the image in the panel if it exists
 void ImagePanel::OnPaint(wxPaintEvent &event)
 {
-  if (!image.IsOk()) // || event.GetEventObject() != imagePanel)
-  {
-	event.Skip();
-	return;
-  }
-        
-   // imagePanel != NULL or we wouldn't get this event
+    if (!image.IsOk()) { // || event.GetEventObject() != imagePanel)
+        event.Skip();
+        return;
+    }
+
+    // imagePanel != NULL or we wouldn't get this event
     wxPaintDC dc(this);
 
     wxMemoryDC memDC;
     wxSize size = GetClientSize();
-	
-	int newWidth = size.GetWidth();
-	int newHeight = size.GetHeight();
 
-	int orgWidth = image.GetWidth();
-	int orgHeight = image.GetHeight();
+    int newWidth = size.GetWidth();
+    int newHeight = size.GetHeight();
 
-	int thumbWidth = 0;
-	int thumbHeight = 0;
+    int orgWidth = image.GetWidth();
+    int orgHeight = image.GetHeight();
 
-	if (orgWidth > orgHeight) 
-	{
-		thumbWidth = newWidth;
-		thumbHeight = (int) (orgHeight * (float)newHeight / (float)orgWidth);
-	}
+    int thumbWidth = 0;
+    int thumbHeight = 0;
 
-	if (orgWidth < orgHeight) 
-	{
-		thumbWidth = (int) (orgWidth * (float)newWidth / (float)orgHeight);
-		thumbHeight = newHeight;
-	}
+    if (orgWidth > orgHeight) {
+        thumbWidth = newWidth;
+        thumbHeight = (int) (orgHeight * (float)newHeight / (float)orgWidth);
+    }
 
-	if (orgWidth == orgHeight) 
-	{
-		thumbWidth = newWidth;
-		thumbHeight = newHeight;
-	}
+    if (orgWidth < orgHeight) {
+        thumbWidth = (int) (orgWidth * (float)newWidth / (float)orgHeight);
+        thumbHeight = newHeight;
+    }
 
-	int x;
+    if (orgWidth == orgHeight) {
+        thumbWidth = newWidth;
+        thumbHeight = newHeight;
+    }
 
-	x = (newWidth - thumbWidth)/2;
+    int x;
 
-	wxBitmap bitmap;
-	bitmap = wxBitmap(image.Scale(thumbWidth,thumbHeight));
+    x = (newWidth - thumbWidth)/2;
 
-    if (bitmap.GetPalette())
-    {
-		memDC.SetPalette(*bitmap.GetPalette());
-		dc.SetPalette(*bitmap.GetPalette());
+    wxBitmap bitmap;
+    bitmap = wxBitmap(image.Scale(thumbWidth,thumbHeight));
+
+    if (bitmap.GetPalette()) {
+        memDC.SetPalette(*bitmap.GetPalette());
+        dc.SetPalette(*bitmap.GetPalette());
     }
 
     memDC.SelectObject(bitmap);
@@ -184,8 +174,8 @@ void ImagePanel::OnPaint(wxPaintEvent &event)
 BEGIN_EVENT_TABLE(ImagePanel, wxPanel)
     // Paint event for the panel
     EVT_PAINT(ImagePanel::OnPaint)
-	EVT_SIZE(ImagePanel::OnSize)
-	EVT_LEFT_UP(ImagePanel::Click)
+    EVT_SIZE(ImagePanel::OnSize)
+    EVT_LEFT_UP(ImagePanel::Click)
 END_EVENT_TABLE()
 
 #endif

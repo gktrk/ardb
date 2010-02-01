@@ -96,8 +96,7 @@ Updater::decodeCSV(wxInputStream *file, char sep, char quote, int maxrecords, in
     char acBuffer[2] = {'\0', '\0'};
     wxChar c = 0;
 
-    if (bSkipFirstLine)
-    {
+    if (bSkipFirstLine) {
         // Skip first line (column names)
         while (!file->Eof () && c != 10)
             c = file->GetC ();
@@ -116,9 +115,9 @@ Updater::decodeCSV(wxInputStream *file, char sep, char quote, int maxrecords, in
         sChar = wxString (acBuffer, wxConvISO8859_1);
         c = Updater::MakeAscii(sChar.GetChar(0));
 
-        if (c==quote){
-            if (inquotemode){
-                if (inescapemode){
+        if (c==quote) {
+            if (inquotemode) {
+                if (inescapemode) {
                     inescapemode = false;
                     //add the escaped char here
                     current.Append(c);
@@ -137,7 +136,7 @@ Updater::decodeCSV(wxInputStream *file, char sep, char quote, int maxrecords, in
                 inquotemode = true;
             }
         } else if (c==sep) {
-            if (inquotemode){
+            if (inquotemode) {
                 //add the sep here
                 current.Append(c);
             } else {
@@ -155,7 +154,7 @@ Updater::decodeCSV(wxInputStream *file, char sep, char quote, int maxrecords, in
                 current.Clear ();
             }
         } else if (c==10) {
-            if (inquotemode){
+            if (inquotemode) {
                 //add the newline
                 current.Append(c);
             } else {
@@ -172,7 +171,7 @@ Updater::decodeCSV(wxInputStream *file, char sep, char quote, int maxrecords, in
                 wasinquotemode = false;
                 current.Clear ();
                 //for the first line, store the field count
-                if (*numfields == 0){
+                if (*numfields == 0) {
                     *numfields = pResult->GetCount();
                 }
                 recs++;
@@ -181,7 +180,7 @@ Updater::decodeCSV(wxInputStream *file, char sep, char quote, int maxrecords, in
                 }
             }
         } else if (c==13) {
-            if (inquotemode){
+            if (inquotemode) {
                 //add the carrier return if in quote mode only
                 current.Append(c);
             }
@@ -201,8 +200,7 @@ Updater::decodeCSV(wxInputStream *file, char sep, char quote, int maxrecords, in
 void
 Updater::DeleteInstance ()
 {
-    if (spInstance != NULL)
-    {
+    if (spInstance != NULL) {
         delete spInstance;
         spInstance = NULL;
     }
@@ -212,8 +210,7 @@ Updater::DeleteInstance ()
 Updater *
 Updater::Instance ()
 {
-    if (spInstance == NULL)
-    {
+    if (spInstance == NULL) {
         spInstance = new Updater ();
     }
     return spInstance;
@@ -228,8 +225,7 @@ Updater::DoUpdate ()
     m_pStatusLabel->Clear();
     m_pOKButton->Disable();
 
-    if (m_bUpdating)
-    {
+    if (m_bUpdating) {
         return -1;
     }
 
@@ -276,65 +272,55 @@ Updater::DoUpdate ()
 
             if (oUpdateDialog.ShowModal () == wxID_OK) {
 
-                wxMessageDialog oPermissionDialog (NULL,
-                                                   wxT("To update the database, I must download a file ")
-						   wxT("about 200 KBytes) from White Wolf's website.\n")
-                                                   wxT("Please make sure that you are connected ")
-                                                   wxT("to the Internet, and then click OK.\n\n")
-						   wxT("To update from a local ")
-                                                   wxT("'vtescsv.zip' file, click Cancel."),
-                                                   wxT("Internet connection request"),
-                                                   wxOK | wxCANCEL | wxICON_QUESTION);
-
                 Show ();
                 wxYield ();
 
-                if (oPermissionDialog.ShowModal() == wxID_OK) {
+                Log (wxT ("Downloading..."));
+                m_bUpdating = true;
+                wxSafeYield(this);
 
-                    Log (wxT ("Downloading..."));
-                    m_bUpdating = true;
-                    wxSafeYield(this);
+                iResult = FetchCSVFiles();
 
-                    iResult = FetchCSVFiles();
-
-                    if (iResult < 0) {
-                        Log (wxT ("Failed.\n"));
-                    }
-
-                } else {
-                    iResult = -1;
+                if (iResult < 0) {
+                    Log (wxT ("Failed.\n"));
                 }
 
-                if (iResult >= 0) {
-                    Log(wxT ("\n"));
-                    UpdateDatabaseFromCSV();
-                } else {
-
-                    wxFileDialog oFileDialog(NULL,
-					     wxT ("Please locate vtescsv.zip"),
-					     wxT (""), wxT ("vtescsv.zip"),
-					     wxT ("*.zip"), wxOPEN);
-
-                    if (oFileDialog.ShowModal() != wxID_OK) {
-                        Hide ();
-                        return -1;
-                    }
-
-                    m_bUpdating = true;
-                    m_sZipFile = oFileDialog.GetDirectory()
-                        << wxFileName::GetPathSeparator()
-                        << oFileDialog.GetFilename();
-
-                    Log(wxT ("Opening "));
-                    Log(m_sZipFile);
-                    Log(wxT ("\n"));
-                    UpdateDatabaseFromCSV();
-                }
-
-                Log(wxT ("Database update has ended.\n"
-                         "You may need to restart ARDB.\n"));
+            } else {
+                iResult = -1;
             }
+
+            if (iResult >= 0) {
+
+                Log(wxT ("\n"));
+                UpdateDatabaseFromCSV();
+
+            } else {
+
+                wxFileDialog oFileDialog(NULL,
+                                         wxT ("Please locate vtescsv.zip"),
+                                         wxT (""), wxT ("vtescsv.zip"),
+                                         wxT ("*.zip"), wxOPEN);
+
+                if (oFileDialog.ShowModal() != wxID_OK) {
+                    Hide ();
+                    return -1;
+                }
+
+                m_bUpdating = true;
+                m_sZipFile = oFileDialog.GetDirectory()
+                    << wxFileName::GetPathSeparator()
+                    << oFileDialog.GetFilename();
+
+                Log(wxT ("Opening "));
+                Log(m_sZipFile);
+                Log(wxT ("\n"));
+                UpdateDatabaseFromCSV();
+            }
+
+            Log(wxT ("Database update has ended.\n"
+                     "You may need to restart ARDB.\n"));
         }
+
         m_pOKButton->Enable();
     }
 
@@ -353,17 +339,14 @@ Updater::FetchCSVFiles ()
         sFile (wxT ("/VTES/downloads/vtescsv.zip"));
 
     wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get ();
-    if (pConfig)
-    {
+    if (pConfig) {
         wxString sUpdateServer = wxT ("UpdateServer"),
             sUpdateFile = wxT ("UpdateFile");
-        if (!pConfig->Read (sUpdateServer, &sServer))
-        {
+        if (!pConfig->Read (sUpdateServer, &sServer)) {
             pConfig->Write (sUpdateServer, sServer);
             pConfig->Flush (TRUE);
         }
-        if (!pConfig->Read (sUpdateFile, &sFile))
-        {
+        if (!pConfig->Read (sUpdateFile, &sFile)) {
             pConfig->Write (sUpdateFile, sFile);
             pConfig->Flush (TRUE);
         }
@@ -372,8 +355,7 @@ Updater::FetchCSVFiles ()
 
 
     wxHTTP oHTTPCtrl;
-    if (!oHTTPCtrl.Connect(sServer))
-    {
+    if (!oHTTPCtrl.Connect(sServer)) {
         wxMessageBox(wxString (wxT ("HTTP connection to ")) << sServer << wxT (" failed."), wxT ("HTTP Error"), wxICON_ERROR | wxOK);
         return -1;
     }
@@ -385,8 +367,7 @@ Updater::FetchCSVFiles ()
 
 
 
-    if (!pInputStream)
-    {
+    if (!pInputStream) {
         wxMessageBox(wxString (wxT ("Failed to get :\nhttp://")) << sServer << sFile, wxT ("HTTP Error"), wxICON_ERROR | wxOK);
         return -1;
     }
@@ -415,10 +396,8 @@ Updater::LoadDisciplinesFromCSV ()
     wxString sCurrent;
 
     oZipInputStream.Read (pCopyBuffer, iZipLength);
-    do
-    {
-        switch (pCopyBuffer[i])
-        {
+    do {
+        switch (pCopyBuffer[i]) {
             case ',':
                 m_oDisciplinesArray.Add (sCurrent);
                 sCurrent.Clear ();
@@ -427,10 +406,9 @@ Updater::LoadDisciplinesFromCSV ()
                 sCurrent.Append (pCopyBuffer[i]);
         }
         i++;
-    }
-    while (pCopyBuffer[i] != '\n' &&
-           pCopyBuffer[i] != '\r' &&
-           i < iZipLength - 1);
+    } while (pCopyBuffer[i] != '\n' &&
+             pCopyBuffer[i] != '\r' &&
+             i < iZipLength - 1);
     // add the last discipline
     if (sCurrent.Length () > 1) m_oDisciplinesArray.Add (sCurrent);
 
@@ -439,8 +417,7 @@ Updater::LoadDisciplinesFromCSV ()
 
 
     // make sure we have something
-    if (m_oDisciplinesArray.GetCount () > uiCrap)
-    {
+    if (m_oDisciplinesArray.GetCount () > uiCrap) {
         wxString sQuery;
         pDatabase->Query (wxT ("BEGIN TRANSACTION;"));
 
@@ -448,8 +425,7 @@ Updater::LoadDisciplinesFromCSV ()
         m_oDisciplinesArray.RemoveAt (0, uiCrap);
 
         pDatabase->Query (wxT ("DELETE FROM disciplines;"));
-        for (unsigned int c=0; c<m_oDisciplinesArray.GetCount (); c++)
-        {
+        for (unsigned int c=0; c<m_oDisciplinesArray.GetCount (); c++) {
             sQuery.Printf (wxT("INSERT INTO disciplines"
                                " VALUES ('%s', '%s', '%s', NULL);"),
                            m_oDisciplinesArray[c].c_str (),
@@ -508,11 +484,9 @@ Updater::LoadTableFromCSV (wxString sTable, wxString sCSVFile, int iNulls = 1)
     for (int i=0; i < iNulls; i++) sNulls.Append (wxT (", NULL"));
 
     //now lets import all data, one row at a time
-    for (unsigned int i = 0; i < oList.GetCount (); i++)
-    {
+    for (unsigned int i = 0; i < oList.GetCount (); i++) {
         wxString& sItem = oList.Item (i);
-        if (colNum == 0)
-        {
+        if (colNum == 0) {
             sQuery = wxT ("INSERT INTO ");
             sQuery.Append (sTable);
             sQuery.Append (wxT (" VALUES("));
@@ -521,8 +495,7 @@ Updater::LoadTableFromCSV (wxString sTable, wxString sCSVFile, int iNulls = 1)
         sQuery.Append (sItem);
 
         colNum++;
-        if (colNum < iNumFields)
-        {
+        if (colNum < iNumFields) {
             sQuery.Append (wxT(","));
         } else {
 
@@ -542,16 +515,14 @@ Updater::LoadTableFromCSV (wxString sTable, wxString sCSVFile, int iNulls = 1)
             //    printf (sQuery.mb_str (wxConvLibc));
             //    printf ("\n");
 
-            if (pDatabase->Query (sQuery) == NULL)
-            {
+            if (pDatabase->Query (sQuery) == NULL) {
                 wxLogError (wxT ("An error occured : canceling import."));
                 Log(wxT ("\n"));
                 delete pCopyBuffer;
                 return -1;
             }
             rowNum++;
-            if (!(rowNum % 100))
-            {
+            if (!(rowNum % 100)) {
                 Log (wxT ("."));
             }
         }
@@ -619,8 +590,7 @@ Updater::UpdateDatabaseFromCSV ()
                   "       title TEXT,"
                   "       banned TEXT,"
                   "       artist TEXT,");
-    for (unsigned int c=0; c<m_oDisciplinesArray.GetCount (); c++)
-    {
+    for (unsigned int c=0; c<m_oDisciplinesArray.GetCount (); c++) {
         sQuery.Append (wxT (" "));
         sQuery.Append (m_oDisciplinesArray[c].Lower ());
         sQuery.Append (wxT (" int,"));
@@ -661,8 +631,7 @@ Updater::UpdateDatabaseFromCSV ()
                   "       rarity INTEGER,"      /* FOREIGN KEY for rarity_types.record_num */
                   "       artist STRING,"
                   "       url STRING,");
-    for (unsigned int c=0; c<m_oDisciplinesArray.GetCount (); c++)
-    {
+    for (unsigned int c=0; c<m_oDisciplinesArray.GetCount (); c++) {
         sQuery.Append (wxT (" "));
         sQuery.Append (m_oDisciplinesArray[c].Lower ());
         sQuery.Append (wxT (" INTEGER,"));
@@ -687,8 +656,7 @@ Updater::UpdateDatabaseFromCSV ()
     int iCards = LoadTableFromCSV (wxT ("Library"), wxT ("vteslib.csv"));
     int iSets = LoadTableFromCSV (wxT ("cards_sets_unsorted"), wxT ("vtessets.csv"));
 
-    if (iVamps <= 0 || iCards <= 0 || iSets <= 0)
-    {
+    if (iVamps <= 0 || iCards <= 0 || iSets <= 0) {
         wxLogError (wxT("Cancelling changes to prevent database corruption"));
         Log (wxT("ERROR -> UPDATE ABORTED (ROLLBACK)\n"));
         pDatabase->Query (wxT ("ROLLBACK TRANSACTION;"));
@@ -743,8 +711,7 @@ Updater::UpdateDatabaseFromCSV ()
     pDatabase->Query (wxT ("UPDATE Crypt SET edition_save = edition;"));
 
     // this loop inserts the promo cards into the cards_sets_unsorted table
-    for (int iLoop = 0; iLoop < iSets; iLoop++)
-    {
+    for (int iLoop = 0; iLoop < iSets; iLoop++) {
         pDatabase->Query (wxT ("INSERT OR IGNORE INTO cards_sets_unsorted "
                                "SELECT before (edition, ':') || after (before (edition, ','), ':'),"
                                "       after (before (edition, ','), ':'),"
@@ -810,8 +777,7 @@ Updater::UpdateDatabaseFromCSV ()
     pDatabase->Query (wxT ("UPDATE Crypt SET edition = edition_save;"));
 
     // This loop fills the cards_*_unsorted tables
-    for (int iLoop = 0; iLoop < iSets; iLoop++)
-    {
+    for (int iLoop = 0; iLoop < iSets; iLoop++) {
         /* tweak the Promo:XX editions so they'll be like PromoXX:XX */
         pDatabase->Query (wxT ("UPDATE Library "
                                "SET edition = 'Promo' "
@@ -879,8 +845,7 @@ Updater::UpdateDatabaseFromCSV ()
                       "       rarity_types.record_num,"
                       "       Crypt.artist,"           // artist
                       "       '',");           // url
-        for (unsigned int c=0; c<m_oDisciplinesArray.GetCount (); c++)
-        {
+        for (unsigned int c=0; c<m_oDisciplinesArray.GetCount (); c++) {
             sQuery.Append (wxT (" Crypt."));
             sQuery.Append (m_oDisciplinesArray[c].Lower ());
             sQuery.Append (wxT (","));
@@ -931,8 +896,7 @@ Updater::UpdateDatabaseFromCSV ()
                   "        rarity,"
                   "        artist,"
                   "        url,");
-    for (unsigned int c=0; c<m_oDisciplinesArray.GetCount (); c++)
-    {
+    for (unsigned int c=0; c<m_oDisciplinesArray.GetCount (); c++) {
         sQuery.Append (wxT (" "));
         sQuery.Append (m_oDisciplinesArray[c].Lower ());
         sQuery.Append (wxT (","));
@@ -984,8 +948,7 @@ Updater::UpdateDatabaseFromCSV ()
                   "       rarity INTEGER,"      /* FOREIGN KEY for rarity_types.record_num */
                   "       artist STRING,"
                   "       url STRING,");
-    for (unsigned int c=0; c<m_oDisciplinesArray.GetCount (); c++)
-    {
+    for (unsigned int c=0; c<m_oDisciplinesArray.GetCount (); c++) {
         sQuery.Append (wxT (" "));
         sQuery.Append (m_oDisciplinesArray[c].Lower ());
         sQuery.Append (wxT (" INTEGER,"));
@@ -1011,8 +974,7 @@ Updater::UpdateDatabaseFromCSV ()
                   "        rarity,"
                   "        artist,"
                   "        url,");
-    for (unsigned int c=0; c<m_oDisciplinesArray.GetCount (); c++)
-    {
+    for (unsigned int c=0; c<m_oDisciplinesArray.GetCount (); c++) {
         sQuery.Append (wxT (" "));
         sQuery.Append (m_oDisciplinesArray[c].Lower ());
         sQuery.Append (wxT (","));
@@ -1048,8 +1010,7 @@ Updater::UpdateDatabaseFromCSV ()
     // rebuild discipline information
     Log (wxT ("Rebuilding discipline information...\n"));
 
-    for (unsigned int c=0; c<m_oDisciplinesArray.GetCount (); c++)
-    {
+    for (unsigned int c=0; c<m_oDisciplinesArray.GetCount (); c++) {
         // "UPDATE cards_crypt SET inferior = inferior || 'ani ' WHERE animalism = 1;"
         sQuery.Printf (wxT ("UPDATE cards_crypt "
                             "SET inferior = inferior || (SELECT infabbrev FROM disciplines WHERE name ='%s') || ' ' "
@@ -1059,8 +1020,7 @@ Updater::UpdateDatabaseFromCSV ()
         pDatabase->Query (sQuery);
     }
 
-    for (unsigned int c=0; c<m_oDisciplinesArray.GetCount (); c++)
-    {
+    for (unsigned int c=0; c<m_oDisciplinesArray.GetCount (); c++) {
         // "UPDATE cards_crypt SET superior = superior || 'ANI ' WHERE animalism = 2;"
         sQuery.Printf (wxT ("UPDATE cards_crypt "
                             "SET superior = superior || (SELECT supabbrev FROM disciplines WHERE name ='%s') || ' ' "
@@ -1103,8 +1063,7 @@ wxChar Updater::MakeAscii(wxChar c)
 {
     wxChar result = c;
 
-    switch (c)
-    {
+    switch (c) {
         case 'à':
         case 'á':
         case 'â':
