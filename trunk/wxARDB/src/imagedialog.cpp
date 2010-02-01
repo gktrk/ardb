@@ -2,7 +2,7 @@
  *
  *  Copyright (C) 2007 Graham Smith
  *  graham.r.smith@gmail.com
- *  
+ *
  *  Official project page: http://code.google.com/p/ardb/
  *
  *
@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  
+ * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
 #include "imagedialog.h"
@@ -30,36 +30,34 @@ ImageDialog::ImageDialog() : wxDialog (0, -1, wxT ("Card Image"), wxDefaultPosit
 
 void ImageDialog::SetImage(wxString fileName)
 {
-	image.LoadFile(fileName);
+    image.LoadFile(fileName);
 
-	int width = image.GetWidth();
-	int height = image.GetHeight();
+    int width = image.GetWidth();
+    int height = image.GetHeight();
 
-	SetSize(width,height+10);  //+10 is a fudge factor to take into account dialog title on Windows
-							   //This will need to be changed for different platforms.
+    SetSize(width,height+10);  //+10 is a fudge factor to take into account dialog title on Windows
+    //This will need to be changed for different platforms.
 }
 
 void ImageDialog::OnPaint(wxPaintEvent &event)
 {
-  if (!image.IsOk()) // || event.GetEventObject() != imagePanel)
-  {
-	event.Skip();
-	return;
-  }
-        
-   // imagePanel != NULL or we wouldn't get this event
+    if (!image.IsOk()) { // || event.GetEventObject() != imagePanel)
+        event.Skip();
+        return;
+    }
+
+    // imagePanel != NULL or we wouldn't get this event
     wxPaintDC dc(this);
 
     wxMemoryDC memDC;
     wxSize size = GetClientSize();
-	
-	wxBitmap bitmap;
-	bitmap = wxBitmap(image);
 
-    if (bitmap.GetPalette())
-    {
-		memDC.SetPalette(*bitmap.GetPalette());
-		dc.SetPalette(*bitmap.GetPalette());
+    wxBitmap bitmap;
+    bitmap = wxBitmap(image);
+
+    if (bitmap.GetPalette()) {
+        memDC.SetPalette(*bitmap.GetPalette());
+        dc.SetPalette(*bitmap.GetPalette());
     }
 
     memDC.SelectObject(bitmap);

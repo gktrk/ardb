@@ -2,7 +2,7 @@
  *
  *  Copyright (C) 2002 Francois Gombault
  *  gombault.francois@wanadoo.fr
- *  
+ *
  *  Official project page: https://savannah.nongnu.org/projects/anarchdb/
  *
  *
@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  
+ * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
 #include "speling.h"
@@ -46,61 +46,59 @@
  * it does NOT try to correct multiple errors.
  */
 
-sp_reason 
+sp_reason
 spdist(wxString &s, wxString &t)
 {
-  unsigned int index;
-  wxString s2 = s.MakeLower (), t2 = t.MakeLower (), s3, t3;
+    unsigned int index;
+    wxString s2 = s.MakeLower (), t2 = t.MakeLower (), s3, t3;
 
-  if (!s2.Cmp (t2))
-    return SP_MISCAPITALIZED;   /* exact match (sans case) */
+    if (!s2.Cmp (t2))
+        return SP_MISCAPITALIZED;   /* exact match (sans case) */
 
-  for (index = 0; index < s.Length () 
-	 && index < s.Length () 
-	 && s2.GetChar (index) == t2.GetChar (index); index++);
-  s2 = s2.Mid (index);
-  t2 = t2.Mid (index);
+    for (index = 0; index < s.Length ()
+            && index < s.Length ()
+            && s2.GetChar (index) == t2.GetChar (index); index++);
+    s2 = s2.Mid (index);
+    t2 = t2.Mid (index);
 
-  if (s2.Length () >= 1) {
-    if (t2.Length () >= 1) {
-      if (s2.Length () >= 2 && t2.Length () >= 2
-	  && s2.GetChar (0) == t2.GetChar (1)
-	  && t2.GetChar (0) == s2.GetChar (1)
-	  && s2.Mid (2).Cmp (t2.Mid (2)) == 0) {
-	return SP_TRANSPOSITION;        /* transposition */
-      }
-      if (s2.Mid (1).Cmp (t2.Mid (1)) == 0) {
-	return SP_SIMPLETYPO;   /* 1 char mismatch */
-      }
+    if (s2.Length () >= 1) {
+        if (t2.Length () >= 1) {
+            if (s2.Length () >= 2 && t2.Length () >= 2
+                    && s2.GetChar (0) == t2.GetChar (1)
+                    && t2.GetChar (0) == s2.GetChar (1)
+                    && s2.Mid (2).Cmp (t2.Mid (2)) == 0) {
+                return SP_TRANSPOSITION;        /* transposition */
+            }
+            if (s2.Mid (1).Cmp (t2.Mid (1)) == 0) {
+                return SP_SIMPLETYPO;   /* 1 char mismatch */
+            }
+        }
+        if (t2.Cmp (s2.Mid (1)) == 0) {
+            return SP_EXTRACHAR;        /* extra character */
+        }
     }
-    if (t2.Cmp (s2.Mid (1)) == 0) {
-     return SP_EXTRACHAR;        /* extra character */
+    if (t2.Length () >= 1 && s2.Cmp (t2.Mid (1)) == 0) {
+        return SP_MISSINGCHAR;  /* missing character */
     }
-  }
-  if (t2.Length () >= 1 && s2.Cmp (t2.Mid (1)) == 0) {
-    return SP_MISSINGCHAR;  /* missing character */
-  }
-  return SP_VERYDIFFERENT;    /* distance too large to fix. */
+    return SP_VERYDIFFERENT;    /* distance too large to fix. */
 }
 
 
 int
 check_speling (wxString &sBad, wxArrayString &oList)
 {
-  wxString sCandidate;
+    wxString sCandidate;
 
-  for (unsigned int i = 0; i < oList.Count (); i++)
-    {
-      /*
-       * simple typing errors are checked (like, e.g.,
-       * missing/extra/transposed char)
-       */
-      // Let's not compare further than the bad string's length
-      sCandidate = oList.Item (i).Left (sBad.Length ());
-      if (spdist (sBad, sCandidate) != SP_VERYDIFFERENT) 
-	{
-	  return i;
-	}
+    for (unsigned int i = 0; i < oList.Count (); i++) {
+        /*
+         * simple typing errors are checked (like, e.g.,
+         * missing/extra/transposed char)
+         */
+        // Let's not compare further than the bad string's length
+        sCandidate = oList.Item (i).Left (sBad.Length ());
+        if (spdist (sBad, sCandidate) != SP_VERYDIFFERENT) {
+            return i;
+        }
     }
-  return -1;
+    return -1;
 }
