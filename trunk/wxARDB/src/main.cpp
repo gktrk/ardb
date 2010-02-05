@@ -50,8 +50,6 @@
 #include <wx/confbase.h>
 #include <wx/fileconf.h>
 
-
-
 class BrowserFrame ;
 
 #include "main.h"
@@ -67,24 +65,24 @@ class BrowserFrame ;
 #  include "ardbsplash.xpm"
 
 BEGIN_EVENT_TABLE (BrowserFrame, wxFrame)
-EVT_MENU (ID_BROWSER_CLOSE_TAB, BrowserFrame::OnBrowserCloseTab)
-EVT_MENU (ID_BROWSER_NEW_CRYPT, BrowserFrame::OnBrowserNewCrypt)
-EVT_MENU (ID_BROWSER_NEW_LIBRARY, BrowserFrame::OnBrowserNewLibrary)
-EVT_MENU (ID_FILE_DECKBUILDER, BrowserFrame::OnFileDeckBuilder)
+    EVT_MENU (ID_BROWSER_CLOSE_TAB, BrowserFrame::OnBrowserCloseTab)
+    EVT_MENU (ID_BROWSER_NEW_CRYPT, BrowserFrame::OnBrowserNewCrypt)
+    EVT_MENU (ID_BROWSER_NEW_LIBRARY, BrowserFrame::OnBrowserNewLibrary)
+    EVT_MENU (ID_FILE_DECKBUILDER, BrowserFrame::OnFileDeckBuilder)
 //EVT_MENU (ID_FILE_EDITIONS, BrowserFrame::OnFileEditions)
-EVT_MENU (ID_FILE_PREFERENCES, BrowserFrame::OnFilePreferences)
-EVT_MENU (ID_FILE_UPDATEDB, BrowserFrame::OnFileUpdateDatabase)
-EVT_MENU (ID_FILE_EXIT, BrowserFrame::OnFileExit)
-EVT_MENU (ID_INV_OPEN, BrowserFrame::OnInventoryOpen)
-EVT_MENU (ID_INV_SAVE, BrowserFrame::OnInventorySave)
-EVT_MENU (ID_INV_IMPORT, BrowserFrame::OnInventoryImport)
-EVT_MENU (ID_INV_EXPORT_CSV, BrowserFrame::OnInventoryExportCSV)
-EVT_MENU (ID_INV_EXPORT_HTML, BrowserFrame::OnInventoryExportHTML)
-EVT_MENU (ID_HELP_ABOUT, BrowserFrame::OnHelpAbout)
-EVT_MENU (ID_HELP_MANUAL, BrowserFrame::OnHelpManual)
-EVT_CLOSE (BrowserFrame::OnClose)
+    EVT_MENU (ID_FILE_PREFERENCES, BrowserFrame::OnFilePreferences)
+    EVT_MENU (ID_FILE_UPDATEDB, BrowserFrame::OnFileUpdateDatabase)
+    EVT_MENU (ID_FILE_EXIT, BrowserFrame::OnFileExit)
+    EVT_MENU (ID_INV_OPEN, BrowserFrame::OnInventoryOpen)
+    EVT_MENU (ID_INV_SAVE, BrowserFrame::OnInventorySave)
+    EVT_MENU (ID_INV_IMPORT, BrowserFrame::OnInventoryImport)
+    EVT_MENU (ID_INV_EXPORT_CSV, BrowserFrame::OnInventoryExportCSV)
+    EVT_MENU (ID_INV_EXPORT_HTML, BrowserFrame::OnInventoryExportHTML)
+    EVT_MENU (ID_HELP_ABOUT, BrowserFrame::OnHelpAbout)
+    EVT_MENU (ID_HELP_MANUAL, BrowserFrame::OnHelpManual)
+    EVT_CLOSE (BrowserFrame::OnClose)
 
-EVT_NOTEBOOK_PAGE_CHANGED(ID_BROWSER_NOTEBOOK,BrowserFrame::TabChanged)
+    EVT_NOTEBOOK_PAGE_CHANGED(ID_BROWSER_NOTEBOOK,BrowserFrame::TabChanged)
 
 END_EVENT_TABLE ()
 
@@ -94,219 +92,212 @@ IMPLEMENT_APP (MyApp)
 int
 MyApp::OnExit ()
 {
-	return 0;
+    return 0;
 }
 
 
 bool
 MyApp::OnInit ()
 {
-	wxSplashScreen* pSplash = NULL;
+    wxSplashScreen* pSplash = NULL;
 
-	::wxInitAllImageHandlers();
-	g_pIcon = new wxIcon (wxICON(icon));
-	g_pSplashBitmap = new wxBitmap (ardbsplash_xpm);
+    ::wxInitAllImageHandlers();
+    g_pIcon = new wxIcon (wxICON(icon));
+    g_pSplashBitmap = new wxBitmap (ardbsplash_xpm);
 
-	// Init database
-	Database::Instance();
+    // Init database
+    Database::Instance();
 
-	// config file
-	wxFileConfig *pConfig = new wxFileConfig (wxT ("Anarch Revolt Deck Builder"), wxT (""), wxT ("ardb.ini"), wxEmptyString, wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_RELATIVE_PATH);
-	wxFileConfig::Set (pConfig);
+    // config file
+    wxFileConfig *pConfig = new wxFileConfig (wxT ("Anarch Revolt Deck Builder"), wxT (""), wxT ("ardb.ini"), wxEmptyString, wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_RELATIVE_PATH);
+    wxFileConfig::Set (pConfig);
 
-	// Init interface data
-	InterfaceData::Instance();
+    // Init interface data
+    InterfaceData::Instance();
 
-	wxString sSplashEntry = wxT ("DisplaySplashScreen");
-	bool bDisplaySplash;
-	if (!pConfig->Read (sSplashEntry, &bDisplaySplash, TRUE))
-	{
-		pConfig->Write (sSplashEntry, bDisplaySplash);
-		pConfig->Flush (TRUE);
-	}
+    wxString sSplashEntry = wxT ("DisplaySplashScreen");
+    bool bDisplaySplash;
+    if (!pConfig->Read (sSplashEntry, &bDisplaySplash, TRUE)) {
+        pConfig->Write (sSplashEntry, bDisplaySplash);
+        pConfig->Flush (TRUE);
+    }
 
-	if (bDisplaySplash)
-	{
-		pSplash = new wxSplashScreen(*g_pSplashBitmap,
-			wxSPLASH_CENTRE_ON_SCREEN,
-			6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
-			wxSIMPLE_BORDER|wxSTAY_ON_TOP);
-		wxYield();
-	}
+    if (bDisplaySplash) {
+        pSplash = new wxSplashScreen(*g_pSplashBitmap,
+                                     wxSPLASH_CENTRE_ON_SCREEN,
+                                     6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
+                                     wxSIMPLE_BORDER|wxSTAY_ON_TOP);
+        wxYield();
+    }
 
-	int iHeight;
-	int iWidth;
-	int iX;
-	int iY;
+    int iHeight;
+    int iWidth;
+    int iX;
+    int iY;
 
-	wxString sBrowserHeightEntry = wxT ("BrowserWindowHeight");
-	wxString sBrowserWidthEntry = wxT ("BrowserWindowWidth");
+    wxString sBrowserHeightEntry = wxT ("BrowserWindowHeight");
+    wxString sBrowserWidthEntry = wxT ("BrowserWindowWidth");
 
-	wxString sBrowserXEntry = wxT("BrowserWindowX");
-	wxString sBrowserYEntry = wxT("BrowserWindowY");
+    wxString sBrowserXEntry = wxT("BrowserWindowX");
+    wxString sBrowserYEntry = wxT("BrowserWindowY");
 
 
-	if (!pConfig->Read (sBrowserHeightEntry, &iHeight, 600))
-	{
-		pConfig->Write (sBrowserHeightEntry, iHeight);
-		pConfig->Flush (TRUE);
-	}
+    if (!pConfig->Read (sBrowserHeightEntry, &iHeight, 600)) {
+        pConfig->Write (sBrowserHeightEntry, iHeight);
+        pConfig->Flush (TRUE);
+    }
 
-	if (!pConfig->Read (sBrowserWidthEntry, &iWidth, 800))
-	{
-		pConfig->Write (sBrowserWidthEntry, iWidth);
-		pConfig->Flush (TRUE);
-	}
+    if (!pConfig->Read (sBrowserWidthEntry, &iWidth, 800)) {
+        pConfig->Write (sBrowserWidthEntry, iWidth);
+        pConfig->Flush (TRUE);
+    }
 
-	pConfig->Read (sBrowserXEntry, &iX, -1);
-	pConfig->Read (sBrowserYEntry, &iY, -1);
+    pConfig->Read (sBrowserXEntry, &iX, -1);
+    pConfig->Read (sBrowserYEntry, &iY, -1);
 
-	wxToolTip::SetDelay (2000);
+    wxToolTip::SetDelay (2000);
 
-	g_pMainWindow = new BrowserFrame (wxT ("Robert's Test App - Card Browser"),
-		wxPoint(iX,iY),
-		wxSize (iWidth, iHeight));
-	SetTopWindow (g_pMainWindow);
+    g_pMainWindow = new BrowserFrame (wxT ("Anarch Revolt - Card Browser"),
+                                      wxPoint(iX,iY),
+                                      wxSize (iWidth, iHeight));
+    SetTopWindow (g_pMainWindow);
 
-	//reset edition filter
-	//ardb_db_ef_reset();
+    //reset edition filter
+    //ardb_db_ef_reset();
 
     //Runs Updater on Startup
-	Updater *pUpdater = Updater::Instance ();
-	pUpdater->DoUpdate ();
+    Updater *pUpdater = Updater::Instance ();
+    pUpdater->DoUpdate(UPDATE_FROM_STARTUP);
 
 
 
-	if (pSplash != NULL) delete pSplash;
+    if (pSplash != NULL) delete pSplash;
 
-	return TRUE;
+    return TRUE;
 }
 
 
-BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos, const wxSize& size) :
-wxFrame (0, -1, title, pos, size),
-m_pBrowserCryptModel (NULL),
-m_pBrowserLibraryModel (NULL),
-m_pPapaSizer (NULL),
-m_uiCryptBrowserCount (0),
-m_uiLibraryBrowserCount (0)
+BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos, 
+			    const wxSize& size) :
+    wxFrame (0, -1, title, pos, size),
+    m_pBrowserCryptModel (NULL),
+    m_pBrowserLibraryModel (NULL),
+    m_pPapaSizer (NULL),
+    m_uiCryptBrowserCount (0),
+    m_uiLibraryBrowserCount (0)
 {
-	SetSizeHints (640, 480);
+    SetSizeHints (640, 480);
 
-	// create sizer
-	m_pPapaSizer = new wxBoxSizer (wxVERTICAL);
+    // create sizer
+    m_pPapaSizer = new wxBoxSizer (wxVERTICAL);
 
-	// create Notebook
-	m_pNotebook = new wxNotebook(this, ID_BROWSER_NOTEBOOK);
-	m_pPapaSizer->Add (m_pNotebook, 3, wxEXPAND);
+    // create Notebook
+    m_pNotebook = new wxNotebook(this, ID_BROWSER_NOTEBOOK);
+    m_pPapaSizer->Add (m_pNotebook, 3, wxEXPAND);
 
-	SetSizer (m_pPapaSizer);
-	//  m_pPapaSizer->Layout ();
+    SetSizer (m_pPapaSizer);
 
-	//  menu setup goes here
-	wxMenu *pBrowserMenu = new wxMenu ();
-	pBrowserMenu->Append (ID_BROWSER_NEW_CRYPT, wxT ("New Crypt browser\tCtrl+Shift+C"), wxT (""));
-	pBrowserMenu->Append (ID_BROWSER_NEW_LIBRARY, wxT ("New Library browser\tCtrl+Shift+L"), wxT (""));
-	pBrowserMenu->AppendSeparator ();
-	pBrowserMenu->Append (ID_BROWSER_CLOSE_TAB, wxT ("Kill current browser\tCtrl+Shift+K"), wxT (""));
+    //  menu setup goes here
+    wxMenu *pBrowserMenu = new wxMenu ();
+    pBrowserMenu->Append (ID_BROWSER_NEW_CRYPT, 
+			  wxT ("New Crypt browser\tCtrl+Shift+C"), wxT (""));
+    pBrowserMenu->Append (ID_BROWSER_NEW_LIBRARY, 
+			  wxT ("New Library browser\tCtrl+Shift+L"), wxT (""));
+    pBrowserMenu->AppendSeparator ();
+    pBrowserMenu->Append (ID_BROWSER_CLOSE_TAB, 
+			  wxT ("Kill current browser\tCtrl+Shift+K"), wxT (""));
 
-	wxMenu *pFileMenu = new wxMenu ();
-	//   pFileMenu->Append (ID_FILE_PREFERENCES, wxT ("Preferences"), wxT (""));
-	//   pFileMenu->AppendSeparator () ;
-	pFileMenu->Append (ID_FILE_DECKBUILDER, wxT ("Deck Builder\tCtrl+D"), wxT (""));
-	pFileMenu->AppendSeparator () ;
-	//   pFileMenu->Append (ID_FILE_EDITIONS, wxT ("VTES Sets..."), wxT (""));
-	pFileMenu->Append (ID_FILE_UPDATEDB, wxT ("Update Database"), wxT (""));
-	pFileMenu->AppendSeparator () ;
-	pFileMenu->Append (ID_FILE_EXIT, wxT ("Quit\tCtrl+Q"), wxT (""));
+    wxMenu *pFileMenu = new wxMenu ();
+    //   pFileMenu->Append (ID_FILE_PREFERENCES, wxT ("Preferences"), wxT (""));
+    //   pFileMenu->AppendSeparator () ;
+    pFileMenu->Append (ID_FILE_DECKBUILDER, wxT ("Deck Builder\tCtrl+D"), 
+		       wxT (""));
+    pFileMenu->AppendSeparator () ;
+    //pFileMenu->Append (ID_FILE_EDITIONS, wxT ("VTES Sets..."), wxT (""));
+    pFileMenu->Append (ID_FILE_UPDATEDB, wxT ("Update Database"), wxT (""));
+    pFileMenu->AppendSeparator () ;
+    pFileMenu->Append (ID_FILE_EXIT, wxT ("Quit\tCtrl+Q"), wxT (""));
 
-	wxMenu *pInventoryMenu = new wxMenu ();
-	pInventoryMenu->Append (ID_INV_OPEN, wxT ("Open"), wxT (""));
-	pInventoryMenu->Append (ID_INV_IMPORT, wxT ("Import from (F)ELDB"), wxT (""));
-	pInventoryMenu->AppendSeparator () ;
-	pInventoryMenu->Append (ID_INV_SAVE, wxT ("Save"), wxT (""));
-	pInventoryMenu->Append (ID_INV_EXPORT_HTML, wxT ("Export to HTML"), wxT (""));
-	pInventoryMenu->Append (ID_INV_EXPORT_CSV, wxT ("Export for (F)ELDB"), wxT (""));
+    wxMenu *pInventoryMenu = new wxMenu ();
+    pInventoryMenu->Append (ID_INV_OPEN, wxT ("Open"), wxT (""));
+    pInventoryMenu->Append (ID_INV_IMPORT, 
+			    wxT ("Import from (F)ELDB"), wxT (""));
+    pInventoryMenu->AppendSeparator () ;
+    pInventoryMenu->Append (ID_INV_SAVE, wxT ("Save"), wxT (""));
+    pInventoryMenu->Append (ID_INV_EXPORT_HTML, 
+			    wxT ("Export to HTML"), wxT (""));
+    pInventoryMenu->Append (ID_INV_EXPORT_CSV, 
+			    wxT ("Export for (F)ELDB"), wxT (""));
 
-	wxMenu *pHelpMenu = new wxMenu ();
-	//  pHelpMenu->Append (ID_HELP_MANUAL, wxT ("Manual"), wxT (""));
-	pHelpMenu -> Append (ID_HELP_ABOUT, wxT ("About"), wxT (""));
+    wxMenu *pHelpMenu = new wxMenu ();
+    //  pHelpMenu->Append (ID_HELP_MANUAL, wxT ("Manual"), wxT (""));
+    pHelpMenu -> Append (ID_HELP_ABOUT, wxT ("About"), wxT (""));
 
-	wxMenuBar *pMenuBar = new wxMenuBar;
+    wxMenuBar *pMenuBar = new wxMenuBar;
 
-	pMenuBar->Append (pFileMenu, wxT ("File"));
+    pMenuBar->Append (pFileMenu, wxT ("File"));
+    pMenuBar->Append (pBrowserMenu, wxT ("Browser"));
+    pMenuBar->Append (pInventoryMenu, wxT("Inventory"));
+    pMenuBar->Append (pHelpMenu, wxT ("Help"));
 
-#if 0
-	//Opening extra browser windows does not work
-	//under windows.
-	pMenuBar->Append (pBrowserMenu, wxT ("Browser"));
-#endif
+    SetMenuBar (pMenuBar);
 
-	pMenuBar->Append (pInventoryMenu, wxT("Inventory"));
-	pMenuBar->Append (pHelpMenu, wxT ("Help"));
+    // Add Crypt Browser
+    m_pBrowserCryptModel = new BrowserCryptModel(m_pNotebook, 
+						 m_uiCryptBrowserCount++);
+    // Add Library Browser
+    m_pBrowserLibraryModel = new BrowserLibraryModel(m_pNotebook, 
+						     m_uiLibraryBrowserCount++);
+    m_pNotebook->SetSelection (0);
 
-	SetMenuBar (pMenuBar);
+    SetIcon (*g_pIcon);
 
-	// Add Crypt Browser
-	m_pBrowserCryptModel = new BrowserCryptModel (m_pNotebook, m_uiCryptBrowserCount++);
-	// Add Library Browser
-	m_pBrowserLibraryModel = new BrowserLibraryModel (m_pNotebook, m_uiLibraryBrowserCount++);
-	m_pNotebook->SetSelection (0);
-
-	SetIcon (*g_pIcon);
-
-	Show ();
+    Show ();
 }
 
 
 BrowserFrame::~BrowserFrame ()
 {
-	wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get ();
-	if (pConfig)
-	{
-		int h = GetSize().GetHeight();
-		int w = GetSize().GetWidth();
+    wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get ();
+    if (pConfig) {
+        int h = GetSize().GetHeight();
+        int w = GetSize().GetWidth();
 
-		if (h != BAD_HEIGHT_OR_WIDTH_X_OR_Y)
-		{
-			pConfig->Write (wxT ("BrowserWindowHeight"), h);
-		}
+        if (h != BAD_HEIGHT_OR_WIDTH_X_OR_Y) {
+            pConfig->Write (wxT ("BrowserWindowHeight"), h);
+        }
 
-		if (w != BAD_HEIGHT_OR_WIDTH_X_OR_Y)
-		{
-			pConfig->Write (wxT ("BrowserWindowWidth"), w);
-		}
+        if (w != BAD_HEIGHT_OR_WIDTH_X_OR_Y) {
+            pConfig->Write (wxT ("BrowserWindowWidth"), w);
+        }
 
-		pConfig->Flush (TRUE);
-	}
+        pConfig->Flush (TRUE);
+    }
 }
 
 void BrowserFrame::TabChanged(wxNotebookEvent &event)
 {
-	int selectedPage;
-	selectedPage = event.GetSelection();
+    int selectedPage;
+    selectedPage = event.GetSelection();
 
-	if (m_pNotebook != NULL)
-	{
-		wxNotebookPage* pPage = m_pNotebook->GetPage(selectedPage);
+    if (m_pNotebook != NULL) {
+        wxNotebookPage* pPage = m_pNotebook->GetPage(selectedPage);
 
-		if (pPage != NULL)
-		{
-			pPage->SetFocus();
-		}
-	}
+        if (pPage != NULL) {
+            pPage->SetFocus();
+        }
+    }
 }
 
 void
 BrowserFrame::OnBrowserCloseTab (wxCommandEvent& WXUNUSED (event))
 {
-	int iPage;
+    int iPage;
 
-	iPage = m_pNotebook->GetSelection ();
-	if (iPage >= 2)
-	{
-		m_pNotebook->DeletePage (iPage);
-	}
+    iPage = m_pNotebook->GetSelection ();
+    if (iPage >= 2) {
+        m_pNotebook->DeletePage (iPage);
+    }
 
 }
 
@@ -314,15 +305,14 @@ BrowserFrame::OnBrowserCloseTab (wxCommandEvent& WXUNUSED (event))
 void
 BrowserFrame::OnBrowserNewCrypt (wxCommandEvent& WXUNUSED (event))
 {
-	new BrowserCryptModel(m_pNotebook, m_uiCryptBrowserCount++);
-
+    new BrowserCryptModel(m_pNotebook, m_uiCryptBrowserCount++);
 }
 
 
 void
 BrowserFrame::OnBrowserNewLibrary (wxCommandEvent& WXUNUSED (event))
 {
-	new BrowserLibraryModel (m_pNotebook, m_uiLibraryBrowserCount++);
+    new BrowserLibraryModel (m_pNotebook, m_uiLibraryBrowserCount++);
 }
 
 
@@ -330,41 +320,38 @@ void
 BrowserFrame::OnClose (wxCloseEvent& WXUNUSED(event))
 {
 
-	int iX = 0;
-	int iY = 0;
-	wxString sBrowserXEntry = wxT("BrowserWindowX");
-	wxString sBrowserYEntry = wxT("BrowserWindowY");
+    int iX = 0;
+    int iY = 0;
+    wxString sBrowserXEntry = wxT("BrowserWindowX");
+    wxString sBrowserYEntry = wxT("BrowserWindowY");
 
-	GetPosition(&iX, &iY);
+    GetPosition(&iX, &iY);
 
-	wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get ();
+    wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get ();
 
-	if (pConfig)
-	{
-		if (iX != BAD_HEIGHT_OR_WIDTH_X_OR_Y)
-		{
-			pConfig->Write(sBrowserXEntry, iX);
-		}
+    if (pConfig) {
+        if (iX != BAD_HEIGHT_OR_WIDTH_X_OR_Y) {
+            pConfig->Write(sBrowserXEntry, iX);
+        }
 
-		if (iY != BAD_HEIGHT_OR_WIDTH_X_OR_Y)
-		{
-			pConfig->Write(sBrowserYEntry, iY);
-		}
+        if (iY != BAD_HEIGHT_OR_WIDTH_X_OR_Y) {
+            pConfig->Write(sBrowserYEntry, iY);
+        }
 
-		pConfig->Flush(TRUE);
-	}
+        pConfig->Flush(TRUE);
+    }
 
 
-	Database::DeleteInstance ();
-	DeckModel::DeleteInstance ();
-	DrawSimulator::DeleteInstance ();
-	Updater::DeleteInstance ();
-	//EditionsDialog::DeleteInstance ();
+    Database::DeleteInstance ();
+    DeckModel::DeleteInstance ();
+    DrawSimulator::DeleteInstance ();
+    Updater::DeleteInstance ();
+    //EditionsDialog::DeleteInstance ();
 
-	delete g_pIcon;
-	delete g_pSplashBitmap;
+    delete g_pIcon;
+    delete g_pSplashBitmap;
 
-	Destroy ();
+    Destroy ();
 }
 
 
@@ -372,14 +359,14 @@ BrowserFrame::OnClose (wxCloseEvent& WXUNUSED(event))
 void
 BrowserFrame::OnFileExit (wxCommandEvent& WXUNUSED (event))
 {
-	Close ();
+    Close ();
 }
 
 
 void
 BrowserFrame::OnFileDeckBuilder (wxCommandEvent& WXUNUSED (event))
 {
-	DeckModel::Instance ();
+    DeckModel::Instance ();
 }
 
 /*
@@ -396,25 +383,25 @@ m_pBrowserLibraryModel->Reset ();
 void
 BrowserFrame::OnFilePreferences (wxCommandEvent& WXUNUSED (event))
 {
-	//Respond to menu here
+    //Respond to menu here
 }
 
 
 void
 BrowserFrame::OnFileUpdateDatabase (wxCommandEvent& WXUNUSED (event))
 {
-	Updater *pUpdater = Updater::Instance ();
-	pUpdater->DoUpdate ();
+    Updater *pUpdater = Updater::Instance ();
+    pUpdater->DoUpdate(UPDATE_FROM_MENU);
 
-	m_pBrowserCryptModel->Reset ();
-	m_pBrowserLibraryModel->Reset ();
+    m_pBrowserCryptModel->Reset ();
+    m_pBrowserLibraryModel->Reset ();
 }
 
 
 void
 BrowserFrame::OnHelpManual (wxCommandEvent& WXUNUSED (event))
 {
-	//Respond to menu here
+    //Respond to menu here
 }
 
 
@@ -422,68 +409,64 @@ BrowserFrame::OnHelpManual (wxCommandEvent& WXUNUSED (event))
 void
 BrowserFrame::OnHelpAbout (wxCommandEvent& WXUNUSED (event))
 {
-	wxString about;
-	about.Printf(wxT ("The Anarch Revolt Deck Builder\nVersion 2.9.1\r\nby Francois Gombault & Graham Smith\r\nEmail: graham.r.smith@gmail.com\r\nBuilt: %s"),BUILD_DATE);
-	wxMessageBox(about, wxT ("About"));
+    wxString about;
+    about.Printf(wxT ("The Anarch Revolt Deck Builder\nVersion 2.9.1\r\nby Francois Gombault & Graham Smith\r\nEmail: graham.r.smith@gmail.com\r\nBuilt: %s"),BUILD_DATE);
+    wxMessageBox(about, wxT ("About"));
 }
 
 
 void
 BrowserFrame::OnInventoryExportCSV (wxCommandEvent& WXUNUSED (event))
 {
-	InventoryModel *pInv = InventoryModel::Instance ();
+    InventoryModel *pInv = InventoryModel::Instance ();
 
-	if (pInv) pInv->ExportToCSV ();
+    if (pInv) pInv->ExportToCSV ();
 }
 
 
 void
 BrowserFrame::OnInventoryExportHTML (wxCommandEvent& WXUNUSED (event))
 {
-	InventoryModel *pInv = InventoryModel::Instance ();
+    InventoryModel *pInv = InventoryModel::Instance ();
 
-	if (pInv) pInv->ExportToHTML ();
+    if (pInv) pInv->ExportToHTML ();
 }
 
 
 void
 BrowserFrame::OnInventoryImport (wxCommandEvent& WXUNUSED (event))
 {
-	InventoryModel *pInv = InventoryModel::Instance ();
+    InventoryModel *pInv = InventoryModel::Instance ();
 
-	if (pInv)
-	{
-		if (pInv->ImportFromCSV ())
-		{
-			m_pBrowserCryptModel->Reset ();
-			m_pBrowserLibraryModel->Reset ();
-		}
-	}
+    if (pInv) {
+        if (pInv->ImportFromCSV ()) {
+            m_pBrowserCryptModel->Reset ();
+            m_pBrowserLibraryModel->Reset ();
+        }
+    }
 }
 
 
 void
 BrowserFrame::OnInventoryOpen (wxCommandEvent& WXUNUSED (event))
 {
-	InventoryModel *pInv = InventoryModel::Instance ();
+    InventoryModel *pInv = InventoryModel::Instance ();
 
-	if (pInv)
-	{
-		if (pInv->ImportFromXML ())
-		{
-			m_pBrowserCryptModel->Reset ();
-			m_pBrowserLibraryModel->Reset ();
-		}
-	}
+    if (pInv) {
+        if (pInv->ImportFromXML ()) {
+            m_pBrowserCryptModel->Reset ();
+            m_pBrowserLibraryModel->Reset ();
+        }
+    }
 }
 
 
 void
 BrowserFrame::OnInventorySave (wxCommandEvent& WXUNUSED (event))
 {
-	InventoryModel *pInv = InventoryModel::Instance ();
+    InventoryModel *pInv = InventoryModel::Instance ();
 
-	if (pInv) pInv->ExportToXML ();
+    if (pInv) pInv->ExportToXML ();
 }
 
 
