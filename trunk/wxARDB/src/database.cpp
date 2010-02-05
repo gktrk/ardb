@@ -1045,7 +1045,7 @@ Database::Instance ()
         if (spInstance->m_bMustUpdate == true) {
             spInstance->m_bMustUpdate = false;
             Updater *pUpdater = Updater::Instance ();
-            pUpdater->DoUpdate ();
+            pUpdater->DoUpdate(UPDATE_FROM_MENU);
         }
     }
 #endif

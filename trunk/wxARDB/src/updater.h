@@ -46,7 +46,11 @@
 // this is almost twice as much as needed, the longest line is around 640.
 #define BUFFER_SIZE 1000
 
-
+typedef enum  {
+    UPDATE_FROM_STARTUP,
+    UPDATE_FROM_MENU,
+    UNKNOWN
+} UPDATE_TYPE;
 
 class Updater : public wxDialog
 {
@@ -56,8 +60,10 @@ class Updater : public wxDialog
   static void DeleteInstance ();
 
 
-  int DoUpdate ();
-  static void decodeCSV (wxInputStream *file, char sep, char quote, int maxrecords, int *numfields, wxArrayString *pResult, bool bSkipFirstLine);
+  int DoUpdate (UPDATE_TYPE utType);
+  static void decodeCSV (wxInputStream *file, char sep, char quote, 
+			 int maxrecords, int *numfields, 
+			 wxArrayString *pResult, bool bSkipFirstLine);
 
   protected:
   // Constructor & destructor
