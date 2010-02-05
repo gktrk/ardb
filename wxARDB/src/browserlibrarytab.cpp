@@ -247,7 +247,6 @@ BrowserLibraryTab::Init ()
     m_pParent->AddPage (this, sTabName, TRUE);
 }
 
-
 void
 BrowserLibraryTab::UpdateView ()
 {
@@ -370,24 +369,7 @@ BrowserLibraryTab::FillCardList ()
             sCopy.Replace (wxT ("\n"), wxT (" "));
 
             m_pCardGrid->SetCellValue (iLine, iCol, sCopy);
-
-            /*
-            if (iCol > 2)
-            {
-            // data columns
-            // DEALT WITH IN THE ONCARDSELECT HANDLER FOR BETTER PERFORMANCE
-            // m_pCardGrid->SetReadOnly (iLine, iCol, TRUE);
-            }
-            else
-            {
-            // Inventory columns
-            if (iCol % 2)
-            m_pCardGrid->SetCellBackgroundColour (iLine, iCol, wxColour (230, 230, 230));
-            else
-            m_pCardGrid->SetCellBackgroundColour (iLine, iCol, wxColour (240, 240, 240));
-            }
-            */
-        }
+	}
     }
 
     //  Fit ();

@@ -64,12 +64,12 @@ BrowserLibraryModel::BrowserLibraryModel (wxNotebook *pViewPanel, unsigned int u
     m_sWipeQuery.Printf (wxT ("DELETE FROM library_selection WHERE browser_num = %d; "),
                          m_uiModelIDNumber);
 
-    SetSortColumn (4);
+    SetSortColumn(4);
+    Reset();
 
     m_pController = new BrowserLibraryController (this);
     m_pView = new BrowserLibraryTab (this, m_pController, m_pViewPanel, uiNumber);
 
-    Reset ();
 }
 
 
