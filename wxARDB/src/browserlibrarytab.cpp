@@ -243,6 +243,7 @@ BrowserLibraryTab::Init ()
 
     m_oTabSize = GetSize ();
 
+    UpdateView();
     m_pParent->AddPage (this, sTabName, TRUE);
 }
 
