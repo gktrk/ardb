@@ -3,12 +3,13 @@
 *  Copyright (C) 2002 Francois Gombault
 *  gombault.francois@wanadoo.fr
 *
-*  Copyright (C) 2007 Graham Smith
+*  Copyright (C) 2007, 2010 Graham Smith
 *  graham.r.smith@gmail.com
 *
 *  contributors:
 *    meshee.knight@gmail.com
-*	 afri@afri.cz
+*    afri@afri.cz
+*    Rob Woodruff
 *
 *  Official project page: http://code.google.com/p/ardb/
 *
@@ -29,6 +30,8 @@
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
+
+#define VERSION_NUMBER wxT("3.0.0")
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -168,8 +171,6 @@ MyApp::OnInit ()
     //Runs Updater on Startup
     Updater *pUpdater = Updater::Instance ();
     pUpdater->DoUpdate(UPDATE_FROM_STARTUP);
-
-
 
     if (pSplash != NULL) delete pSplash;
 
@@ -410,7 +411,7 @@ void
 BrowserFrame::OnHelpAbout (wxCommandEvent& WXUNUSED (event))
 {
     wxString about;
-    about.Printf(wxT ("The Anarch Revolt Deck Builder\nVersion 2.9.1\r\nby Francois Gombault & Graham Smith\r\nEmail: graham.r.smith@gmail.com\r\nBuilt: %s"),BUILD_DATE);
+    about.Printf(wxT ("The Anarch Revolt Deck Builder\nVersion %s\r\nby Francois Gombault & Graham Smith\r\nEmail: graham.r.smith@gmail.com\r\nBuilt: %s"),VERSION_NUMBER,BUILD_DATE);
     wxMessageBox(about, wxT ("About"));
 }
 
