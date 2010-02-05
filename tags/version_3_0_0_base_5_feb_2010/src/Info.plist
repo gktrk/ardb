@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>ardb</string>
+	<key>CFBundleIdentifier</key>
+	<string>org.nongnu.savanah.anarchdb</string>
+	<key>CFBundleIconFile</key>
+	<string>ardb.icns</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>1.3</string>
+	<key>CSResourcesFileMapped</key>
+	<true/>
+	<key>CFBundleName</key>
+	<string>ARDB</string>
+  <key>CFBundleURLTypes</key>
+  <array>
+    <dict>
+      <key>CFBundleURLName</key>
+      <string>ARDB URL</string>
+      <key>CFBundleURLSchemes</key>
+      <array>
+        <string>ardb</string>
+      </array>
+      <key>CFBundleTypeRole</key>
+      <string>Editor</string>
+      <key>LSIsAppleDefaultForType</key>
+      <string>Yes</string>
+    </dict>
+  </array>
+  <key>CFBundleGetInfoString</key>
+  <string>The Anarch Revolt Deck Builder, helper tool for the VTES card game</string>
+</dict>
+</plist>
