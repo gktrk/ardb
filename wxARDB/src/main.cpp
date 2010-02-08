@@ -56,7 +56,7 @@
 class BrowserFrame ;
 
 #include "main.h"
-//#include "configfile.h"
+#include "preferencedialog.h"
 #include "editionsdialog.h"
 #include "drawsimulator.h"
 #include "inventorymodel.h"
@@ -73,8 +73,8 @@ BEGIN_EVENT_TABLE (BrowserFrame, wxFrame)
     EVT_MENU (ID_BROWSER_NEW_LIBRARY, BrowserFrame::OnBrowserNewLibrary)
     EVT_MENU (ID_FILE_DECKBUILDER, BrowserFrame::OnFileDeckBuilder)
 //EVT_MENU (ID_FILE_EDITIONS, BrowserFrame::OnFileEditions)
-    EVT_MENU (ID_FILE_PREFERENCES, BrowserFrame::OnFilePreferences)
     EVT_MENU (ID_FILE_UPDATEDB, BrowserFrame::OnFileUpdateDatabase)
+    EVT_MENU (ID_FILE_PREFERENCES, BrowserFrame::OnFilePreferences)
     EVT_MENU (ID_FILE_EXIT, BrowserFrame::OnFileExit)
     EVT_MENU (ID_INV_OPEN, BrowserFrame::OnInventoryOpen)
     EVT_MENU (ID_INV_SAVE, BrowserFrame::OnInventorySave)
@@ -209,14 +209,15 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos,
 			  wxT ("Kill current browser\tCtrl+Shift+K"), wxT (""));
 
     wxMenu *pFileMenu = new wxMenu ();
-    //   pFileMenu->Append (ID_FILE_PREFERENCES, wxT ("Preferences"), wxT (""));
-    //   pFileMenu->AppendSeparator () ;
+
     pFileMenu->Append (ID_FILE_DECKBUILDER, wxT ("Deck Builder\tCtrl+D"), 
 		       wxT (""));
     pFileMenu->AppendSeparator () ;
     //pFileMenu->Append (ID_FILE_EDITIONS, wxT ("VTES Sets..."), wxT (""));
     pFileMenu->Append (ID_FILE_UPDATEDB, wxT ("Update Database"), wxT (""));
     pFileMenu->AppendSeparator () ;
+    pFileMenu->Append (ID_FILE_PREFERENCES, wxT ("Preferences"), wxT (""));
+    pFileMenu->AppendSeparator() ;
     pFileMenu->Append (ID_FILE_EXIT, wxT ("Quit\tCtrl+Q"), wxT (""));
 
     wxMenu *pInventoryMenu = new wxMenu ();
@@ -384,7 +385,10 @@ m_pBrowserLibraryModel->Reset ();
 void
 BrowserFrame::OnFilePreferences (wxCommandEvent& WXUNUSED (event))
 {
-    //Respond to menu here
+     PrefDialog *pDialog = new PrefDialog();
+     pDialog->ShowModal();
+     delete pDialog;
+     
 }
 
 
