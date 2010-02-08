@@ -45,7 +45,8 @@ ardb_SOURCES = \
 	importxml.cpp \
 	cardviewer.cpp \
 	DeckUpload.cpp \
-	sllogindialog.cpp
+	sllogindialog.cpp \
+	preferencedialog.cpp
 
 ardb_resource.o: ardb.rc
 	$(RESCOMP) -i$(srcdir)/ardb.rc -o ardb_resource.o \
