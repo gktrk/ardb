@@ -19,6 +19,7 @@
 
 #include "DownloadEvent.h"
 
+DEFINE_EVENT_TYPE( wxEVT_DOWNLOAD )
 
 IMPLEMENT_DYNAMIC_CLASS(wxDownloadEvent, wxNotifyEvent)
 
