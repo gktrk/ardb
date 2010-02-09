@@ -29,6 +29,9 @@
 #include "browserlibrarymodel.h"
 #include "deckmodel.h"
 #include "updater.h"
+#include "DownloadFile.h"
+
+
 #include <wx/apptrait.h>
 
 class MyApp: public wxApp
@@ -69,6 +72,8 @@ public:
   void OnFileEditions (wxCommandEvent& WXUNUSED (event));
   void OnFilePreferences (wxCommandEvent& WXUNUSED (event));
   void OnFileUpdateDatabase (wxCommandEvent& WXUNUSED (event));
+  void OnFileImageDownload (wxCommandEvent& event);
+  void OnFileImageDownloadEvent (wxDownloadEvent& event);
   void OnHelpManual (wxCommandEvent& WXUNUSED (event));
   void OnHelpAbout (wxCommandEvent& WXUNUSED (event));
   void OnInventoryExportCSV (wxCommandEvent& WXUNUSED (event));
@@ -83,6 +88,8 @@ public:
  private:
   BrowserCryptModel	  *m_pBrowserCryptModel;
   BrowserLibraryModel *m_pBrowserLibraryModel;
+  //wxPanel             *panel;
+  //wxGauge             *gauge;
   wxBoxSizer		  *m_pPapaSizer;
   wxNotebook		  *m_pNotebook;
 
@@ -99,6 +106,7 @@ public:
 	  ID_FILE_EDITIONS,
 	  ID_FILE_PREFERENCES,
 	  ID_FILE_UPDATEDB,
+	  ID_FILE_IMAGE_DOWNLOAD,
 	  ID_HELP_MANUAL,
 	  ID_HELP_ABOUT,
 	  ID_INV_OPEN,
