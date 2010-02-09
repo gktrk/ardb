@@ -73,7 +73,7 @@ public:
   void OnFilePreferences (wxCommandEvent& WXUNUSED (event));
   void OnFileUpdateDatabase (wxCommandEvent& WXUNUSED (event));
   void OnFileImageDownload (wxCommandEvent& event);
-  void OnFileImageDownloadEvent (wxDownloadEvent& event);
+  void OnImageDownloadEvent (wxDownloadEvent& event);
   void OnHelpManual (wxCommandEvent& WXUNUSED (event));
   void OnHelpAbout (wxCommandEvent& WXUNUSED (event));
   void OnInventoryExportCSV (wxCommandEvent& WXUNUSED (event));
@@ -86,12 +86,11 @@ public:
 
 
  private:
-  BrowserCryptModel	  *m_pBrowserCryptModel;
+  BrowserCryptModel   *m_pBrowserCryptModel;
   BrowserLibraryModel *m_pBrowserLibraryModel;
-  //wxPanel             *panel;
-  //wxGauge             *gauge;
-  wxBoxSizer		  *m_pPapaSizer;
-  wxNotebook		  *m_pNotebook;
+  wxBoxSizer          *m_pPapaSizer;
+  wxNotebook          *m_pNotebook;
+  wxStatusBar         *m_pStatusBar;
 
   unsigned int		   m_uiCryptBrowserCount;
   unsigned int		   m_uiLibraryBrowserCount;
@@ -114,7 +113,8 @@ public:
 	  ID_INV_IMPORT,
 	  ID_INV_EXPORT_CSV,
 	  ID_INV_EXPORT_HTML,
-	  ID_BROWSER_NOTEBOOK
+	  ID_BROWSER_NOTEBOOK,
+          ID_EVENT_DOWNLOAD
 	};
 
   DECLARE_EVENT_TABLE()
