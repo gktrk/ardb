@@ -289,11 +289,10 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos,
 
     SetIcon (*g_pIcon);
 
-	SetIcon (*g_pIcon);
-    Show ();
-    wxPanel *panel = new wxPanel(m_pNotebook, wxID_ANY,wxPoint (1050,1),wxSize(205,20));
 
-    wxGauge *gauge = new wxGauge(panel, 1, 200, wxPoint(100, 1), wxSize(100,15), wxGA_HORIZONTAL, wxDefaultValidator, wxT("Downloading Images"));
+    //wxPanel *panel = new wxPanel(m_pNotebook, wxID_ANY,wxPoint (1050,1),wxSize(205,20));
+
+    //wxGauge *gauge = new wxGauge(panel, 1, 200, wxPoint(100, 1), wxSize(100,15), wxGA_HORIZONTAL, wxDefaultValidator, wxT("Downloading Images"));
 
 	Show ();
 }

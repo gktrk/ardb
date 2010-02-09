@@ -254,7 +254,8 @@ Updater::DoUpdate (UPDATE_TYPE utType)
 
     if(url.GetError() == wxURL_NOERR) {
 
-	wxInputStream *data = url.GetInputStream();
+	wxInputStream *data;
+	data= url.GetInputStream();
         wxHTTP* p = wxDynamicCast(&url.GetProtocol(),wxHTTP);
         wxString remoteDisplayTime = p->GetHeader(wxT("Last-Modified"));
 
