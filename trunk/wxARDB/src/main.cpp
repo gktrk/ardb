@@ -243,7 +243,6 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos,
 	pFileMenu->Append (ID_FILE_UPDATEDB, wxT ("Update Database"), wxT (""));
 	pFileMenu->AppendSeparator () ;
 	pFileMenu->Append (ID_FILE_IMAGE_DOWNLOAD, wxT("Download Images"),wxT(""));
-	pFileMenu->Append (ID_FILE_EXIT, wxT ("Quit\tCtrl+Q"), wxT (""));
 
     pFileMenu->Append (ID_FILE_DECKBUILDER, wxT ("Deck Builder\tCtrl+D"),
 		       wxT (""));
