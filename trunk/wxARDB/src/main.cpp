@@ -52,6 +52,8 @@
 #include <wx/tooltip.h>
 #include <wx/confbase.h>
 #include <wx/fileconf.h>
+#include <wx/gauge.h>
+#include <wx/colour.h>
 
 class BrowserFrame ;
 
@@ -61,29 +63,51 @@ class BrowserFrame ;
 #include "drawsimulator.h"
 #include "inventorymodel.h"
 #include "ardb_db_edition_filter.h"
+#include "DeckUpload.h"
+
+
 
 #ifndef __WXMSW__
+
 #  include "icon.xpm"
 #endif
 #  include "ardbsplash.xpm"
 
 BEGIN_EVENT_TABLE (BrowserFrame, wxFrame)
     EVT_MENU (ID_BROWSER_CLOSE_TAB, BrowserFrame::OnBrowserCloseTab)
+
     EVT_MENU (ID_BROWSER_NEW_CRYPT, BrowserFrame::OnBrowserNewCrypt)
+EVT_MENU (ID_BROWSER_CLOSE_TAB, BrowserFrame::OnBrowserCloseTab)
     EVT_MENU (ID_BROWSER_NEW_LIBRARY, BrowserFrame::OnBrowserNewLibrary)
+EVT_MENU (ID_BROWSER_NEW_CRYPT, BrowserFrame::OnBrowserNewCrypt)
     EVT_MENU (ID_FILE_DECKBUILDER, BrowserFrame::OnFileDeckBuilder)
+EVT_MENU (ID_BROWSER_NEW_LIBRARY, BrowserFrame::OnBrowserNewLibrary)
+EVT_MENU (ID_FILE_DECKBUILDER, BrowserFrame::OnFileDeckBuilder)
 //EVT_MENU (ID_FILE_EDITIONS, BrowserFrame::OnFileEditions)
+wxEVT_DOWNLOAD (wxID_ANY, BrowserFrame::OnFileImageDownloadEvent)
     EVT_MENU (ID_FILE_UPDATEDB, BrowserFrame::OnFileUpdateDatabase)
+EVT_MENU (ID_FILE_IMAGE_DOWNLOAD,BrowserFrame::OnFileImageDownload)
     EVT_MENU (ID_FILE_PREFERENCES, BrowserFrame::OnFilePreferences)
     EVT_MENU (ID_FILE_EXIT, BrowserFrame::OnFileExit)
+EVT_MENU (ID_FILE_PREFERENCES, BrowserFrame::OnFilePreferences)
     EVT_MENU (ID_INV_OPEN, BrowserFrame::OnInventoryOpen)
+EVT_MENU (ID_FILE_UPDATEDB, BrowserFrame::OnFileUpdateDatabase)
     EVT_MENU (ID_INV_SAVE, BrowserFrame::OnInventorySave)
+EVT_MENU (ID_FILE_EXIT, BrowserFrame::OnFileExit)
     EVT_MENU (ID_INV_IMPORT, BrowserFrame::OnInventoryImport)
+EVT_MENU (ID_INV_OPEN, BrowserFrame::OnInventoryOpen)
     EVT_MENU (ID_INV_EXPORT_CSV, BrowserFrame::OnInventoryExportCSV)
+EVT_MENU (ID_INV_SAVE, BrowserFrame::OnInventorySave)
     EVT_MENU (ID_INV_EXPORT_HTML, BrowserFrame::OnInventoryExportHTML)
+EVT_MENU (ID_INV_IMPORT, BrowserFrame::OnInventoryImport)
     EVT_MENU (ID_HELP_ABOUT, BrowserFrame::OnHelpAbout)
+EVT_MENU (ID_INV_EXPORT_CSV, BrowserFrame::OnInventoryExportCSV)
     EVT_MENU (ID_HELP_MANUAL, BrowserFrame::OnHelpManual)
+EVT_MENU (ID_INV_EXPORT_HTML, BrowserFrame::OnInventoryExportHTML)
     EVT_CLOSE (BrowserFrame::OnClose)
+EVT_MENU (ID_HELP_ABOUT, BrowserFrame::OnHelpAbout)
+EVT_MENU (ID_HELP_MANUAL, BrowserFrame::OnHelpManual)
+EVT_CLOSE (BrowserFrame::OnClose)
 
     EVT_NOTEBOOK_PAGE_CHANGED(ID_BROWSER_NOTEBOOK,BrowserFrame::TabChanged)
 
@@ -171,6 +195,7 @@ MyApp::OnInit ()
     //Runs Updater on Startup
     Updater *pUpdater = Updater::Instance ();
     pUpdater->DoUpdate(UPDATE_FROM_STARTUP);
+	pUpdater->DoUpdate (UPDATE_FROM_STARTUP);
 
     if (pSplash != NULL) delete pSplash;
 
@@ -178,7 +203,7 @@ MyApp::OnInit ()
 }
 
 
-BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos, 
+BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos,
 			    const wxSize& size) :
     wxFrame (0, -1, title, pos, size),
     m_pBrowserCryptModel (NULL),
@@ -200,17 +225,27 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos,
 
     //  menu setup goes here
     wxMenu *pBrowserMenu = new wxMenu ();
-    pBrowserMenu->Append (ID_BROWSER_NEW_CRYPT, 
+    pBrowserMenu->Append (ID_BROWSER_NEW_CRYPT,
 			  wxT ("New Crypt browser\tCtrl+Shift+C"), wxT (""));
-    pBrowserMenu->Append (ID_BROWSER_NEW_LIBRARY, 
+    pBrowserMenu->Append (ID_BROWSER_NEW_LIBRARY,
 			  wxT ("New Library browser\tCtrl+Shift+L"), wxT (""));
     pBrowserMenu->AppendSeparator ();
-    pBrowserMenu->Append (ID_BROWSER_CLOSE_TAB, 
+    pBrowserMenu->Append (ID_BROWSER_CLOSE_TAB,
 			  wxT ("Kill current browser\tCtrl+Shift+K"), wxT (""));
 
-    wxMenu *pFileMenu = new wxMenu ();
 
-    pFileMenu->Append (ID_FILE_DECKBUILDER, wxT ("Deck Builder\tCtrl+D"), 
+    wxMenu *pFileMenu = new wxMenu ();
+	pFileMenu->Append (ID_FILE_PREFERENCES, wxT ("Preferences"), wxT (""));
+	pFileMenu->AppendSeparator () ;
+	pFileMenu->Append (ID_FILE_DECKBUILDER, wxT ("Deck Builder\tCtrl+D"), wxT (""));
+	pFileMenu->AppendSeparator () ;
+	//   pFileMenu->Append (ID_FILE_EDITIONS, wxT ("VTES Sets..."), wxT (""));
+	pFileMenu->Append (ID_FILE_UPDATEDB, wxT ("Update Database"), wxT (""));
+	pFileMenu->AppendSeparator () ;
+	pFileMenu->Append (ID_FILE_IMAGE_DOWNLOAD, wxT("Download Images"),wxT(""));
+	pFileMenu->Append (ID_FILE_EXIT, wxT ("Quit\tCtrl+Q"), wxT (""));
+
+    pFileMenu->Append (ID_FILE_DECKBUILDER, wxT ("Deck Builder\tCtrl+D"),
 		       wxT (""));
     pFileMenu->AppendSeparator () ;
     //pFileMenu->Append (ID_FILE_EDITIONS, wxT ("VTES Sets..."), wxT (""));
@@ -222,13 +257,13 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos,
 
     wxMenu *pInventoryMenu = new wxMenu ();
     pInventoryMenu->Append (ID_INV_OPEN, wxT ("Open"), wxT (""));
-    pInventoryMenu->Append (ID_INV_IMPORT, 
+    pInventoryMenu->Append (ID_INV_IMPORT,
 			    wxT ("Import from (F)ELDB"), wxT (""));
     pInventoryMenu->AppendSeparator () ;
     pInventoryMenu->Append (ID_INV_SAVE, wxT ("Save"), wxT (""));
-    pInventoryMenu->Append (ID_INV_EXPORT_HTML, 
+    pInventoryMenu->Append (ID_INV_EXPORT_HTML,
 			    wxT ("Export to HTML"), wxT (""));
-    pInventoryMenu->Append (ID_INV_EXPORT_CSV, 
+    pInventoryMenu->Append (ID_INV_EXPORT_CSV,
 			    wxT ("Export for (F)ELDB"), wxT (""));
 
     wxMenu *pHelpMenu = new wxMenu ();
@@ -245,16 +280,22 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos,
     SetMenuBar (pMenuBar);
 
     // Add Crypt Browser
-    m_pBrowserCryptModel = new BrowserCryptModel(m_pNotebook, 
+    m_pBrowserCryptModel = new BrowserCryptModel(m_pNotebook,
 						 m_uiCryptBrowserCount++);
     // Add Library Browser
-    m_pBrowserLibraryModel = new BrowserLibraryModel(m_pNotebook, 
+    m_pBrowserLibraryModel = new BrowserLibraryModel(m_pNotebook,
 						     m_uiLibraryBrowserCount++);
     m_pNotebook->SetSelection (0);
 
     SetIcon (*g_pIcon);
 
+	SetIcon (*g_pIcon);
     Show ();
+    wxPanel *panel = new wxPanel(m_pNotebook, wxID_ANY,wxPoint (1050,1),wxSize(205,20));
+
+    wxGauge *gauge = new wxGauge(panel, 1, 200, wxPoint(100, 1), wxSize(100,15), wxGA_HORIZONTAL, wxDefaultValidator, wxT("Downloading Images"));
+
+	Show ();
 }
 
 
@@ -385,23 +426,53 @@ m_pBrowserLibraryModel->Reset ();
 void
 BrowserFrame::OnFilePreferences (wxCommandEvent& WXUNUSED (event))
 {
-     PrefDialog *pDialog = new PrefDialog();
+	PrefDialog *pDialog = new PrefDialog();
+
      pDialog->ShowModal();
      delete pDialog;
-     
+
+     //Respond to menu here
 }
 
 
 void
 BrowserFrame::OnFileUpdateDatabase (wxCommandEvent& WXUNUSED (event))
 {
-    Updater *pUpdater = Updater::Instance ();
+	Updater *pUpdater = Updater::Instance ();
     pUpdater->DoUpdate(UPDATE_FROM_MENU);
 
     m_pBrowserCryptModel->Reset ();
     m_pBrowserLibraryModel->Reset ();
 }
 
+
+void
+BrowserFrame::OnFileImageDownload (wxCommandEvent& event)
+{
+
+  wxDownloadFile *pDownloadFile=  new wxDownloadFile(this, wxT("http://www.powerbase-bath.com/files/cardimages.zip"),
+      wxT("cardimages.zip"), true, 1000);
+
+}
+
+
+void BrowserFrame::OnFileImageDownloadEvent (wxDownloadEvent& event)
+{
+    if(event.GetDownLoadStatus() == wxDownloadEvent::DOWNLOAD_COMPLETE ||
+     event.GetDownLoadStatus() == wxDownloadEvent::DOWNLOAD_FAIL)
+  {
+  }
+  else if(event.GetDownLoadStatus() == wxDownloadEvent::DOWNLOAD_INPROGRESS)
+  {
+    wxInt64 nFileSize = event.GetFileSize();
+    wxInt64 nDownloaded = event.GetDownLoadedBytesCount();
+
+
+
+    //m_nFileSize
+  }
+
+}
 
 void
 BrowserFrame::OnHelpManual (wxCommandEvent& WXUNUSED (event))

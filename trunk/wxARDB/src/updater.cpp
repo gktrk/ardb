@@ -36,7 +36,7 @@ Updater *Updater::spInstance = NULL;
 
 
 Updater::Updater () :
-    wxDialog (0, -1, wxT ("Anarch Revolt - Database Updater"), 
+    wxDialog (0, -1, wxT ("Anarch Revolt - Database Updater"),
 	      wxDefaultPosition, wxSize (350, 250)),
     m_bUpdating (false),
     m_oDisciplinesArray (),
@@ -58,8 +58,8 @@ Updater::Updater () :
     m_pScrolledWindow->SetScrollRate (0, 10);
     m_pScrolledSizer = new wxBoxSizer (wxVERTICAL);
     m_pScrolledWindow->SetSizer (m_pScrolledSizer);
-    m_pStatusLabel = new wxTextCtrl (m_pScrolledWindow, -1, wxT (""), 
-				     wxDefaultPosition, wxSize (350, 200), 
+    m_pStatusLabel = new wxTextCtrl (m_pScrolledWindow, -1, wxT (""),
+				     wxDefaultPosition, wxSize (350, 200),
 				     wxTE_READONLY | wxTE_MULTILINE);
     m_pScrolledSizer->Add (m_pStatusLabel, 1, wxEXPAND);
     m_pScrolledSizer->Layout ();
@@ -309,7 +309,8 @@ Updater::DoUpdate (UPDATE_TYPE utType)
                     Hide ();
                     return -1;
                 }
-
+                Show ();
+                wxYield ();
                 m_bUpdating = true;
                 m_sZipFile = oFileDialog.GetDirectory()
                     << wxFileName::GetPathSeparator()
@@ -324,13 +325,15 @@ Updater::DoUpdate (UPDATE_TYPE utType)
             Log(wxT ("Database update has ended.\n"
                      "You may need to restart ARDB.\n"));
         } else {
-	    
+
 	    if (utType == UPDATE_FROM_MENU) {
 		wxMessageDialog oUpToDateDialog (NULL,
 						 wxT("Your database is up to date"),
 						 wxT ("Update to Date"),
 						 wxOK);
 		oUpToDateDialog.ShowModal();
+		Show ();
+        wxYield ();
 	    }
 	}
 
