@@ -17,7 +17,7 @@
 *  http://www.priyank.co.in
 *********************************************************************/
 
-#pragma once
+
 #include <wx/event.h>
 
 class wxDownloadFile;
@@ -155,18 +155,19 @@ private:
 
 typedef void (wxEvtHandler::*wxDownloadEventFunction)(wxDownloadEvent&);
 
+
 /**
  * Declares the event types to be used by the user in their event tables.
  */
-const wxEventType wxEVT_DOWNLOAD = wxNewEventType();
-#define wxEVT_DOWNLOAD(id, fn) \
-    DECLARE_EVENT_TABLE_ENTRY( \
-        wxEVT_DOWNLOAD, id, wxID_ANY, \
-        (wxObjectEventFunction)(wxEventFunction) wxStaticCastEvent(wxDownloadEventFunction, &fn ), \
-        (wxObject *) NULL \
-    ),
-//BEGIN_DECLARE_EVENT_TYPES()
-//    DECLARE_EVENT_TYPE(wxEVT_DOWNLOAD, wxID_EVENT_DOWNLOAD)
-//END_DECLARE_EVENT_TYPES()
+//const wxEventType wxEVT_DOWNLOAD = wxNewEventType();
+//#define wxEVT_DOWNLOAD(id, fn)
+ //   DECLARE_EVENT_TABLE_ENTRY(
+  //      wxEVT_DOWNLOAD, id, wxID_ANY,
+  //      (wxObjectEventFunction)(wxEventFunction) wxStaticCastEvent(wxDownloadEventFunction, &fn ),
+  //      (wxObject *) NULL
+  //  ),
+BEGIN_DECLARE_EVENT_TYPES()
+   DECLARE_LOCAL_EVENT_TYPE(wxEVT_DOWNLOAD, wxID_EVENT_DOWNLOAD)
+END_DECLARE_EVENT_TYPES()
 
-//#define EVT_DOWNLOAD(fn) DECLARE_EVENT_TABLE_ENTRY(wxEVT_DOWNLOAD, wxID_ANY, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)(wxDownloadEventFunction) & fn, (wxObject *) NULL ),
+#define wxEVT_DOWNLOAD(fn) DECLARE_EVENT_TABLE_ENTRY(wxEVT_DOWNLOAD, wxID_ANY, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)(wxDownloadEventFunction) & fn, (wxObject *) NULL ),
