@@ -73,7 +73,7 @@ public:
   void OnFilePreferences (wxCommandEvent& WXUNUSED (event));
   void OnFileUpdateDatabase (wxCommandEvent& WXUNUSED (event));
   void OnFileImageDownload (wxCommandEvent& event);
-  void OnImageDownloadEvent (wxDownloadEvent& event);
+  void OnFileImageDownloadEvent (wxDownloadEvent& event);
   void OnHelpManual (wxCommandEvent& WXUNUSED (event));
   void OnHelpAbout (wxCommandEvent& WXUNUSED (event));
   void OnInventoryExportCSV (wxCommandEvent& WXUNUSED (event));

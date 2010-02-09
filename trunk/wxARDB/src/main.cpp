@@ -195,7 +195,6 @@ MyApp::OnInit ()
     //Runs Updater on Startup
     Updater *pUpdater = Updater::Instance ();
     pUpdater->DoUpdate(UPDATE_FROM_STARTUP);
-	pUpdater->DoUpdate (UPDATE_FROM_STARTUP);
 
     if (pSplash != NULL) delete pSplash;
 
@@ -281,7 +280,11 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos,
 
     SetIcon (*g_pIcon);
 
-	Show ();
+    // Create Status bar
+    m_pStatusBar = CreateStatusBar(1);
+    SetStatusText(wxT("Ready!"));
+
+    Show ();
 
 }
 
@@ -413,7 +416,7 @@ m_pBrowserLibraryModel->Reset ();
 void
 BrowserFrame::OnFilePreferences (wxCommandEvent& WXUNUSED (event))
 {
-	PrefDialog *pDialog = new PrefDialog();
+     PrefDialog *pDialog = new PrefDialog();
 
      pDialog->ShowModal();
      delete pDialog;
@@ -461,6 +464,9 @@ void BrowserFrame::OnFileImageDownloadEvent (wxDownloadEvent& event)
     wxInt64 nFileSize = event.GetFileSize();
     wxInt64 nDownloaded = event.GetDownLoadedBytesCount();
 
+    SetStatusText(wxT("Downloaded: ") + 
+                        wxString::Format(wxT("%i"),nDownloaded) + 
+                        wxT(" Bytes"));
     //gauge->SetRange(nFileSize);
     //gauge->SetValue(nDownloaded);
   }
