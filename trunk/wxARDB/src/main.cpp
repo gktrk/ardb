@@ -235,23 +235,16 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos,
 
 
     wxMenu *pFileMenu = new wxMenu ();
-	pFileMenu->Append (ID_FILE_PREFERENCES, wxT ("Preferences"), wxT (""));
-	pFileMenu->AppendSeparator () ;
+
 	pFileMenu->Append (ID_FILE_DECKBUILDER, wxT ("Deck Builder\tCtrl+D"), wxT (""));
 	pFileMenu->AppendSeparator () ;
 	//   pFileMenu->Append (ID_FILE_EDITIONS, wxT ("VTES Sets..."), wxT (""));
 	pFileMenu->Append (ID_FILE_UPDATEDB, wxT ("Update Database"), wxT (""));
 	pFileMenu->AppendSeparator () ;
 	pFileMenu->Append (ID_FILE_IMAGE_DOWNLOAD, wxT("Download Images"),wxT(""));
-
-    pFileMenu->Append (ID_FILE_DECKBUILDER, wxT ("Deck Builder\tCtrl+D"),
-		       wxT (""));
-    pFileMenu->AppendSeparator () ;
     //pFileMenu->Append (ID_FILE_EDITIONS, wxT ("VTES Sets..."), wxT (""));
-    pFileMenu->Append (ID_FILE_UPDATEDB, wxT ("Update Database"), wxT (""));
-    pFileMenu->AppendSeparator () ;
     pFileMenu->Append (ID_FILE_PREFERENCES, wxT ("Preferences"), wxT (""));
-    pFileMenu->AppendSeparator() ;
+	pFileMenu->AppendSeparator () ;
     pFileMenu->Append (ID_FILE_EXIT, wxT ("Quit\tCtrl+Q"), wxT (""));
 
     wxMenu *pInventoryMenu = new wxMenu ();
@@ -288,10 +281,9 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos,
 
     SetIcon (*g_pIcon);
 
+   // wxPanel *panel = new wxPanel(m_pNotebook, wxID_ANY,wxPoint (1050,1),wxSize(205,20));
 
-    //wxPanel *panel = new wxPanel(m_pNotebook, wxID_ANY,wxPoint (1050,1),wxSize(205,20));
-
-    //wxGauge *gauge = new wxGauge(panel, 1, 200, wxPoint(100, 1), wxSize(100,15), wxGA_HORIZONTAL, wxDefaultValidator, wxT("Downloading Images"));
+   // wxGauge *gauge = new wxGauge(panel, 1, 200, wxPoint(100, 1), wxSize(100,15), wxGA_HORIZONTAL, wxDefaultValidator, wxT("Downloading Images"));
 
 	Show ();
 }
