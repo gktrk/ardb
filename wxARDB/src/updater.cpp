@@ -217,11 +217,17 @@ Updater::Instance ()
     return spInstance;
 }
 
-
+//TODO This function is now getting to big and difficult to understand
+//need to clean up and make much much nicer
 int
-Updater::DoUpdate (UPDATE_TYPE utType)
+Updater::DoUpdate(UPDATE_TYPE utType)
 {
-    int iResult;
+    wxString sServer = GetServerName();
+    wxString sFile = GetFileName();
+    wxFileName vtesdatabase(wxT("vtescsv.zip"));
+    wxDateTime localFileTime;
+    wxDateTime remoteFileTime;
+    wxString localDisplayTime;
 
     m_pStatusLabel->Clear();
     m_pOKButton->Disable();
@@ -232,16 +238,15 @@ Updater::DoUpdate (UPDATE_TYPE utType)
 
     Log (wxT ("Checking dates of databases..."));
 
-    wxFileName vtesdatabase(wxT("vtescsv.zip"));
-    wxDateTime localFileTime = vtesdatabase.GetModificationTime();
+    if (vtesdatabase.FileExists()) {
+         localFileTime = vtesdatabase.GetModificationTime();
+    } else {
+         //No file so set the time to long ago to trigger
+         //an update
+         localFileTime.ParseDate(wxT("01/01/1980"));
+    }
 
     localFileTime = localFileTime.ToUTC();
-
-    wxString sServer (wxT ("www.white-wolf.com")),
-        sFile (wxT("/VTES/downloads/vtescsv.zip"));
-
-    wxString localDisplayTime;
-
     localDisplayTime = localFileTime.Format(_T("%A, %d %b %Y %H:%M:%S"));
     localDisplayTime += (_T(" GMT"));
 
@@ -250,95 +255,93 @@ Updater::DoUpdate (UPDATE_TYPE utType)
     Log (localDisplayTime);
     Log (wxT ("\n"));
 
-    wxURL url(wxT("http://www.white-wolf.com/vtes/downloads/vtescsv.zip"));
+    wxURL url(wxT("http://") + sServer + sFile);
 
     if(url.GetError() == wxURL_NOERR) {
 
-	wxInputStream *data;
-	data= url.GetInputStream();
-        wxHTTP* p = wxDynamicCast(&url.GetProtocol(),wxHTTP);
-        wxString remoteDisplayTime = p->GetHeader(wxT("Last-Modified"));
+         url.GetInputStream();
 
-        Log (wxT ("Online Datebase: "));
-        Log(remoteDisplayTime);
+         if (url.GetError() == wxURL_NOERR) {
 
-        Log (wxT ("\n"));
-        wxDateTime remoteFileTime;
-        remoteFileTime.ParseDate(remoteDisplayTime);
+              wxHTTP* p = wxDynamicCast(&url.GetProtocol(),wxHTTP);
+              wxString remoteDisplayTime = p->GetHeader(wxT("Last-Modified"));
+              remoteFileTime.ParseDate(remoteDisplayTime);
+              Log (wxT ("Online Datebase: "));
+              Log(remoteDisplayTime);
+              Log (wxT ("\n"));
 
-        if (remoteFileTime.IsLaterThan(localFileTime) == TRUE) {
+         } else {
+              //Error.  Probably no network access. Assume the user is trying
+              //to force an update from a local copy of the csv file.
+              //Only do this if called from the menu
+              if (utType == UPDATE_FROM_MENU) {
+                   remoteFileTime = wxDateTime::Now();
+              } else {
+                   remoteFileTime = localFileTime;
+              }
+         }
+    }
+    
+    if (remoteFileTime.IsLaterThan(localFileTime) == TRUE) {
 
-            wxMessageDialog oUpdateDialog (NULL,
-                                           wxT("Your database is not up to date and there is a newer version online. ")
-                                           wxT("Do you wish to update? If you wish to update hit the OK button. ")
-                                           wxT("If not hit the CANCEL button"),
-                                           wxT ("Internet connection request"),
-                                           wxOK | wxCANCEL | wxICON_QUESTION);
+         wxMessageDialog oUpdate (NULL,
+                                  wxT("Your database is not up to date and there is a newer version online. ")
+                                  wxT("Do you wish to update? If you wish to update hit the OK button. ")
+                                  wxT("If not hit the CANCEL button"),
+                                  wxT ("Internet connection request"),
+                                  wxOK | wxCANCEL | wxICON_QUESTION);
 
-            if (oUpdateDialog.ShowModal () == wxID_OK) {
+         if (oUpdate.ShowModal () == wxID_OK) {
 
-                Show ();
-                wxYield ();
+              Show ();
+              wxYield ();
 
-                Log (wxT ("Downloading..."));
-                m_bUpdating = true;
-                wxSafeYield(this);
+              Log (wxT ("Downloading..."));
+              m_bUpdating = true;
+              wxSafeYield(this);
 
-                iResult = FetchCSVFiles();
+              if (FetchCSVFiles() < 0) {
 
-                if (iResult < 0) {
-                    Log (wxT ("Failed.\n"));
-                }
+                   Log (wxT ("Failed.\n"));
 
-            } else {
-                iResult = -1;
-            }
+                   wxFileDialog oFileDialog(NULL,
+                                            wxT ("Please locate vtescsv.zip"),
+                                            wxT (""), wxT ("vtescsv.zip"),
+                                            wxT ("*.zip"), wxOPEN);
 
-            if (iResult >= 0) {
+                   if (oFileDialog.ShowModal() != wxID_OK) {
+                        Hide ();
+                        return -1;
+                   }
 
-                Log(wxT ("\n"));
-                UpdateDatabaseFromCSV();
+                   m_sZipFile = oFileDialog.GetDirectory()
+                        << wxFileName::GetPathSeparator()
+                        << oFileDialog.GetFilename();
 
-            } else {
+                   Log(wxT ("Opening "));
+                   Log(m_sZipFile);
+                   Log(wxT ("\n"));
 
-                wxFileDialog oFileDialog(NULL,
-                                         wxT ("Please locate vtescsv.zip"),
-                                         wxT (""), wxT ("vtescsv.zip"),
-                                         wxT ("*.zip"), wxOPEN);
+              }
 
-                if (oFileDialog.ShowModal() != wxID_OK) {
-                    Hide ();
-                    return -1;
-                }
-                Show ();
-                wxYield ();
-                m_bUpdating = true;
-                m_sZipFile = oFileDialog.GetDirectory()
-                    << wxFileName::GetPathSeparator()
-                    << oFileDialog.GetFilename();
+              Log(wxT ("\n"));
+              m_bUpdating = true;
+              UpdateDatabaseFromCSV();
+              Log(wxT ("Database update has ended.\n"
+                       "You may need to restart ARDB.\n"));
+         }
 
-                Log(wxT ("Opening "));
-                Log(m_sZipFile);
-                Log(wxT ("\n"));
-                UpdateDatabaseFromCSV();
-            }
+         m_pOKButton->Enable();
 
-            Log(wxT ("Database update has ended.\n"
-                     "You may need to restart ARDB.\n"));
-        } else {
-
-	    if (utType == UPDATE_FROM_MENU) {
-		wxMessageDialog oUpToDateDialog (NULL,
-						 wxT("Your database is up to date"),
-						 wxT ("Update to Date"),
-						 wxOK);
-		oUpToDateDialog.ShowModal();
-		Show ();
-        wxYield ();
-	    }
-	}
-
-        m_pOKButton->Enable();
+    } else {
+         
+         if (utType == UPDATE_FROM_MENU) {
+              wxMessageDialog oUpToDate(NULL,
+                                        wxT("Your database is up to date"),
+                                        wxT ("Update to Date"),
+                                        wxOK);
+              oUpToDate.ShowModal();
+         }
     }
 
     m_bUpdating = false;
@@ -346,61 +349,58 @@ Updater::DoUpdate (UPDATE_TYPE utType)
     return 0;
 }
 
-
-int
-Updater::FetchCSVFiles ()
+wxString Updater::GetServerName()
 {
+     wxString sServer (wxT ("www.white-wolf.com"));
+     wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get();
+     
+     if (pConfig) {
+          wxString sUpdateServer = wxT ("UpdateServer");
+          pConfig->Read(sUpdateServer, &sServer);
+     }
 
-
-    wxString sServer (wxT ("www.white-wolf.com")),
-        sFile (wxT ("/VTES/downloads/vtescsv.zip"));
-
-    wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get ();
-    if (pConfig) {
-        wxString sUpdateServer = wxT ("UpdateServer"),
-            sUpdateFile = wxT ("UpdateFile");
-        if (!pConfig->Read (sUpdateServer, &sServer)) {
-            pConfig->Write (sUpdateServer, sServer);
-            pConfig->Flush (TRUE);
-        }
-        if (!pConfig->Read (sUpdateFile, &sFile)) {
-            pConfig->Write (sUpdateFile, sFile);
-            pConfig->Flush (TRUE);
-        }
-    }
-
-
-
-    wxHTTP oHTTPCtrl;
-    if (!oHTTPCtrl.Connect(sServer)) {
-        wxMessageBox(wxString (wxT ("HTTP connection to ")) << sServer << wxT (" failed."), wxT ("HTTP Error"), wxICON_ERROR | wxOK);
-        return -1;
-    }
-
-
-
-    wxInputStream *pInputStream = oHTTPCtrl.GetInputStream(sFile);
-
-
-
-
-    if (!pInputStream) {
-        wxMessageBox(wxString (wxT ("Failed to get :\nhttp://")) << sServer << sFile, wxT ("HTTP Error"), wxICON_ERROR | wxOK);
-        return -1;
-    }
-
-
-
-
-
-
-    //   wxFileOutputStream oFileStream (wxT ("vtescsv2.zip")); // for testing purposes
-    wxFileOutputStream oFileStream (wxT ("vtescsv.zip"));
-    oFileStream << *pInputStream;
-
-    return 0;
+     return sServer;
 }
 
+wxString Updater::GetFileName()
+{
+     wxString sFile (wxT ("/VTES/downloads/vtescsv.zip"));
+     wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get();
+     
+     if (pConfig) {
+          wxString sUpdateFile = wxT ("UpdateFile");
+          pConfig->Read(sUpdateFile, &sFile);
+     }
+     
+     return sFile;
+}
+
+int
+Updater::FetchCSVFiles()
+{
+     wxString sServer = GetServerName();
+     wxString sFile = GetFileName();
+     wxHTTP oHTTPCtrl;
+
+     if (!oHTTPCtrl.Connect(sServer)) {
+          wxMessageBox(wxString (wxT ("HTTP connection to ")) << 
+                       sServer << wxT (" failed."), wxT ("HTTP Error"), wxICON_ERROR | wxOK);
+          return -1;
+     }
+     
+     wxInputStream *pInputStream = oHTTPCtrl.GetInputStream(sFile);
+     
+     if (!pInputStream) {
+          wxMessageBox(wxString (wxT ("Failed to get :\nhttp://")) << 
+                       sServer << sFile, wxT ("HTTP Error"), wxICON_ERROR | wxOK);
+          return -1;
+     }
+
+     wxFileOutputStream oFileStream (wxT ("vtescsv.zip"));
+     oFileStream << *pInputStream;
+    
+     return 0;
+}
 
 int
 Updater::LoadDisciplinesFromCSV ()
