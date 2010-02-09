@@ -88,6 +88,10 @@ class Updater : public wxDialog
   int LoadTableFromCSV (wxString sTable, wxString sCSVFile, int iNulls);
   void Log (wxString sText);
   int UpdateDatabaseFromCSV ();
+
+  wxString GetServerName();
+  wxString GetFileName();
+
   static wxChar MakeAscii(wxChar c);
 
 };

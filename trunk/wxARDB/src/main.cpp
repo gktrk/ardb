@@ -136,8 +136,12 @@ MyApp::OnInit ()
     Database::Instance();
 
     // config file
-    wxFileConfig *pConfig = new wxFileConfig (wxT ("Anarch Revolt Deck Builder"), wxT (""), wxT ("ardb.ini"), wxEmptyString, wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_RELATIVE_PATH);
-    wxFileConfig::Set (pConfig);
+    wxFileConfig *pConfig = new wxFileConfig(wxT("Anarch Revolt Deck Builder"),
+                                             wxT (""), wxT ("ardb.ini"), 
+                                             wxEmptyString, 
+                                             wxCONFIG_USE_LOCAL_FILE | 
+                                             wxCONFIG_USE_RELATIVE_PATH);
+    wxFileConfig::Set(pConfig);
 
     // Init interface data
     InterfaceData::Instance();
@@ -161,6 +165,7 @@ MyApp::OnInit ()
     int iWidth;
     int iX;
     int iY;
+
 
     wxString sBrowserHeightEntry = wxT ("BrowserWindowHeight");
     wxString sBrowserWidthEntry = wxT ("BrowserWindowWidth");
@@ -192,10 +197,14 @@ MyApp::OnInit ()
     //reset edition filter
     //ardb_db_ef_reset();
 
-    //Runs Updater on Startup
-    Updater *pUpdater = Updater::Instance ();
-    pUpdater->DoUpdate(UPDATE_FROM_STARTUP);
-	pUpdater->DoUpdate (UPDATE_FROM_STARTUP);
+    //Checks and runs Updater on Startup
+    bool fUpdateCards = FALSE;
+    pConfig->Read(wxT("UpdateCards"), &fUpdateCards, FALSE);
+    
+    if (fUpdateCards) {
+         Updater *pUpdater = Updater::Instance ();
+         pUpdater->DoUpdate(UPDATE_FROM_STARTUP);
+    }
 
     if (pSplash != NULL) delete pSplash;
 
