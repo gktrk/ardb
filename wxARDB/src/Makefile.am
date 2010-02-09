@@ -31,8 +31,8 @@ ardb_SOURCES = \
 	decklibrarytab.cpp \
 	deckmodel.cpp \
 	deckwindow.cpp \
-	DownloadEvent.cpp\
-	DownloadFile.cpp		
+	DownloadEvent.cpp \
+	DownloadFile.cpp \
 	drawsimulator.cpp \
 	editionsdialog.cpp \
 	interfacedata.cpp \
