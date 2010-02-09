@@ -331,7 +331,6 @@ BrowserFrame::OnBrowserCloseTab (wxCommandEvent& WXUNUSED (event))
     if (iPage >= 2) {
         m_pNotebook->DeletePage (iPage);
     }
-
 }
 
 
