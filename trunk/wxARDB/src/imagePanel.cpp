@@ -32,6 +32,10 @@
 #include <wx/dcmemory.h>
 
 #include <wx/file.h>
+#include <wx/fs_zip.h>
+#include <wx/filesys.h>
+#include <wx/wfstream.h>
+
 
 #include "imagePanel.h"
 
@@ -69,15 +73,23 @@ ImagePanel::~ImagePanel()
  */
 void ImagePanel::SetImage(wxString fileName)
 {
+     wxFileSystem* fileSystem = new wxFileSystem();
+     wxString archive = wxFileSystem::FileNameToURL(wxFileName(wxT("cardimages.zip"))) + wxT("#zip:");
+     wxFSFile* file = fileSystem->OpenFile(archive + fileName);
+
     if (image.IsOk()) {
         image.Destroy();
     }
-
-    if (wxFile::Exists(fileName)) {
+    
+    if (file) {
         m_fileName = fileName;
-        image.LoadFile(m_fileName);
+        image.LoadFile(*file->GetStream(),wxBITMAP_TYPE_ANY);
         Refresh();
+	
+	delete file;
     }
+    
+    delete fileSystem;
 }
 
 /**
@@ -105,11 +117,11 @@ void ImagePanel::Click(wxMouseEvent &event)
 {
     ImageDialog dialog;
 
-    if (wxFile::Exists(m_fileName)) {
-        dialog.SetImage(m_fileName);
-        dialog.CentreOnParent ();
-        dialog.ShowModal();
-    }
+    // if (wxFile::Exists(m_fileName)) {
+    //     dialog.SetImage(m_fileName);
+    //     dialog.CentreOnParent ();
+    //     dialog.ShowModal();
+    // }
 }
 
 /// Draw the image in the panel if it exists
