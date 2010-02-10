@@ -30,7 +30,13 @@
 #include "deckmodel.h"
 #include "updater.h"
 #include "DownloadFile.h"
+#include "wx/statusbr.h"
+//
+#include <wx/ptr_scpd.h>
 
+
+
+//This adds the smart pointer for the ZIP extraction
 
 #include <wx/apptrait.h>
 
@@ -72,8 +78,10 @@ public:
   void OnFileEditions (wxCommandEvent& WXUNUSED (event));
   void OnFilePreferences (wxCommandEvent& WXUNUSED (event));
   void OnFileUpdateDatabase (wxCommandEvent& WXUNUSED (event));
+
   void OnFileImageDownload (wxCommandEvent& event);
   void OnFileImageDownloadEvent (wxDownloadEvent& event);
+
   void OnHelpManual (wxCommandEvent& WXUNUSED (event));
   void OnHelpAbout (wxCommandEvent& WXUNUSED (event));
   void OnInventoryExportCSV (wxCommandEvent& WXUNUSED (event));
@@ -88,9 +96,13 @@ public:
  private:
   BrowserCryptModel   *m_pBrowserCryptModel;
   BrowserLibraryModel *m_pBrowserLibraryModel;
-  wxBoxSizer          *m_pPapaSizer;
-  wxNotebook          *m_pNotebook;
-  wxStatusBar         *m_pStatusBar;
+
+  wxGauge             *gauge;
+  wxStatusBar         *statbar;
+  wxBoxSizer		  *m_pPapaSizer;
+  wxNotebook		  *m_pNotebook;
+
+
 
   unsigned int		   m_uiCryptBrowserCount;
   unsigned int		   m_uiLibraryBrowserCount;
@@ -114,7 +126,7 @@ public:
 	  ID_INV_EXPORT_CSV,
 	  ID_INV_EXPORT_HTML,
 	  ID_BROWSER_NOTEBOOK,
-          ID_EVENT_DOWNLOAD
+      ID_EVENT_DOWNLOAD
 	};
 
   DECLARE_EVENT_TABLE()
