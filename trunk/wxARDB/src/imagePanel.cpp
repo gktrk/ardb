@@ -74,18 +74,18 @@ ImagePanel::~ImagePanel()
 void ImagePanel::SetImage(wxString fileName)
 {
      wxFileSystem* fileSystem = new wxFileSystem();
-     wxString archive = wxFileSystem::FileNameToURL(wxFileName(wxT("cardimages.zip"))) + wxT("#zip:");
-     wxFSFile* file = fileSystem->OpenFile(archive + fileName);
+     wxString archive = wxFileSystem::FileNameToURL(
+	  wxFileName(wxT("cardimages.zip"))) + wxT("#zip:") + fileName;
+     wxFSFile* file = fileSystem->OpenFile(archive);
 
     if (image.IsOk()) {
         image.Destroy();
     }
     
     if (file) {
-        m_fileName = fileName;
+        m_fileName = archive;
         image.LoadFile(*file->GetStream(),wxBITMAP_TYPE_ANY);
         Refresh();
-	
 	delete file;
     }
     
@@ -115,13 +115,19 @@ void ImagePanel::OnSize(wxSizeEvent &event)
 
 void ImagePanel::Click(wxMouseEvent &event)
 {
-    ImageDialog dialog;
+     ImageDialog dialog;
 
-    // if (wxFile::Exists(m_fileName)) {
-    //     dialog.SetImage(m_fileName);
-    //     dialog.CentreOnParent ();
-    //     dialog.ShowModal();
-    // }
+     wxFileSystem* fileSystem = new wxFileSystem();
+     wxFSFile* file = fileSystem->OpenFile(m_fileName);
+
+     if (file) {
+	  dialog.SetImage(*file->GetStream());
+	  dialog.CentreOnParent();
+	  dialog.ShowModal();
+	  delete file;
+     }
+     
+     delete fileSystem;
 }
 
 /// Draw the image in the panel if it exists

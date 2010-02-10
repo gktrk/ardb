@@ -32,7 +32,7 @@ class ImageDialog : public wxDialog
 public:
 	ImageDialog();
 	~ImageDialog() { };
-	void SetImage(wxString fileName);
+	void SetImage(wxInputStream &stream);
 
 private:
 	void OnPaint(wxPaintEvent &event);

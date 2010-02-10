@@ -28,15 +28,15 @@ ImageDialog::ImageDialog() : wxDialog (0, -1, wxT ("Card Image"), wxDefaultPosit
 {
 }
 
-void ImageDialog::SetImage(wxString fileName)
+void ImageDialog::SetImage(wxInputStream &stream)
 {
-    image.LoadFile(fileName);
+     image.LoadFile(stream,wxBITMAP_TYPE_ANY);
 
-    int width = image.GetWidth();
-    int height = image.GetHeight();
+     int width = image.GetWidth();
+     int height = image.GetHeight();
 
-    SetSize(width,height+10);  //+10 is a fudge factor to take into account dialog title on Windows
-    //This will need to be changed for different platforms.
+     SetSize(width,height+10);  //+10 is a fudge factor to take into account dialog title on Windows
+     //This will need to be changed for different platforms.
 }
 
 void ImageDialog::OnPaint(wxPaintEvent &event)
