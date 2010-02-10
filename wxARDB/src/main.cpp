@@ -56,6 +56,9 @@
 #include <wx/fileconf.h>
 #include <wx/gauge.h>
 #include <wx/colour.h>
+#include <wx/fs_zip.h>
+#include <wx/filesys.h>
+#include <wx/wfstream.h>
 
 class BrowserFrame ;
 
@@ -131,6 +134,8 @@ MyApp::OnInit ()
     wxSplashScreen* pSplash = NULL;
 
     ::wxInitAllImageHandlers();
+    wxFileSystem::AddHandler(new wxZipFSHandler);
+
     g_pIcon = new wxIcon (wxICON(icon));
     g_pSplashBitmap = new wxBitmap (ardbsplash_xpm);
 
@@ -197,7 +202,6 @@ MyApp::OnInit ()
     //Runs Updater on Startup
     Updater *pUpdater = Updater::Instance ();
     pUpdater->DoUpdate(UPDATE_FROM_STARTUP);
-	pUpdater->DoUpdate (UPDATE_FROM_STARTUP);
 
     if (pSplash != NULL) delete pSplash;
 
@@ -238,15 +242,15 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos,
 
     wxMenu *pFileMenu = new wxMenu ();
 
-	pFileMenu->Append (ID_FILE_DECKBUILDER, wxT ("Deck Builder\tCtrl+D"), wxT (""));
-	pFileMenu->AppendSeparator () ;
-	//   pFileMenu->Append (ID_FILE_EDITIONS, wxT ("VTES Sets..."), wxT (""));
-	pFileMenu->Append (ID_FILE_UPDATEDB, wxT ("Update Database"), wxT (""));
-	pFileMenu->AppendSeparator () ;
-	pFileMenu->Append (ID_FILE_IMAGE_DOWNLOAD, wxT("Download Images"),wxT(""));
+    pFileMenu->Append (ID_FILE_DECKBUILDER, wxT ("Deck Builder\tCtrl+D"), wxT (""));
+    pFileMenu->AppendSeparator () ;
+    //   pFileMenu->Append (ID_FILE_EDITIONS, wxT ("VTES Sets..."), wxT (""));
+    pFileMenu->Append (ID_FILE_UPDATEDB, wxT ("Update Database"), wxT (""));
+    pFileMenu->AppendSeparator () ;
+    pFileMenu->Append (ID_FILE_IMAGE_DOWNLOAD, wxT("Download Images"),wxT(""));
     //pFileMenu->Append (ID_FILE_EDITIONS, wxT ("VTES Sets..."), wxT (""));
     pFileMenu->Append (ID_FILE_PREFERENCES, wxT ("Preferences"), wxT (""));
-	pFileMenu->AppendSeparator () ;
+    pFileMenu->AppendSeparator () ;
     pFileMenu->Append (ID_FILE_EXIT, wxT ("Quit\tCtrl+Q"), wxT (""));
 
     wxMenu *pInventoryMenu = new wxMenu ();
@@ -283,7 +287,7 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos,
 
     SetIcon (*g_pIcon);
 
-	Show ();
+    Show ();
 
 }
 
@@ -427,11 +431,11 @@ BrowserFrame::OnFilePreferences (wxCommandEvent& WXUNUSED (event))
 void
 BrowserFrame::OnFileUpdateDatabase (wxCommandEvent& WXUNUSED (event))
 {
-	Updater *pUpdater = Updater::Instance ();
-    pUpdater->DoUpdate(UPDATE_FROM_MENU);
+     Updater *pUpdater = Updater::Instance ();
+     pUpdater->DoUpdate(UPDATE_FROM_MENU);
 
-    m_pBrowserCryptModel->Reset ();
-    m_pBrowserLibraryModel->Reset ();
+     m_pBrowserCryptModel->Reset ();
+     m_pBrowserLibraryModel->Reset ();
 }
 
 
@@ -439,19 +443,18 @@ void
 BrowserFrame::OnFileImageDownload (wxCommandEvent& event)
 {
 
-  wxDownloadFile *pDownloadFile=  new wxDownloadFile(this, wxT("http://www.powerbase-bath.com/files/cardimages.zip"),
-     wxT("cardimages.zip"), true, 1000);
+     wxDownloadFile *pDownloadFile=  new wxDownloadFile(this, wxT("http://www.powerbase-bath.com/files/cardimages.zip"),
+							wxT("cardimages.zip"), true, 1000);
 
 
 
 
-    statbar = new wxStatusBar(g_pMainWindow, wxID_ANY,wxST_SIZEGRIP);
-
-    gauge = new wxGauge(statbar, 1, 285, wxPoint(100, 1), wxSize(100,20), wxGA_HORIZONTAL, wxDefaultValidator, wxT("Downloading Images"));
-    g_pMainWindow->SetStatusBar(statbar);
-    statbar->SetStatusText(wxT("Downloading Files"), 0);
-    gauge->SetRange(298);
-    gauge->SetValue(0);
+     statbar = new wxStatusBar(g_pMainWindow, wxID_ANY,wxST_SIZEGRIP);
+     gauge = new wxGauge(statbar, 1, 285, wxPoint(100, 1), wxSize(100,20), wxGA_HORIZONTAL, wxDefaultValidator, wxT("Downloading Images"));
+     g_pMainWindow->SetStatusBar(statbar);
+     statbar->SetStatusText(wxT("Downloading Files"), 0);
+     gauge->SetRange(298);
+     gauge->SetValue(0);
 
 
 
@@ -465,36 +468,21 @@ void BrowserFrame::OnFileImageDownloadEvent (wxDownloadEvent& event)
      event.GetDownLoadStatus() == wxDownloadEvent::DOWNLOAD_FAIL)
   {
     statbar->SetStatusText(wxT("Download Complete"),0);
-
-     // 'smart pointer' type created with wxDEFINE_SCOPED_PTR_TYPE
-    //statbar->SetStatusText(wxT("Unzipping Download"),0);
-    //wxZipEntryPtr entry;
-
-    //wxFFileInputStream in(_T("cardimages.zip"));
-    //wxZipInputStream zip(in);
-    //while (entry.reset(zip.GetNextEntry()),entry.get() !=NULL)
-    //{
-    // wxString name=entry->GetName ();
-
-    //}
-
-
-
   }
   else if(event.GetDownLoadStatus() == wxDownloadEvent::DOWNLOAD_INPROGRESS)
   {
-   wxInt64 nFileSize = event.GetFileSize();
-   wxInt64 nDownloaded = event.GetDownLoadedBytesCount();
-   wxString bigstring = wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),nFileSize/1000000);
-   bigstring+= wxT("MB");
-   bigstring+= wxT("/");
-   bigstring+= wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),nDownloaded/1000000 );
-   bigstring+= wxT("MB");
-   statbar->SetStatusText(bigstring,0);
-   wxString MBDownloaded=wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),nDownloaded/1000000 );
-   int num;
-   num = wxAtoi(MBDownloaded);
-   gauge->SetValue(num);
+       wxInt64 nFileSize = event.GetFileSize();
+       wxInt64 nDownloaded = event.GetDownLoadedBytesCount();
+       wxString bigstring = wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),nFileSize/1000000);
+       bigstring+= wxT("MB");
+       bigstring+= wxT("/");
+       bigstring+= wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),nDownloaded/1000000 );
+       bigstring+= wxT("MB");
+       statbar->SetStatusText(bigstring,0);
+       wxString MBDownloaded=wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),nDownloaded/1000000 );
+       int num;
+       num = wxAtoi(MBDownloaded);
+       gauge->SetValue(num);
   }
 
 
