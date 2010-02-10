@@ -45,6 +45,8 @@
 #include "wx/wx.h"
 #endif
 
+
+
 #include <wx/image.h>
 #include <wx/filename.h>
 #include <wx/splash.h>
@@ -65,7 +67,7 @@ class BrowserFrame ;
 #include "ardb_db_edition_filter.h"
 #include "DeckUpload.h"
 
-
+wxDEFINE_SCOPED_PTR_TYPE(wxZipEntry);
 
 #ifndef __WXMSW__
 
@@ -109,7 +111,7 @@ EVT_MENU (ID_HELP_ABOUT, BrowserFrame::OnHelpAbout)
 EVT_MENU (ID_HELP_MANUAL, BrowserFrame::OnHelpManual)
 EVT_CLOSE (BrowserFrame::OnClose)
 
-    EVT_NOTEBOOK_PAGE_CHANGED(ID_BROWSER_NOTEBOOK,BrowserFrame::TabChanged)
+EVT_NOTEBOOK_PAGE_CHANGED(ID_BROWSER_NOTEBOOK,BrowserFrame::TabChanged)
 
 END_EVENT_TABLE ()
 
@@ -195,6 +197,7 @@ MyApp::OnInit ()
     //Runs Updater on Startup
     Updater *pUpdater = Updater::Instance ();
     pUpdater->DoUpdate(UPDATE_FROM_STARTUP);
+	pUpdater->DoUpdate (UPDATE_FROM_STARTUP);
 
     if (pSplash != NULL) delete pSplash;
 
@@ -280,11 +283,7 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos,
 
     SetIcon (*g_pIcon);
 
-    // Create Status bar
-    m_pStatusBar = CreateStatusBar(1);
-    SetStatusText(wxT("Ready!"));
-
-    Show ();
+	Show ();
 
 }
 
@@ -416,7 +415,7 @@ m_pBrowserLibraryModel->Reset ();
 void
 BrowserFrame::OnFilePreferences (wxCommandEvent& WXUNUSED (event))
 {
-     PrefDialog *pDialog = new PrefDialog();
+	PrefDialog *pDialog = new PrefDialog();
 
      pDialog->ShowModal();
      delete pDialog;
@@ -441,11 +440,18 @@ BrowserFrame::OnFileImageDownload (wxCommandEvent& event)
 {
 
   wxDownloadFile *pDownloadFile=  new wxDownloadFile(this, wxT("http://www.powerbase-bath.com/files/cardimages.zip"),
-      wxT("cardimages.zip"), true, 1000);
+     wxT("cardimages.zip"), true, 1000);
 
-    //wxPanel *panel = new wxPanel(m_pNotebook, wxID_ANY,wxPoint (1050,1),wxSize(205,20));
 
-    //wxGauge *gauge = new wxGauge(panel, 1, 200, wxPoint(100, 1), wxSize(100,15), wxGA_HORIZONTAL, wxDefaultValidator, wxT("Downloading Images"));
+
+
+    statbar = new wxStatusBar(g_pMainWindow, wxID_ANY,wxST_SIZEGRIP);
+
+    gauge = new wxGauge(statbar, 1, 285, wxPoint(100, 1), wxSize(100,20), wxGA_HORIZONTAL, wxDefaultValidator, wxT("Downloading Images"));
+    g_pMainWindow->SetStatusBar(statbar);
+    statbar->SetStatusText(wxT("Downloading Files"), 0);
+    gauge->SetRange(298);
+    gauge->SetValue(0);
 
 
 
@@ -453,23 +459,45 @@ BrowserFrame::OnFileImageDownload (wxCommandEvent& event)
 
 void BrowserFrame::OnFileImageDownloadEvent (wxDownloadEvent& event)
 {
+
+
     if(event.GetDownLoadStatus() == wxDownloadEvent::DOWNLOAD_COMPLETE ||
      event.GetDownLoadStatus() == wxDownloadEvent::DOWNLOAD_FAIL)
   {
-    wxString downloadstatus=(wxT("Download Complete"));
-    wxMessageBox(downloadstatus,wxT("Download Status"));
+    statbar->SetStatusText(wxT("Download Complete"),0);
+
+     // 'smart pointer' type created with wxDEFINE_SCOPED_PTR_TYPE
+    //statbar->SetStatusText(wxT("Unzipping Download"),0);
+    //wxZipEntryPtr entry;
+
+    //wxFFileInputStream in(_T("cardimages.zip"));
+    //wxZipInputStream zip(in);
+    //while (entry.reset(zip.GetNextEntry()),entry.get() !=NULL)
+    //{
+    // wxString name=entry->GetName ();
+
+    //}
+
+
+
   }
   else if(event.GetDownLoadStatus() == wxDownloadEvent::DOWNLOAD_INPROGRESS)
   {
-    wxInt64 nFileSize = event.GetFileSize();
-    wxInt64 nDownloaded = event.GetDownLoadedBytesCount();
-
-    SetStatusText(wxT("Downloaded: ") + 
-                        wxString::Format(wxT("%i"),nDownloaded) + 
-                        wxT(" Bytes"));
-    //gauge->SetRange(nFileSize);
-    //gauge->SetValue(nDownloaded);
+   wxInt64 nFileSize = event.GetFileSize();
+   wxInt64 nDownloaded = event.GetDownLoadedBytesCount();
+   wxString bigstring = wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),nFileSize/1000000);
+   bigstring+= wxT("MB");
+   bigstring+= wxT("/");
+   bigstring+= wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),nDownloaded/1000000 );
+   bigstring+= wxT("MB");
+   statbar->SetStatusText(bigstring,0);
+   wxString MBDownloaded=wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),nDownloaded/1000000 );
+   int num;
+   num = wxAtoi(MBDownloaded);
+   gauge->SetValue(num);
   }
+
+
 
 }
 void
