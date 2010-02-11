@@ -216,9 +216,9 @@ BrowserCryptTab::Init ()
 
     m_pCardViewer = NULL;
 
-    if (wxDir::Exists(CARD_IMAGE_DIR)) {
+    //if (wxDir::Exists(CARD_IMAGE_DIR)) {
         m_pCardViewer = new CardViewer(pCardTextPanel,wxID_ANY, wxDefaultPosition, wxDefaultSize, 0);
-    }
+	//}
 
     pCardTextSizer->Add(m_pCardText, 3, wxEXPAND);
 

@@ -444,17 +444,19 @@ void
 BrowserFrame::OnFileImageDownload (wxCommandEvent& event)
 {
 #define CARD_SETS_QUERY wxT ("SELECT full_name, set_name FROM cards_sets WHERE cards_sets.full_name NOT LIKE 'Proxy%' AND cards_sets.full_name NOT LIKE 'promo%' ORDER BY release_date DESC")
+#define ALL_SETS_SELECTED 0
      
-     Database *pDatabase = Database::Instance ();
+     Database *pDatabase = Database::Instance();
      RecordSet *pResult;
      wxArrayString strings;
+     wxArrayString filesToDownload;
 
      strings.Add(wxT("ALL"));
 
      pResult = pDatabase->Query (CARD_SETS_QUERY, NULL);
      if (pResult) {
 	  for (unsigned int i = 0; i < pResult->GetCount (); i++) {
-	       strings.Add(pResult->Item (i).Item (0));
+	       strings.Add(pResult->Item(i).Item(0));
 	  }
      }
 
@@ -470,18 +472,33 @@ BrowserFrame::OnFileImageDownload (wxCommandEvent& event)
 	  msg.Printf(wxT("You selected %u items:\n"), selections.GetCount());
 
 	  for (size_t n=0;n<selections.GetCount();n++) {
-	       msg += wxString::Format(wxT("\t%d: %d (%s)\n"),
-				       n, selections[n],
-				       strings[selections[n]].c_str());
+	       
+	       //If user has selected ALL break out of 
+	       //the loop after loading all the sets into
+	       //the file list
+	       if (selections[n] == ALL_SETS_SELECTED) {
+		    filesToDownload.Clear();
+		    for (unsigned int i = 0; i < pResult->GetCount(); i++) {
+			 filesToDownload.Add(pResult->Item(i).Item(1).Lower() + 
+					     wxT(".zip"));
+		    }
+		    break;
+	       }
+	       
+	       filesToDownload.Add(pResult->Item(n).Item(1).Lower() + wxT(".zip"));
 	  }
-	  wxMessageBox(msg, wxT("Done"));
      }
 
-     wxDownloadFile *pDownloadFile=  new wxDownloadFile(this, wxT("http://www.powerbase-bath.com/files/cardimages.zip"),
-							wxT("cardimages.zip"), true, 1000);
+     wxDownloadFile *pDownloadFile;
+     pDownloadFile = new wxDownloadFile(this, 
+					wxT("http://www.powerbase-bath.com/files/"), 
+					filesToDownload, wxT("cardimages"), true, 1000);
 
      statbar = new wxStatusBar(g_pMainWindow, wxID_ANY,wxST_SIZEGRIP);
-     gauge = new wxGauge(statbar, 1, 285, wxPoint(100, 1), wxSize(100,20), wxGA_HORIZONTAL, wxDefaultValidator, wxT("Downloading Images"));
+     gauge = new wxGauge(statbar, 1, 285, wxPoint(100, 1), wxSize(100,20), 
+			 wxGA_HORIZONTAL, wxDefaultValidator, 
+			 wxT("Downloading Images"));
+
      g_pMainWindow->SetStatusBar(statbar);
      statbar->SetStatusText(wxT("Downloading Files"), 0);
      gauge->SetRange(0);
