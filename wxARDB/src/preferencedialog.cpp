@@ -35,7 +35,9 @@ PrefDialog::PrefDialog() : wxDialog(0, -1, wxT("Preferences"), wxDefaultPosition
      bool fUpdateCards = FALSE;
 
      if (pConfig) {
+#if 0 //Not supported in v3.0.0    	
           pConfig->Read(wxT("UpdateImages"), &fUpdateImages, FALSE);
+#endif
           pConfig->Read(wxT("UpdateCards"), &fUpdateCards, FALSE);
      }
 
@@ -43,15 +45,18 @@ PrefDialog::PrefDialog() : wxDialog(0, -1, wxT("Preferences"), wxDefaultPosition
      
      wxBoxSizer* bSizer4;
      bSizer4 = new wxBoxSizer( wxVERTICAL );
-     
+
+
      m_cbDownloadImages = new wxCheckBox(this, wxID_ANY, 
                                          wxT("Automatic Image Download"), 
                                          wxDefaultPosition, wxDefaultSize, 
                                          0);
 
+
      m_cbDownloadImages->SetValue(fUpdateImages);
-	
+#if 0 //Not supported in v3.0.0    	
      bSizer4->Add(m_cbDownloadImages, 0, wxALL, 5);
+#endif
 	
      m_cbDownloadCards = new wxCheckBox(this, wxID_ANY, 
                                         wxT("Automatic Card Text Download"),
@@ -98,7 +103,9 @@ void PrefDialog::SaveSettings(wxCommandEvent& event)
      wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get();
 
      if (pConfig) {
+#if 0 //Not supported in v3.0.0    	
           pConfig->Write(wxT("UpdateImages"), m_cbDownloadImages->GetValue());
+#endif
           pConfig->Write(wxT("UpdateCards"), m_cbDownloadCards->GetValue());
      }
 
