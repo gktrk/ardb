@@ -200,9 +200,14 @@ MyApp::OnInit ()
     //reset edition filter
     //ardb_db_ef_reset();
 
-    //Runs Updater on Startup
-    Updater *pUpdater = Updater::Instance ();
-    pUpdater->DoUpdate(UPDATE_FROM_STARTUP);
+    //Check if the updater shoudl runs on Startup
+    bool fUpdateCards;
+    pConfig->Read(wxT("UpdateCards"), &fUpdateCards, FALSE);
+
+    if (fUpdateCards) {
+	 Updater *pUpdater = Updater::Instance ();
+	 pUpdater->DoUpdate(UPDATE_FROM_STARTUP);	 
+    }
 
     if (pSplash != NULL) delete pSplash;
 
@@ -247,8 +252,9 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos,
     pFileMenu->AppendSeparator () ;
     //   pFileMenu->Append (ID_FILE_EDITIONS, wxT ("VTES Sets..."), wxT (""));
     pFileMenu->Append (ID_FILE_UPDATEDB, wxT ("Update Database"), wxT (""));
-    pFileMenu->AppendSeparator () ;
     pFileMenu->Append (ID_FILE_IMAGE_DOWNLOAD, wxT("Download Images"),wxT(""));
+    pFileMenu->AppendSeparator () ;
+
     //pFileMenu->Append (ID_FILE_EDITIONS, wxT ("VTES Sets..."), wxT (""));
     pFileMenu->Append (ID_FILE_PREFERENCES, wxT ("Preferences"), wxT (""));
     pFileMenu->AppendSeparator () ;

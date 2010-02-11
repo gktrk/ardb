@@ -123,25 +123,13 @@ void* wxDownloadFile::Entry()
 		   file.Close();
 		   delete pIn_Stream;
 
-		   //Code reaches here when a file from the list has been downloaded
-		   //check if any files are left in the list
+		   event.SetDownLoadStatus(wxDownloadEvent::DOWNLOAD_COMPLETE);
 
-		   m_nCurrentFile++;
-
-		   if (m_nCurrentFile < m_strFiles.Count()) {
-			fFilesLeftToDownload = TRUE;
-		   } else {
-		   
-			fFilesLeftToDownload = FALSE;
-			event.SetDownLoadStatus(wxDownloadEvent::DOWNLOAD_COMPLETE);
-
-			if(m_pParent)
-			     m_pParent->GetEventHandler()->AddPendingEvent( event );
-		   }
+		   if(m_pParent)
+			m_pParent->GetEventHandler()->AddPendingEvent( event );
 
 	      } else {
 
-		   fFilesLeftToDownload = FALSE;
 		   event.SetDownLoadStatus(wxDownloadEvent::DOWNLOAD_FAIL);
 
 		   if(m_pParent)
@@ -149,12 +137,24 @@ void* wxDownloadFile::Entry()
 	      }
 	 } else {
 
-	      fFilesLeftToDownload = FALSE;
 	      event.SetDownLoadStatus(wxDownloadEvent::DOWNLOAD_FAIL);
 
 	      if(m_pParent)
 		   m_pParent->GetEventHandler()->AddPendingEvent( event );
 	 }
+
+	 //Code reaches here when a file from the list has been downloaded or fails
+	 //check if any files are left in the list
+
+	 m_nCurrentFile++;
+
+	 if (m_nCurrentFile < m_strFiles.Count()) {
+	      fFilesLeftToDownload = TRUE;
+	 } else {
+	      fFilesLeftToDownload = FALSE;
+	 }
+
+
     }
 
     return 0;
