@@ -294,7 +294,7 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos,
 
     SetIcon (*g_pIcon);
 
-    Show ();
+    Show();
 
 }
 
@@ -515,35 +515,36 @@ BrowserFrame::OnFileImageDownload (wxCommandEvent& event)
 
 void BrowserFrame::OnFileImageDownloadEvent (wxDownloadEvent& event)
 {
+     if(event.GetDownLoadStatus() == wxDownloadEvent::DOWNLOAD_COMPLETE ||
+	event.GetDownLoadStatus() == wxDownloadEvent::DOWNLOAD_FAIL) {
 
+	  statbar->SetStatusText(wxT("Download Complete"),0);
 
-    if(event.GetDownLoadStatus() == wxDownloadEvent::DOWNLOAD_COMPLETE ||
-     event.GetDownLoadStatus() == wxDownloadEvent::DOWNLOAD_FAIL)
-  {
-    statbar->SetStatusText(wxT("Download Complete"),0);
-  }
-  else if(event.GetDownLoadStatus() == wxDownloadEvent::DOWNLOAD_INPROGRESS)
-  {
-       wxInt64 nFileSize = event.GetFileSize();
-       wxInt64 nDownloaded = event.GetDownLoadedBytesCount();
-       wxString bigstring = wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),nFileSize/1000000);
-       bigstring+= wxT("MB");
-       bigstring+= wxT("/");
-       bigstring+= wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),nDownloaded/1000000 );
-       bigstring+= wxT("MB");
-       statbar->SetStatusText(bigstring,0);
-       wxString MBFileSize=wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),nFileSize/1000000);
-       wxString MBDownloaded=wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),nDownloaded/1000000 );
-       int passfilesize;
-       int passdownload;
-       passfilesize = wxAtoi(MBFileSize);
-       passdownload = wxAtoi(MBDownloaded);
-       gauge->SetRange(passfilesize);
-       gauge->SetValue(passdownload);
-  }
+     } else if(event.GetDownLoadStatus() == wxDownloadEvent::DOWNLOAD_INPROGRESS) {
 
+	  wxInt64 nFileSize = event.GetFileSize();
+	  wxInt64 nDownloaded = event.GetDownLoadedBytesCount();
+	  wxString bigstring = wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),
+						nFileSize/1000000);
+	  bigstring+= wxT("MB");
+	  bigstring+= wxT("/");
+	  bigstring+= wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),
+				       nDownloaded/1000000 );
+	  bigstring+= wxT("MB");
+	  statbar->SetStatusText(bigstring,0);
 
+	  wxString MBFileSize=wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),
+					       nFileSize/1000000);
 
+	  wxString MBDownloaded=wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),
+						 nDownloaded/1000000 );
+	  int passfilesize;
+	  int passdownload;
+	  passfilesize = wxAtoi(MBFileSize);
+	  passdownload = wxAtoi(MBDownloaded);
+	  gauge->SetRange(passfilesize);
+	  gauge->SetValue(passdownload);
+     }
 }
 void
 BrowserFrame::OnHelpManual (wxCommandEvent& WXUNUSED (event))
