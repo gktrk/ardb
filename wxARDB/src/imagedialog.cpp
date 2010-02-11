@@ -28,9 +28,9 @@ ImageDialog::ImageDialog() : wxDialog (0, -1, wxT ("Card Image"), wxDefaultPosit
 {
 }
 
-void ImageDialog::SetImage(wxInputStream &stream)
+void ImageDialog::SetImage(wxImage &newImage)
 {
-     image.LoadFile(stream,wxBITMAP_TYPE_ANY);
+     image = newImage;
 
      int width = image.GetWidth();
      int height = image.GetHeight();

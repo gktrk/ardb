@@ -46,7 +46,9 @@ class PrefDialog : public wxDialog
 	private:
 	
 	protected:
+#if 0 //Not supported in v3.0.0    	
 		wxCheckBox* m_cbDownloadImages;
+#endif
 		wxCheckBox* m_cbDownloadCards;
 		
 		wxStdDialogButtonSizer* m_sdbSizer2;

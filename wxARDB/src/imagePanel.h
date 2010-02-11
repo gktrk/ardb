@@ -42,18 +42,18 @@ public:
     ImagePanel(wxWindow *parent);
     ~ImagePanel();
 
-    void SetImage(wxString fileName);
-	void Clear();
+    void SetImage(wxImage &newImage);
+    void Clear();
 
 protected:
     void OnPaint(wxPaintEvent &event);
-	void OnSize(wxSizeEvent &event);
-	void Click(wxMouseEvent &event);
+    void OnSize(wxSizeEvent &event);
+    void Click(wxMouseEvent &event);
 
 private:
     wxImage image;
-	wxString m_fileName;
-	wxWindow *m_pParent;
+    wxString m_fileName;
+    wxWindow *m_pParent;
 
 protected:
     DECLARE_EVENT_TABLE()

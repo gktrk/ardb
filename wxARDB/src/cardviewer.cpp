@@ -24,8 +24,13 @@
 #include "cardviewer.h"
 #include "importxml.h"
 
-#include <wx/file.h>
 #include <wx/dir.h>
+
+#include <wx/file.h>
+#include <wx/fs_zip.h>
+#include <wx/filesys.h>
+#include <wx/wfstream.h>
+
 
 #define CONV_BUFFER_SIZE 1024
 
@@ -88,6 +93,7 @@ void CardViewer::DisplayImage(int i)
 #endif
 
     for (int j=i; j>=0; j--) {
+
         wxString filename = wxString::Format(wxT("%s.jpg"),cardImages.Item(j).c_str());
 
 #ifndef __WXMSW__
@@ -105,42 +111,38 @@ void CardViewer::DisplayImage(int i)
 
         filename = wxString(buffer, *wxConvCurrent);
 #endif
-        //if (wxFile::Exists(filename)) {
-            m_imagePanel->SetImage(filename);
 
-            imageFound = true;
-            break;
-	    //}
+	//fileName will be in the format set/cardname.jpg
+	//we need to split this up and format into set.zip#zip:cardname.jpg
+
+	wxFileSystem* fileSystem;
+	wxFSFile* file;
+	wxString imageName;
+
+	fileSystem = new wxFileSystem();
+
+	imageName = wxFileSystem::FileNameToURL(
+	     wxFileName(wxT("cardimages/") + filename.BeforeFirst('/'))) + 
+	     wxT(".zip#zip:") + filename.AfterFirst('/');
+
+	file = fileSystem->OpenFile(imageName);
+
+	if (file) {
+	     wxImage image(*file->GetStream(),wxBITMAP_TYPE_ANY);
+	     m_imagePanel->SetImage(image);
+	     imageFound = true;
+	     delete file;	 
+	}
+
+	delete fileSystem;
+
+	if (imageFound) {
+	     break;	     
+	}
     }
 
-
     if (!imageFound) {
-        //No set image found, find a standard image
-        wxString altName = cardName.AfterFirst(wxT('/'));
-        wxString filename = wxString::Format(wxT("%s/%s.jpg"),CARD_IMAGE_DIR, altName.c_str());
-
-#ifndef __WXMSW__
-        const wxWX2MBbuf tmp_buf2 = filename.mb_str(wxConvISO8859_1);
-        const char* tmp_str2 = tmp_buf2;
-
-        for(k = 0; k < strlen(tmp_str2); k++) {
-            if(tmp_str2[k] < 0) {
-                buffer[k] = Unicode2Ascii((unsigned char)tmp_str2[k]);
-            } else {
-                buffer[k] = tmp_str2[k];
-            }
-        }
-        buffer[k] = '\0';
-
-        filename = wxString(buffer, *wxConvCurrent);
-#endif
-        if (wxFile::Exists(filename)) {
-            m_nextPrevImage->SetRange(0,0);
-            m_imagePanel->SetImage(filename);
-
-        } else { // No image at all clear the viewer
-            m_imagePanel->Clear();
-        }
+	 m_imagePanel->Clear();
     }
 }
 
