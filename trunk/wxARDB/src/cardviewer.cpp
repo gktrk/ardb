@@ -88,7 +88,7 @@ void CardViewer::DisplayImage(int i)
 #endif
 
     for (int j=i; j>=0; j--) {
-        wxString filename = wxString::Format(wxT("%s/%s.jpg"),CARD_IMAGE_DIR,cardImages.Item(j).c_str());
+        wxString filename = wxString::Format(wxT("%s.jpg"),cardImages.Item(j).c_str());
 
 #ifndef __WXMSW__
         const wxWX2MBbuf tmp_buf = filename.mb_str(wxConvISO8859_1);
@@ -105,12 +105,12 @@ void CardViewer::DisplayImage(int i)
 
         filename = wxString(buffer, *wxConvCurrent);
 #endif
-        if (wxFile::Exists(filename)) {
+        //if (wxFile::Exists(filename)) {
             m_imagePanel->SetImage(filename);
 
             imageFound = true;
             break;
-        }
+	    //}
     }
 
 

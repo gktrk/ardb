@@ -73,23 +73,32 @@ ImagePanel::~ImagePanel()
  */
 void ImagePanel::SetImage(wxString fileName)
 {
-     wxFileSystem* fileSystem = new wxFileSystem();
-     wxString archive = wxFileSystem::FileNameToURL(
-	  wxFileName(wxT("cardimages.zip"))) + wxT("#zip:") + fileName;
-     wxFSFile* file = fileSystem->OpenFile(archive);
+     wxFileSystem* fileSystem;
+     wxString imageName;
+     wxFSFile* file;
 
-    if (image.IsOk()) {
-        image.Destroy();
-    }
+     //fileName will be in the format set/cardname
+     //we need to split this up and format into set.zip#zip:cardname
+
+     fileSystem = new wxFileSystem();
+
+     imageName = wxFileSystem::FileNameToURL(
+	  wxFileName(wxT("cardimages/") + fileName.BeforeFirst('/'))) + wxT(".zip#zip:") + fileName.AfterFirst('/');
+
+     file = fileSystem->OpenFile(imageName);
+
+     if (image.IsOk()) {
+	  image.Destroy();
+     }
     
-    if (file) {
-        m_fileName = archive;
-        image.LoadFile(*file->GetStream(),wxBITMAP_TYPE_ANY);
-        Refresh();
-	delete file;
-    }
+     if (file) {
+	 m_fileName = imageName;
+	 image.LoadFile(*file->GetStream(),wxBITMAP_TYPE_ANY);
+	 Refresh();
+	 delete file;
+     }
     
-    delete fileSystem;
+     delete fileSystem;
 }
 
 /**

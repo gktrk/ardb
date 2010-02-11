@@ -27,58 +27,63 @@
 class wxDownloadFile : public wxThread
 {
 private:
-	wxWindow *m_pParent;		/// parent window pointer
-	wxString m_strURL;			/// URL from where to download the file
-	wxString m_strFile;			/// local file name where the downloaded file would be saved
-	bool m_bIsDownload;			/// boolean value to stop the download, when user cancels the download
-	wxInt64 m_nFileSize;		/// size of the file downloading; may be wrong also, depends on the server.
-	bool m_bNotifyDownloading;	/// Enable or disable the downloading in progress notification.
-	wxInt64 m_nNotifyBytes;		/// After how many number of bytes downloaded, to send the notification.
+     wxWindow *m_pParent;
+     wxString m_strURL;
+     wxArrayString m_strFiles;  //List of file names to download
+     bool m_bIsDownload;
+     wxInt64 m_nFileSize;
+     bool m_bNotifyDownloading;
+     wxInt64 m_nNotifyBytes;
+     wxInt32 m_nCurrentFile;
+     wxString m_strDstDir;
 
 public:
-	/**
-	 * Constructor
-	 * \param *pParent parent window pointer
-	 * \param strURL URL from where to download the file
-	 * \param strFile local file name where the downloaded file would be saved
-	 * \param bNotify Enable or disable the downloading in progress notification.
-	 * \param nBytes After how many number of bytes downloaded, to send the notification.
-	 * \return
-	 */
-	wxDownloadFile(wxWindow *pParent, wxString strURL, wxString strFile, bool bNotify = false, wxInt64 nBytes = 1000);
-	/**
-	 * Virtual destructor
-	 * \param void
-	 * \return
-	 */
-	virtual ~wxDownloadFile(void);
-
+     /**
+      * Constructor
+      * \param *pParent parent window pointer
+      * \param strURL URL from where to download the file
+      * \param strFiles list of files to download from strURL
+      * \param bNotify Enable or disable the downloading in progress notification.
+      * \param nBytes After how many number of bytes downloaded, to send the notification.
+      * \return
+      */
+     wxDownloadFile(wxWindow *pParent, wxString strURL, 
+		    wxArrayString &strFiles,
+		    wxString strDstDir,
+		    bool bNotify = false, wxInt64 nBytes = 1000);
+     /**
+      * Virtual destructor
+      * \param void
+      * \return
+      */
+     virtual ~wxDownloadFile(void);
+     
 public:
-    /// thread execution starts here
-    virtual void *Entry();
-
-	/// called when the thread exits - whether it terminates normally or is
-    /// stopped with Delete() (but not when it is Kill()ed!)
-    virtual void OnExit();
-
+     /// thread execution starts here
+     virtual void *Entry();
+	
+     /// called when the thread exits - whether it terminates normally or is
+     /// stopped with Delete() (but not when it is Kill()ed!)
+     virtual void OnExit();
+     
 public:
-	/**
-	 * Function to cancel the download, by the user/program.
-	 * \param void
-	 */
-	void CancelDownload(void);
+    /**
+     * Function to cancel the download, by the user/program.
+     * \param void
+     */
+    void CancelDownload(void);
 
-	/**
-	 * Returns the size of the downloading file; may be wrong also, it depends on the server.
-	 * \param void
-	 * \return Size of the file downloading.
-	 */
-	wxInt64 GetFileSize(void);
+    /**
+     * Returns the size of the downloading file; may be wrong also, it depends on the server.
+     * \param void
+     * \return Size of the file downloading.
+     */
+    wxInt64 GetFileSize(void);
 
-	/**
-	 * Sends an DOWNLOAD_INPROGRESS event after the specified number of bytes downloaded.
-	 * \param bool Enable or disable the notification.
-	 * \param wxInt64 After how many bytes downloaded, the notification should be sent.
-	 */
-	void SetDownloadingNotification(bool bEnable = true, wxInt64 nBytes = 1000);
+    /**
+     * Sends an DOWNLOAD_INPROGRESS event after the specified number of bytes downloaded.
+     * \param bool Enable or disable the notification.
+     * \param wxInt64 After how many bytes downloaded, the notification should be sent.
+     */
+    void SetDownloadingNotification(bool bEnable = true, wxInt64 nBytes = 1000);
 };
