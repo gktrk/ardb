@@ -443,62 +443,42 @@ BrowserFrame::OnFileUpdateDatabase (wxCommandEvent& WXUNUSED (event))
 void
 BrowserFrame::OnFileImageDownload (wxCommandEvent& event)
 {
+#define CARD_SETS_QUERY wxT ("SELECT full_name, set_name FROM cards_sets WHERE cards_sets.full_name NOT LIKE 'Proxy%' AND cards_sets.full_name NOT LIKE 'promo%' ORDER BY release_date DESC")
+     
+     Database *pDatabase = Database::Instance ();
+     RecordSet *pResult;
+     wxArrayString strings;
 
+     strings.Add(wxT("ALL"));
 
-  //   wxArrayString strings;
-  //   strings.Add(wxT("Ancient Hearts"));
-  //   strings.Add(wxT("Anarchs"));
-  //   strings.Add(wxT("Black Hand"));
-  //   strings.Add(wxT("Camarilla Edition"));
-  //   strings.Add(wxT("Dark Sovereigns"));
-  //   strings.Add(wxT("Ebony Kingdom"));
-  //   strings.Add(wxT("Final Nights"));
-  //   strings.Add(wxT("Gehenna"));
-  //   strings.Add(wxT("Jyhad"));
-  //   strings.Add(wxT("Kindred Most Wanted"));
-  //   strings.Add(wxT("Keepers of Tradition"));
-  //   strings.Add(wxT("Legacies of Blood"));
-  //   strings.Add(wxT("Lords of the Night"));
-  //   strings.Add(wxT("Nights of Reckoning"));
-  //   strings.Add(wxT("Promotional Cards"));
-  //   strings.Add(wxT("Sabbat"));
-  //   strings.Add(wxT("Sword of Caine"));
-  //   strings.Add(wxT("Third Edition"));
-   //  strings.Add(wxT("Tenth Edition"));
-  //   strings.Add(wxT("Twilight Rebellion"));
-  //   strings.Add(wxT("VTES"));
-  //strings.Add(wxT("NEW SET HERE"));
-  //   strings.Add(wxT("ALL"));
+     pResult = pDatabase->Query (CARD_SETS_QUERY, NULL);
+     if (pResult) {
+	  for (unsigned int i = 0; i < pResult->GetCount (); i++) {
+	       strings.Add(pResult->Item (i).Item (0));
+	  }
+     }
 
+     wxMultiChoiceDialog pickset(this,
+				 wxT("Please select the image sets you wish to download"),
+				 wxT("Download Select"),
+				 strings);
 
-     //wxMultiChoiceDialog pickset(this,
-     //wxT("Please select the image sets you wish to download"),
-     //wxT("Download Select"),
-     //strings);
+     if (pickset.ShowModal()== wxID_OK) {
 
-     //if (pickset.ShowModal()== wxID_OK)
-    // {
-     // wxArrayInt selections=pickset.GetSelections();
-     // wxString msg;
-     // msg.Printf(wxT("You selected %u items:\n"),
-     //    selections.GetCount());
+	  wxArrayInt selections = pickset.GetSelections();
+	  wxString msg;
+	  msg.Printf(wxT("You selected %u items:\n"), selections.GetCount());
 
-      //for (size_t n=0;n<selections.GetCount();n++)
-      //{
-     //     msg += wxString::Format(wxT("\t%d: %d (%s)\n"),
-      //                          n, selections[n],
-      //                          strings[selections[n]].c_str());
-      //}
-     // wxMessageBox(msg, wxT("Done"));
-    // }
-
-
+	  for (size_t n=0;n<selections.GetCount();n++) {
+	       msg += wxString::Format(wxT("\t%d: %d (%s)\n"),
+				       n, selections[n],
+				       strings[selections[n]].c_str());
+	  }
+	  wxMessageBox(msg, wxT("Done"));
+     }
 
      wxDownloadFile *pDownloadFile=  new wxDownloadFile(this, wxT("http://www.powerbase-bath.com/files/cardimages.zip"),
 							wxT("cardimages.zip"), true, 1000);
-
-
-
 
      statbar = new wxStatusBar(g_pMainWindow, wxID_ANY,wxST_SIZEGRIP);
      gauge = new wxGauge(statbar, 1, 285, wxPoint(100, 1), wxSize(100,20), wxGA_HORIZONTAL, wxDefaultValidator, wxT("Downloading Images"));
