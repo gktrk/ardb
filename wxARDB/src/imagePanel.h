@@ -2,7 +2,7 @@
  *
  *  Copyright (C) 2007 Graham Smith
  *  graham.r.smith@gmail.com
- *  
+ *
  *  Official project page: http://code.google.com/p/ardb/
  *
  *
@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  
+ * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
 #ifndef IMAGEPANEL_H
@@ -31,12 +31,12 @@
 #include <wx/dialog.h>
 
 /** The main program frame
- * 
+ *
  *  This shows the main window for the program which includes the menu, a
  *  status bar and a panel in which to show the relevant image.
  */
 
-class ImagePanel : public wxPanel 
+class ImagePanel : public wxPanel
 {
 public:
     ImagePanel(wxWindow *parent);

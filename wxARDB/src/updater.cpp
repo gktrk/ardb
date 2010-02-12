@@ -37,7 +37,7 @@ Updater *Updater::spInstance = NULL;
 
 Updater::Updater () :
     wxDialog (0, -1, wxT ("Anarch Revolt - Database Updater"),
-	      wxDefaultPosition, wxSize (350, 250)),
+              wxDefaultPosition, wxSize (350, 250)),
     m_bUpdating (false),
     m_oDisciplinesArray (),
     m_pOKButton (NULL),
@@ -59,8 +59,8 @@ Updater::Updater () :
     m_pScrolledSizer = new wxBoxSizer (wxVERTICAL);
     m_pScrolledWindow->SetSizer (m_pScrolledSizer);
     m_pStatusLabel = new wxTextCtrl (m_pScrolledWindow, -1, wxT (""),
-				     wxDefaultPosition, wxSize (350, 200),
-				     wxTE_READONLY | wxTE_MULTILINE);
+                                     wxDefaultPosition, wxSize (350, 200),
+                                     wxTE_READONLY | wxTE_MULTILINE);
     m_pScrolledSizer->Add (m_pStatusLabel, 1, wxEXPAND);
     m_pScrolledSizer->Layout ();
 
@@ -111,7 +111,7 @@ Updater::decodeCSV(wxInputStream *file, char sep, char quote, int maxrecords, in
         // Avoid MS-Windows Latin 1 weird characters
         // ERRATUM: that obviously doesn't work at all :(
         if ((unsigned char) *acBuffer >= 0x80 &&
-            (unsigned char) *acBuffer <= 0x9F) *acBuffer = ' ';
+                (unsigned char) *acBuffer <= 0x9F) *acBuffer = ' ';
 
         sChar = wxString (acBuffer, wxConvISO8859_1);
         c = Updater::MakeAscii(sChar.GetChar(0));
@@ -146,7 +146,7 @@ Updater::decodeCSV(wxInputStream *file, char sep, char quote, int maxrecords, in
                 current.Trim (false);
                 current.Replace (wxT ("\""), wxT ("\"\""));
                 if (wasinquotemode || !current.Length () ||
-                    !current.ToLong (&ldummy)) {
+                        !current.ToLong (&ldummy)) {
                     current.Prepend (wxT ('"'));
                     current.Append ('"');
                 }
@@ -164,7 +164,7 @@ Updater::decodeCSV(wxInputStream *file, char sep, char quote, int maxrecords, in
                 current.Trim (false);
                 current.Replace (wxT ("\""), wxT ("\"\""));
                 if (wasinquotemode || !current.Length () ||
-                    !current.ToLong (&ldummy)) {
+                        !current.ToLong (&ldummy)) {
                     current.Prepend (wxT ('"'));
                     current.Append ('"');
                 }
@@ -222,8 +222,8 @@ Updater::Instance ()
 int
 Updater::DoUpdate(UPDATE_TYPE utType)
 {
-     wxString sServer = GetServerName();
-     wxString sFile =GetFileName();
+    wxString sServer = GetServerName();
+    wxString sFile =GetFileName();
     wxFileName vtesdatabase(wxT("vtescsv.zip"));
     wxDateTime localFileTime;
     wxDateTime remoteFileTime;
@@ -239,11 +239,11 @@ Updater::DoUpdate(UPDATE_TYPE utType)
     Log (wxT ("Checking dates of databases..."));
 
     if (vtesdatabase.FileExists()) {
-         localFileTime = vtesdatabase.GetModificationTime();
+        localFileTime = vtesdatabase.GetModificationTime();
     } else {
-         //No file so set the time to long ago to trigger
-         //an update
-         localFileTime.ParseDate(wxT("01/01/1980"));
+        //No file so set the time to long ago to trigger
+        //an update
+        localFileTime.ParseDate(wxT("01/01/1980"));
     }
 
     localFileTime = localFileTime.ToUTC();
@@ -260,89 +260,89 @@ Updater::DoUpdate(UPDATE_TYPE utType)
 
 
 
-         if (url.GetError() == wxURL_NOERR) {
+    if (url.GetError() == wxURL_NOERR) {
 
-              wxInputStream *data;
-              data=url.GetInputStream();
-              wxHTTP* p = wxDynamicCast(&url.GetProtocol(),wxHTTP);
-              wxString remoteDisplayTime = p->GetHeader(wxT("Last-Modified"));
-              remoteFileTime.ParseDate(remoteDisplayTime);
-              Log (wxT ("Online Datebase: "));
-              Log(remoteDisplayTime);
-              Log (wxT ("\n"));
+        wxInputStream *data;
+        data=url.GetInputStream();
+        wxHTTP* p = wxDynamicCast(&url.GetProtocol(),wxHTTP);
+        wxString remoteDisplayTime = p->GetHeader(wxT("Last-Modified"));
+        remoteFileTime.ParseDate(remoteDisplayTime);
+        Log (wxT ("Online Datebase: "));
+        Log(remoteDisplayTime);
+        Log (wxT ("\n"));
 
-         } else {
-              //Error.  Probably no network access. Assume the user is trying
-              //to force an update from a local copy of the csv file.
-              //Only do this if called from the menu
-              if (utType == UPDATE_FROM_MENU) {
-                   remoteFileTime = wxDateTime::Now();
-              } else {
-                   remoteFileTime = localFileTime;
-              }
-         }
+    } else {
+        //Error.  Probably no network access. Assume the user is trying
+        //to force an update from a local copy of the csv file.
+        //Only do this if called from the menu
+        if (utType == UPDATE_FROM_MENU) {
+            remoteFileTime = wxDateTime::Now();
+        } else {
+            remoteFileTime = localFileTime;
+        }
+    }
 
 
     if (remoteFileTime.IsLaterThan(localFileTime) == TRUE) {
 
-         wxMessageDialog oUpdate (NULL,
-                                  wxT("Your database is not up to date and there is a newer version online. ")
-                                  wxT("Do you wish to update? If you wish to update hit the OK button. ")
-                                  wxT("If not hit the CANCEL button"),
-                                  wxT ("Internet connection request"),
-                                  wxOK | wxCANCEL | wxICON_QUESTION);
+        wxMessageDialog oUpdate (NULL,
+                                 wxT("Your database is not up to date and there is a newer version online. ")
+                                 wxT("Do you wish to update? If you wish to update hit the OK button. ")
+                                 wxT("If not hit the CANCEL button"),
+                                 wxT ("Internet connection request"),
+                                 wxOK | wxCANCEL | wxICON_QUESTION);
 
-         if (oUpdate.ShowModal () == wxID_OK) {
+        if (oUpdate.ShowModal () == wxID_OK) {
 
-              Show ();
-              wxYield ();
+            Show ();
+            wxYield ();
 
-              Log (wxT ("Downloading..."));
-              m_bUpdating = true;
-              wxSafeYield(this);
+            Log (wxT ("Downloading..."));
+            m_bUpdating = true;
+            wxSafeYield(this);
 
-              if (FetchCSVFiles() < 0) {
+            if (FetchCSVFiles() < 0) {
 
-                   Log (wxT ("Failed.\n"));
+                Log (wxT ("Failed.\n"));
 
-                   wxFileDialog oFileDialog(NULL,
-                                            wxT ("Please locate vtescsv.zip"),
-                                            wxT (""), wxT ("vtescsv.zip"),
-                                            wxT ("*.zip"), wxOPEN);
+                wxFileDialog oFileDialog(NULL,
+                                         wxT ("Please locate vtescsv.zip"),
+                                         wxT (""), wxT ("vtescsv.zip"),
+                                         wxT ("*.zip"), wxOPEN);
 
-                   if (oFileDialog.ShowModal() != wxID_OK) {
-                        Hide ();
-                        return -1;
-                   }
+                if (oFileDialog.ShowModal() != wxID_OK) {
+                    Hide ();
+                    return -1;
+                }
 
-                   m_sZipFile = oFileDialog.GetDirectory()
-                        << wxFileName::GetPathSeparator()
-                        << oFileDialog.GetFilename();
+                m_sZipFile = oFileDialog.GetDirectory()
+                             << wxFileName::GetPathSeparator()
+                             << oFileDialog.GetFilename();
 
-                   Log(wxT ("Opening "));
-                   Log(m_sZipFile);
-                   Log(wxT ("\n"));
+                Log(wxT ("Opening "));
+                Log(m_sZipFile);
+                Log(wxT ("\n"));
 
-              }
+            }
 
-              Log(wxT ("\n"));
-              m_bUpdating = true;
-              UpdateDatabaseFromCSV();
-              Log(wxT ("Database update has ended.\n"
-                       "You may need to restart ARDB.\n"));
-         }
+            Log(wxT ("\n"));
+            m_bUpdating = true;
+            UpdateDatabaseFromCSV();
+            Log(wxT ("Database update has ended.\n"
+                     "You may need to restart ARDB.\n"));
+        }
 
-         m_pOKButton->Enable();
+        m_pOKButton->Enable();
 
     } else {
 
-         if (utType == UPDATE_FROM_MENU) {
-              wxMessageDialog oUpToDate(NULL,
-                                        wxT("Your database is up to date"),
-                                        wxT ("Update to Date"),
-                                        wxOK);
-              oUpToDate.ShowModal();
-         }
+        if (utType == UPDATE_FROM_MENU) {
+            wxMessageDialog oUpToDate(NULL,
+                                      wxT("Your database is up to date"),
+                                      wxT ("Update to Date"),
+                                      wxOK);
+            oUpToDate.ShowModal();
+        }
     }
 
     m_bUpdating = false;
@@ -352,55 +352,55 @@ Updater::DoUpdate(UPDATE_TYPE utType)
 
 wxString Updater::GetServerName()
 {
-     wxString sServer (wxT ("www.white-wolf.com"));
-     wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get();
+    wxString sServer (wxT ("www.white-wolf.com"));
+    wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get();
 
-     if (pConfig) {
-          wxString sUpdateServer = wxT ("UpdateServer");
-          pConfig->Read(sUpdateServer, &sServer);
-     }
+    if (pConfig) {
+        wxString sUpdateServer = wxT ("UpdateServer");
+        pConfig->Read(sUpdateServer, &sServer);
+    }
 
-     return sServer;
+    return sServer;
 }
 
 wxString Updater::GetFileName()
 {
-     wxString sFile (wxT ("/VTES/downloads/vtescsv.zip"));
-     wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get();
+    wxString sFile (wxT ("/VTES/downloads/vtescsv.zip"));
+    wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get();
 
-     if (pConfig) {
-          wxString sUpdateFile = wxT ("UpdateFile");
-          pConfig->Read(sUpdateFile, &sFile);
-     }
+    if (pConfig) {
+        wxString sUpdateFile = wxT ("UpdateFile");
+        pConfig->Read(sUpdateFile, &sFile);
+    }
 
-     return sFile;
+    return sFile;
 }
 
 int
 Updater::FetchCSVFiles()
 {
-     wxString sServer = GetServerName();
-     wxString sFile = GetFileName();
-     wxHTTP oHTTPCtrl;
+    wxString sServer = GetServerName();
+    wxString sFile = GetFileName();
+    wxHTTP oHTTPCtrl;
 
-     if (!oHTTPCtrl.Connect(sServer)) {
-          wxMessageBox(wxString (wxT ("HTTP connection to ")) <<
-                       sServer << wxT (" failed."), wxT ("HTTP Error"), wxICON_ERROR | wxOK);
-          return -1;
-     }
+    if (!oHTTPCtrl.Connect(sServer)) {
+        wxMessageBox(wxString (wxT ("HTTP connection to ")) <<
+                     sServer << wxT (" failed."), wxT ("HTTP Error"), wxICON_ERROR | wxOK);
+        return -1;
+    }
 
-     wxInputStream *pInputStream = oHTTPCtrl.GetInputStream(sFile);
+    wxInputStream *pInputStream = oHTTPCtrl.GetInputStream(sFile);
 
-     if (!pInputStream) {
-          wxMessageBox(wxString (wxT ("Failed to get :\nhttp://")) <<
-                       sServer << sFile, wxT ("HTTP Error"), wxICON_ERROR | wxOK);
-          return -1;
-     }
+    if (!pInputStream) {
+        wxMessageBox(wxString (wxT ("Failed to get :\nhttp://")) <<
+                     sServer << sFile, wxT ("HTTP Error"), wxICON_ERROR | wxOK);
+        return -1;
+    }
 
-     wxFileOutputStream oFileStream (wxT ("vtescsv.zip"));
-     oFileStream << *pInputStream;
+    wxFileOutputStream oFileStream (wxT ("vtescsv.zip"));
+    oFileStream << *pInputStream;
 
-     return 0;
+    return 0;
 }
 
 int
@@ -416,12 +416,12 @@ Updater::LoadDisciplinesFromCSV ()
     oZipInputStream.Read (pCopyBuffer, iZipLength);
     do {
         switch (pCopyBuffer[i]) {
-            case ',':
-                m_oDisciplinesArray.Add (sCurrent);
-                sCurrent.Clear ();
-                break;
-            default:
-                sCurrent.Append (pCopyBuffer[i]);
+        case ',':
+            m_oDisciplinesArray.Add (sCurrent);
+            sCurrent.Clear ();
+            break;
+        default:
+            sCurrent.Append (pCopyBuffer[i]);
         }
         i++;
     } while (pCopyBuffer[i] != '\n' &&
@@ -1082,59 +1082,59 @@ wxChar Updater::MakeAscii(wxChar c)
     wxChar result = c;
 
     switch (c) {
-        case 'à':
-        case 'á':
-        case 'â':
-        case 'ã':
-        case 'ä':
-        case 'å':
-            result = 'a';
+    case 'à':
+    case 'á':
+    case 'â':
+    case 'ã':
+    case 'ä':
+    case 'å':
+        result = 'a';
         break;
 
-        case 'ç':
-            result = 'c';
-            break;
-
-        case 'é':
-        case 'è':
-        case 'ê':
-        case 'ë':
-            result = 'e';
+    case 'ç':
+        result = 'c';
         break;
 
-        case 'ì':
-        case 'í':
-        case 'î':
-        case 'ï':
-            result = 'i';
+    case 'é':
+    case 'è':
+    case 'ê':
+    case 'ë':
+        result = 'e';
         break;
 
-        case 'ñ':
-            result = 'n';
-            break;
-
-        case 'ò':
-        case 'ó':
-        case 'ô':
-        case 'õ':
-        case 'ö':
-            result = 'o';
+    case 'ì':
+    case 'í':
+    case 'î':
+    case 'ï':
+        result = 'i';
         break;
 
-        case 'ù':
-        case 'ú':
-        case 'û':
-        case 'ü':
-            result = 'u';
+    case 'ñ':
+        result = 'n';
         break;
 
-        case 'ý':
-        case 'ÿ':
-            result = 'y';
+    case 'ò':
+    case 'ó':
+    case 'ô':
+    case 'õ':
+    case 'ö':
+        result = 'o';
         break;
 
-        default:
-            break;
+    case 'ù':
+    case 'ú':
+    case 'û':
+    case 'ü':
+        result = 'u';
+        break;
+
+    case 'ý':
+    case 'ÿ':
+        result = 'y';
+        break;
+
+    default:
+        break;
     }
 
     return result;

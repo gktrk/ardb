@@ -1,32 +1,32 @@
 /*  Anarch Revolt Deck Builder - a VTES inventory manager / deck builder
-*
-*  Copyright (C) 2002 Francois Gombault
-*  gombault.francois@wanadoo.fr
-*
-*  Copyright (C) 2007, 2010 Graham Smith
-*  graham.r.smith@gmail.com
-*
-*  contributors:
-*    meshee.knight@gmail.com
-*    afri@afri.cz
-*    Rob Woodruff
-*
-*  Official project page: http://code.google.com/p/ardb/
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2, or (at your option)
-* any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software Foundation,
-* Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-*/
+ *
+ *  Copyright (C) 2002 Francois Gombault
+ *  gombault.francois@wanadoo.fr
+ *
+ *  Copyright (C) 2007, 2010 Graham Smith
+ *  graham.r.smith@gmail.com
+ *
+ *  contributors:
+ *    meshee.knight@gmail.com
+ *    afri@afri.cz
+ *    Rob Woodruff
+ *
+ *  Official project page: http://code.google.com/p/ardb/
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -80,37 +80,35 @@ wxDEFINE_SCOPED_PTR_TYPE(wxZipEntry);
 #  include "ardbsplash.xpm"
 
 BEGIN_EVENT_TABLE (BrowserFrame, wxFrame)
-    EVT_MENU (ID_BROWSER_CLOSE_TAB, BrowserFrame::OnBrowserCloseTab)
-
-    EVT_MENU (ID_BROWSER_NEW_CRYPT, BrowserFrame::OnBrowserNewCrypt)
 EVT_MENU (ID_BROWSER_CLOSE_TAB, BrowserFrame::OnBrowserCloseTab)
-    EVT_MENU (ID_BROWSER_NEW_LIBRARY, BrowserFrame::OnBrowserNewLibrary)
+
 EVT_MENU (ID_BROWSER_NEW_CRYPT, BrowserFrame::OnBrowserNewCrypt)
-    EVT_MENU (ID_FILE_DECKBUILDER, BrowserFrame::OnFileDeckBuilder)
+EVT_MENU (ID_BROWSER_CLOSE_TAB, BrowserFrame::OnBrowserCloseTab)
+EVT_MENU (ID_BROWSER_NEW_LIBRARY, BrowserFrame::OnBrowserNewLibrary)
+EVT_MENU (ID_BROWSER_NEW_CRYPT, BrowserFrame::OnBrowserNewCrypt)
+EVT_MENU (ID_FILE_DECKBUILDER, BrowserFrame::OnFileDeckBuilder)
 EVT_MENU (ID_BROWSER_NEW_LIBRARY, BrowserFrame::OnBrowserNewLibrary)
 EVT_MENU (ID_FILE_DECKBUILDER, BrowserFrame::OnFileDeckBuilder)
 //EVT_MENU (ID_FILE_EDITIONS, BrowserFrame::OnFileEditions)
 wxEVT_DOWNLOAD (BrowserFrame::OnFileImageDownloadEvent)
-    EVT_MENU (ID_FILE_UPDATEDB, BrowserFrame::OnFileUpdateDatabase)
-EVT_MENU (ID_FILE_IMAGE_DOWNLOAD,BrowserFrame::OnFileImageDownload)
-    EVT_MENU (ID_FILE_PREFERENCES, BrowserFrame::OnFilePreferences)
-    EVT_MENU (ID_FILE_EXIT, BrowserFrame::OnFileExit)
-EVT_MENU (ID_FILE_PREFERENCES, BrowserFrame::OnFilePreferences)
-    EVT_MENU (ID_INV_OPEN, BrowserFrame::OnInventoryOpen)
 EVT_MENU (ID_FILE_UPDATEDB, BrowserFrame::OnFileUpdateDatabase)
-    EVT_MENU (ID_INV_SAVE, BrowserFrame::OnInventorySave)
+EVT_MENU (ID_FILE_IMAGE_DOWNLOAD,BrowserFrame::OnFileImageDownload)
+EVT_MENU (ID_FILE_PREFERENCES, BrowserFrame::OnFilePreferences)
 EVT_MENU (ID_FILE_EXIT, BrowserFrame::OnFileExit)
-    EVT_MENU (ID_INV_IMPORT, BrowserFrame::OnInventoryImport)
 EVT_MENU (ID_INV_OPEN, BrowserFrame::OnInventoryOpen)
-    EVT_MENU (ID_INV_EXPORT_CSV, BrowserFrame::OnInventoryExportCSV)
 EVT_MENU (ID_INV_SAVE, BrowserFrame::OnInventorySave)
-    EVT_MENU (ID_INV_EXPORT_HTML, BrowserFrame::OnInventoryExportHTML)
+EVT_MENU (ID_FILE_EXIT, BrowserFrame::OnFileExit)
 EVT_MENU (ID_INV_IMPORT, BrowserFrame::OnInventoryImport)
-    EVT_MENU (ID_HELP_ABOUT, BrowserFrame::OnHelpAbout)
+EVT_MENU (ID_INV_OPEN, BrowserFrame::OnInventoryOpen)
 EVT_MENU (ID_INV_EXPORT_CSV, BrowserFrame::OnInventoryExportCSV)
-    EVT_MENU (ID_HELP_MANUAL, BrowserFrame::OnHelpManual)
+EVT_MENU (ID_INV_SAVE, BrowserFrame::OnInventorySave)
 EVT_MENU (ID_INV_EXPORT_HTML, BrowserFrame::OnInventoryExportHTML)
-    EVT_CLOSE (BrowserFrame::OnClose)
+EVT_MENU (ID_INV_IMPORT, BrowserFrame::OnInventoryImport)
+EVT_MENU (ID_HELP_ABOUT, BrowserFrame::OnHelpAbout)
+EVT_MENU (ID_INV_EXPORT_CSV, BrowserFrame::OnInventoryExportCSV)
+EVT_MENU (ID_HELP_MANUAL, BrowserFrame::OnHelpManual)
+EVT_MENU (ID_INV_EXPORT_HTML, BrowserFrame::OnInventoryExportHTML)
+EVT_CLOSE (BrowserFrame::OnClose)
 EVT_MENU (ID_HELP_ABOUT, BrowserFrame::OnHelpAbout)
 EVT_MENU (ID_HELP_MANUAL, BrowserFrame::OnHelpManual)
 EVT_CLOSE (BrowserFrame::OnClose)
@@ -205,8 +203,8 @@ MyApp::OnInit ()
     pConfig->Read(wxT("UpdateCards"), &fUpdateCards, FALSE);
 
     if (fUpdateCards) {
-	 Updater *pUpdater = Updater::Instance ();
-	 pUpdater->DoUpdate(UPDATE_FROM_STARTUP);
+        Updater *pUpdater = Updater::Instance ();
+        pUpdater->DoUpdate(UPDATE_FROM_STARTUP);
     }
 
     if (pSplash != NULL) delete pSplash;
@@ -216,7 +214,7 @@ MyApp::OnInit ()
 
 
 BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos,
-			    const wxSize& size) :
+                            const wxSize& size) :
     wxFrame (0, -1, title, pos, size),
     m_pBrowserCryptModel (NULL),
     m_pBrowserLibraryModel (NULL),
@@ -238,12 +236,12 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos,
     //  menu setup goes here
     wxMenu *pBrowserMenu = new wxMenu ();
     pBrowserMenu->Append (ID_BROWSER_NEW_CRYPT,
-			  wxT ("New Crypt browser\tCtrl+Shift+C"), wxT (""));
+                          wxT ("New Crypt browser\tCtrl+Shift+C"), wxT (""));
     pBrowserMenu->Append (ID_BROWSER_NEW_LIBRARY,
-			  wxT ("New Library browser\tCtrl+Shift+L"), wxT (""));
+                          wxT ("New Library browser\tCtrl+Shift+L"), wxT (""));
     pBrowserMenu->AppendSeparator ();
     pBrowserMenu->Append (ID_BROWSER_CLOSE_TAB,
-			  wxT ("Kill current browser\tCtrl+Shift+K"), wxT (""));
+                          wxT ("Kill current browser\tCtrl+Shift+K"), wxT (""));
 
 
     wxMenu *pFileMenu = new wxMenu ();
@@ -263,13 +261,13 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos,
     wxMenu *pInventoryMenu = new wxMenu ();
     pInventoryMenu->Append (ID_INV_OPEN, wxT ("Open"), wxT (""));
     pInventoryMenu->Append (ID_INV_IMPORT,
-			    wxT ("Import from (F)ELDB"), wxT (""));
+                            wxT ("Import from (F)ELDB"), wxT (""));
     pInventoryMenu->AppendSeparator () ;
     pInventoryMenu->Append (ID_INV_SAVE, wxT ("Save"), wxT (""));
     pInventoryMenu->Append (ID_INV_EXPORT_HTML,
-			    wxT ("Export to HTML"), wxT (""));
+                            wxT ("Export to HTML"), wxT (""));
     pInventoryMenu->Append (ID_INV_EXPORT_CSV,
-			    wxT ("Export for (F)ELDB"), wxT (""));
+                            wxT ("Export for (F)ELDB"), wxT (""));
 
     wxMenu *pHelpMenu = new wxMenu ();
     //  pHelpMenu->Append (ID_HELP_MANUAL, wxT ("Manual"), wxT (""));
@@ -286,13 +284,13 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos,
 
     // Add Crypt Browser
     m_pBrowserCryptModel = new BrowserCryptModel(m_pNotebook,
-						 m_uiCryptBrowserCount++);
+                                                 m_uiCryptBrowserCount++);
     // Add Library Browser
     m_pBrowserLibraryModel = new BrowserLibraryModel(m_pNotebook,
-						     m_uiLibraryBrowserCount++);
+                                                     m_uiLibraryBrowserCount++);
     m_pNotebook->SetSelection (0);
 
-    SetIcon (*g_pIcon);
+    SetIcon(*g_pIcon);
 
     Show();
 
@@ -413,36 +411,36 @@ BrowserFrame::OnFileDeckBuilder (wxCommandEvent& WXUNUSED (event))
 }
 
 /*
-void
-BrowserFrame::OnFileEditions (wxCommandEvent& WXUNUSED (event))
-{
-EditionsDialog *pDialog = EditionsDialog::Instance ();
-if (pDialog) pDialog->Show ();
-m_pBrowserCryptModel->Reset ();
-m_pBrowserLibraryModel->Reset ();
-}
+  void
+  BrowserFrame::OnFileEditions (wxCommandEvent& WXUNUSED (event))
+  {
+  EditionsDialog *pDialog = EditionsDialog::Instance ();
+  if (pDialog) pDialog->Show ();
+  m_pBrowserCryptModel->Reset ();
+  m_pBrowserLibraryModel->Reset ();
+  }
 */
 
 void
 BrowserFrame::OnFilePreferences (wxCommandEvent& WXUNUSED (event))
 {
-	PrefDialog *pDialog = new PrefDialog();
+    PrefDialog *pDialog = new PrefDialog();
 
-     pDialog->ShowModal();
-     delete pDialog;
+    pDialog->ShowModal();
+    delete pDialog;
 
-     //Respond to menu here
+    //Respond to menu here
 }
 
 
 void
 BrowserFrame::OnFileUpdateDatabase (wxCommandEvent& WXUNUSED (event))
 {
-     Updater *pUpdater = Updater::Instance ();
-     pUpdater->DoUpdate(UPDATE_FROM_MENU);
+    Updater *pUpdater = Updater::Instance ();
+    pUpdater->DoUpdate(UPDATE_FROM_MENU);
 
-     m_pBrowserCryptModel->Reset ();
-     m_pBrowserLibraryModel->Reset ();
+    m_pBrowserCryptModel->Reset ();
+    m_pBrowserLibraryModel->Reset ();
 }
 
 
@@ -453,103 +451,110 @@ BrowserFrame::OnFileImageDownload (wxCommandEvent& event)
 #define ALL_SETS_SELECTED 0
 #define PROMO_SET_SELECTED 1
 
-     Database *pDatabase = Database::Instance();
-     RecordSet *pResult;
-     wxArrayString strings;
-     wxArrayString filesToDownload;
-     strings.Add(wxT("ALL"));
-     strings.Add(wxT("Promo"));
+    Database *pDatabase = Database::Instance();
+    RecordSet *pResult;
+    wxArrayString strings;
+    wxArrayString filesToDownload;
+    strings.Add(wxT("ALL"));
+    strings.Add(wxT("Promo"));
 
-     pResult = pDatabase->Query (CARD_SETS_QUERY, NULL);
-     if (pResult) {
-	  for (unsigned int i = 0; i < pResult->GetCount (); i++) {
-	       strings.Add(pResult->Item(i).Item(0));
-	  }
-     }
+    pResult = pDatabase->Query (CARD_SETS_QUERY, NULL);
+    if (pResult) {
+        for (unsigned int i = 0; i < pResult->GetCount (); i++) {
+            strings.Add(pResult->Item(i).Item(0));
+        }
+    }
 
+    wxMultiChoiceDialog pickset(this,
+                                wxT("Please select the image sets you wish to download"),
+                                wxT("Download Select"),
+                                strings);
 
+    if (pickset.ShowModal()== wxID_OK) {
 
-     wxMultiChoiceDialog pickset(this,
-				 wxT("Please select the image sets you wish to download"),
-				 wxT("Download Select"),
-				 strings);
+        wxArrayInt selections = pickset.GetSelections();
 
-     if (pickset.ShowModal()== wxID_OK) {
+        if (selections.GetCount() > 0) {
 
-	  wxArrayInt selections = pickset.GetSelections();
-	  for (size_t n=0;n<selections.GetCount();n++) {
+            for (size_t n=0; n<selections.GetCount(); n++) {
 
-	       //If user has selected ALL break out of
-	       //the loop after loading all the sets into
-	       //the file list
-	       if (selections[n] == ALL_SETS_SELECTED) {
-		    filesToDownload.Clear();
-		    for (unsigned int i = 0; i < pResult->GetCount(); i++) {
-			 filesToDownload.Add(pResult->Item(i).Item(1).Lower() +
-					     wxT(".zip"));
-		    }
-		    filesToDownload.Add(wxT("promo.zip"));
-		    break;
-		 
-	       } else if (selections[n] == PROMO_SET_SELECTED) {
-		    filesToDownload.Add(wxT("promo.zip"));
-	       } else  {
-		    filesToDownload.Add(pResult->Item(selections[n]-2).
-					Item(1).Lower() + wxT(".zip"));
-	       }
-	  }
-     }
+                //If user has selected ALL break out of
+                //the loop after loading all the sets into
+                //the file list
+                if (selections[n] == ALL_SETS_SELECTED) {
+                    filesToDownload.Clear();
+                    for (unsigned int i = 0; i < pResult->GetCount(); i++) {
+                        filesToDownload.Add(pResult->Item(i).Item(1).Lower() +
+                                            wxT(".zip"));
+                    }
+                    filesToDownload.Add(wxT("promo.zip"));
+                    break;
 
-     wxDownloadFile *pDownloadFile;
-     pDownloadFile = new wxDownloadFile(this,
-					wxT("http://www.powerbase-bath.com/files/"),
-					filesToDownload, wxT("cardimages"), true, 1000);
+                } else if (selections[n] == PROMO_SET_SELECTED) {
+                    filesToDownload.Add(wxT("promo.zip"));
+                } else  {
+                    filesToDownload.Add(pResult->Item(selections[n]-2).
+                                        Item(1).Lower() + wxT(".zip"));
+                }
+            }
 
-     statbar = new wxStatusBar(g_pMainWindow, wxID_ANY,wxST_SIZEGRIP);
-     gauge = new wxGauge(statbar, 1, 285, wxPoint(125, 1), wxSize(100,20),
-			 wxGA_HORIZONTAL, wxDefaultValidator,
-			 wxT("Downloading Images"));
+            wxDownloadFile *pDownloadFile;
+            pDownloadFile = new wxDownloadFile(this,
+                                               wxT("http://www.powerbase-bath.com/files/"),
+                                               filesToDownload, wxT("cardimages"), true, 1000);
 
-     g_pMainWindow->SetStatusBar(statbar);
-     statbar->SetStatusText(wxT("Downloading Files"), 0);
-     gauge->SetRange(0);
-     gauge->SetValue(0);
+            statbar = new wxStatusBar(g_pMainWindow, wxID_ANY,wxST_SIZEGRIP);
+            gauge = new wxGauge(statbar, 1, 285, wxPoint(125, 1), wxSize(100,20),
+                                wxGA_HORIZONTAL, wxDefaultValidator,
+                                wxT("Downloading Images"));
 
+            g_pMainWindow->SetStatusBar(statbar);
+            statbar->SetStatusText(wxT("Downloading Files"), 0);
+            gauge->SetRange(0);
+            gauge->SetValue(0);
+	    
+	    EnableDownLoadMenu(FALSE);
 
+        }
+    }
 }
 
 void BrowserFrame::OnFileImageDownloadEvent (wxDownloadEvent& event)
 {
-     if(event.GetDownLoadStatus() == wxDownloadEvent::DOWNLOAD_COMPLETE ||
-	event.GetDownLoadStatus() == wxDownloadEvent::DOWNLOAD_FAIL) {
+    if(event.GetDownLoadStatus() == wxDownloadEvent::DOWNLOAD_COMPLETE) {
 
-	  statbar->SetStatusText(wxT("Download Complete"),0);
+        statbar->SetStatusText(wxT("Downloads Complete"),0);
 
-     } else if(event.GetDownLoadStatus() == wxDownloadEvent::DOWNLOAD_INPROGRESS) {
+	EnableDownLoadMenu(TRUE);
 
-	  wxInt64 nFileSize = event.GetFileSize();
-	  wxInt64 nDownloaded = event.GetDownLoadedBytesCount();
-	  wxString bigstring = wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),
-						nFileSize/1000000);
-	  bigstring+= wxT("MB");
-	  bigstring+= wxT("/");
-	  bigstring+= wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),
-				       nDownloaded/1000000 );
-	  bigstring+= wxT("MB");
-	  statbar->SetStatusText(bigstring,0);
+    } else if(event.GetDownLoadStatus() == wxDownloadEvent::DOWNLOAD_INPROGRESS) {
 
-	  wxString MBFileSize=wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),
-					       nFileSize/1000000);
+        wxInt64 nFileSize = event.GetFileSize();
+        wxInt64 nDownloaded = event.GetDownLoadedBytesCount();
 
-	  wxString MBDownloaded=wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),
-						 nDownloaded/1000000 );
-	  int passfilesize;
-	  int passdownload;
-	  passfilesize = wxAtoi(MBFileSize);
-	  passdownload = wxAtoi(MBDownloaded);
-	  gauge->SetRange(passfilesize);
-	  gauge->SetValue(passdownload);
-     }
+        wxString bigstring = wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),
+                                              nDownloaded/1000000 );
+
+        bigstring+= wxT("MB");
+        bigstring+= wxT(" of ");
+
+        bigstring+= wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),
+                                     nFileSize/1000000);
+        bigstring+= wxT("MB");
+        statbar->SetStatusText(bigstring,0);
+
+        wxString MBFileSize=wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),
+                                             nFileSize/1000000);
+
+        wxString MBDownloaded=wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),
+                                               nDownloaded/1000000 );
+        int passfilesize;
+        int passdownload;
+        passfilesize = wxAtoi(MBFileSize);
+        passdownload = wxAtoi(MBDownloaded);
+        gauge->SetRange(passfilesize);
+        gauge->SetValue(passdownload);
+    }
 }
 void
 BrowserFrame::OnHelpManual (wxCommandEvent& WXUNUSED (event))
@@ -622,4 +627,15 @@ BrowserFrame::OnInventorySave (wxCommandEvent& WXUNUSED (event))
     if (pInv) pInv->ExportToXML ();
 }
 
+void
+BrowserFrame::EnableDownLoadMenu(bool fEnabled)
+{
+    wxMenuBar* pMenu = GetMenuBar();
 
+    if (pMenu != NULL) {
+	 wxMenuItem* pItem = pMenu->FindItem(ID_FILE_IMAGE_DOWNLOAD);
+	 if (pItem != NULL) {
+	     pItem->Enable(fEnabled);
+	 }
+    }
+}

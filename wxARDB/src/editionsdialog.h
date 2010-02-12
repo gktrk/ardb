@@ -5,7 +5,7 @@
  *
  *  contributors:
  *    meshee.knight@gmail.com
- *  
+ *
  *  Official project page: http://code.google.com/p/ardb/
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,7 +20,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  
+ * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
 #ifndef _editionsdialog_h
@@ -37,40 +37,39 @@
 
 class EditionsDialog : public wxDialog
 {
- public:
-  // Singleton access
-  static EditionsDialog *Instance ();
-  static void DeleteInstance ();
+public:
+    // Singleton access
+    static EditionsDialog *Instance ();
+    static void DeleteInstance ();
 
- protected:
-  // Constructor & destructor
-  EditionsDialog ();
-  ~EditionsDialog ();
+protected:
+    // Constructor & destructor
+    EditionsDialog ();
+    ~EditionsDialog ();
 
- private:
-  // Singleton pointer
-  static EditionsDialog   *spInstance;
+private:
+    // Singleton pointer
+    static EditionsDialog   *spInstance;
 
-  wxArrayString     m_oIgnoreEditionsArray;
-  wxArrayString     m_oUseEditionsArray;
-  wxListView       *m_pIgnoreEditionsList;
-  wxListView       *m_pUseEditionsList;
-  
+    wxArrayString     m_oIgnoreEditionsArray;
+    wxArrayString     m_oUseEditionsArray;
+    wxListView       *m_pIgnoreEditionsList;
+    wxListView       *m_pUseEditionsList;
 
 
-  // callbacks
-  void OnCancel (wxCommandEvent& WXUNUSED (event));
-  void OnIgnoreButtonClick (wxCommandEvent& WXUNUSED (event));
-  void OnOK (wxCommandEvent& WXUNUSED (event));
-  void OnUseButtonClick (wxCommandEvent& WXUNUSED (event));
 
-  enum
-    {
-      ID_USE_BUTTON = wxID_HIGHEST + 1,
-      ID_IGNORE_BUTTON
+    // callbacks
+    void OnCancel (wxCommandEvent& WXUNUSED (event));
+    void OnIgnoreButtonClick (wxCommandEvent& WXUNUSED (event));
+    void OnOK (wxCommandEvent& WXUNUSED (event));
+    void OnUseButtonClick (wxCommandEvent& WXUNUSED (event));
+
+    enum {
+        ID_USE_BUTTON = wxID_HIGHEST + 1,
+        ID_IGNORE_BUTTON
     };
-  
-  DECLARE_EVENT_TABLE()
+
+    DECLARE_EVENT_TABLE()
 };
 
 #endif

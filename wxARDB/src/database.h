@@ -2,7 +2,7 @@
  *
  *  Copyright (C) 2002 Francois Gombault
  *  gombault.francois@wanadoo.fr
- *  
+ *
  *  Official project page: https://savannah.nongnu.org/projects/anarchdb/
  *
  *
@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  
+ * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
 
@@ -33,49 +33,55 @@
 
 #include "types.h"
 
-class Database 
+class Database
 {
- public:
-  // Singleton access
-  static Database *Instance ();
-  static void DeleteInstance ();
+public:
+    // Singleton access
+    static Database *Instance ();
+    static void DeleteInstance ();
 
-  // database creation & update
-  int CreateBlankDatabase ();
-  int CreateCoreTables ();
-  int CreateDeckTables ();
-  int CreateInventoryTables ();
-  int CreateViews ();
-  int DeleteCoreTables ();
-  int DeleteDeckTables ();
-  int DeleteInventoryTables ();
-  wxString GetDatabaseDirectory () { return m_sDatabaseDirectory; }
-  bool IsVerbose () { return m_bVerbose; }
+    // database creation & update
+    int CreateBlankDatabase ();
+    int CreateCoreTables ();
+    int CreateDeckTables ();
+    int CreateInventoryTables ();
+    int CreateViews ();
+    int DeleteCoreTables ();
+    int DeleteDeckTables ();
+    int DeleteInventoryTables ();
+    wxString GetDatabaseDirectory () {
+        return m_sDatabaseDirectory;
+    }
+    bool IsVerbose () {
+        return m_bVerbose;
+    }
 
-  RecordSet *Query (const wxString &sQuery, RecordSet *pDest = NULL, bool bSilent = FALSE);
+    RecordSet *Query (const wxString &sQuery, RecordSet *pDest = NULL, bool bSilent = FALSE);
 
-  void ToggleVerbose () { m_bVerbose = !m_bVerbose; }
+    void ToggleVerbose () {
+        m_bVerbose = !m_bVerbose;
+    }
 
- protected:
-  // Constructor & destructor
-  Database ();
-  ~Database ();
+protected:
+    // Constructor & destructor
+    Database ();
+    ~Database ();
 
- private:
-  // Singleton pointer
-  static Database *spInstance;
+private:
+    // Singleton pointer
+    static Database *spInstance;
 
-  bool      m_bReady;
-  bool      m_bMustUpdate;
-  bool      m_bVerbose;
-  RecordSet m_oResultSet;
-  sqlite   *m_pCardsDB;
-  wxString  m_sDatabaseDirectory;
-  wxString  m_sDatabaseFileName;
-  
+    bool      m_bReady;
+    bool      m_bMustUpdate;
+    bool      m_bVerbose;
+    RecordSet m_oResultSet;
+    sqlite   *m_pCardsDB;
+    wxString  m_sDatabaseDirectory;
+    wxString  m_sDatabaseFileName;
 
-  static int Callback (void *pUserData, int argc, char **argv, char **azColName);
-  
+
+    static int Callback (void *pUserData, int argc, char **argv, char **azColName);
+
 
 };
 

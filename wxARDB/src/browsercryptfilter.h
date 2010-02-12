@@ -2,7 +2,7 @@
  *
  *  Copyright (C) 2002 Francois Gombault
  *  gombault.francois@wanadoo.fr
- *  
+ *
  *  Official project page: https://savannah.nongnu.org/projects/anarchdb/
  *
  *
@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  
+ * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
 
@@ -36,30 +36,30 @@
 class BrowserCryptController;
 
 // This class is the dialog that will allow to filter the vampires
-// The magic that happens when the user clicks the OK button is 
+// The magic that happens when the user clicks the OK button is
 // in the CryptBrowserController class
 class BrowserCryptFilter: public wxDialog
 {
-friend class BrowserCryptController;
+    friend class BrowserCryptController;
 
- public:
+public:
     BrowserCryptFilter(BrowserCryptController *pController);
 
     void SetDialogTitle (int iMode);
     void Reset ();
 
- private:
+private:
     bool            m_bNoEvents;
 
     // the cycling boundaries
     int             m_iCycleCounter;
     int             m_iCycleLowerValue;
     int             m_iCycleUpperValue;
-    
+
     // The ideal vampire
     long            m_lFeatherRef;
-  
-   // the complete list of cards for the card picker combo box
+
+    // the complete list of cards for the card picker combo box
     wxArrayString   m_oArrayOfNames;
     RecordSet       m_oCardList;
     ComboArray      m_oDisciplinesCombos;
@@ -110,20 +110,19 @@ friend class BrowserCryptController;
     void OnClearButtonClick (wxCommandEvent& WXUNUSED (event));
     void OnOKButtonClick (wxCommandEvent& WXUNUSED (event));
 
-    enum
-      {
-	ID_OK_BUTTON = wxID_HIGHEST + 1,
-	ID_CANCEL_BUTTON,
-	ID_CLEAR_BUTTON,
-	ID_CAP_LESS_CHECKBOX,
-	ID_CAP_LESS_SCALE,
-	ID_CAP_EQ_CHECKBOX,
-	ID_CAP_EQ_SCALE,
-	ID_CAP_MORE_CHECKBOX,
-	ID_CAP_MORE_SCALE,
-	ID_CARD_INPUT,
-	ID_CARD_PICKER
-      };
+    enum {
+        ID_OK_BUTTON = wxID_HIGHEST + 1,
+        ID_CANCEL_BUTTON,
+        ID_CLEAR_BUTTON,
+        ID_CAP_LESS_CHECKBOX,
+        ID_CAP_LESS_SCALE,
+        ID_CAP_EQ_CHECKBOX,
+        ID_CAP_EQ_SCALE,
+        ID_CAP_MORE_CHECKBOX,
+        ID_CAP_MORE_SCALE,
+        ID_CARD_INPUT,
+        ID_CARD_PICKER
+    };
 
     DECLARE_EVENT_TABLE()
 };

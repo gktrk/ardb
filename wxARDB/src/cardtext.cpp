@@ -59,8 +59,8 @@ CardText::DisplayCryptText(long lCardRef, wxArrayString *cardImageNames)
 
             // Get the name
             oFont.SetWeight (wxBOLD);
-            SetDefaultStyle (wxTextAttr (wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOWTEXT), 
-					 wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOW), oFont));
+            SetDefaultStyle (wxTextAttr (wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOWTEXT),
+                                         wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOW), oFont));
             WriteText (oRecord.Item (0));
 
             wxString adv = oRecord.Item(1);
@@ -72,8 +72,8 @@ CardText::DisplayCryptText(long lCardRef, wxArrayString *cardImageNames)
             }
 
             oFont.SetWeight (wxNORMAL);
-            SetDefaultStyle (wxTextAttr (wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOWTEXT), 
-					 wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOW), oFont));
+            SetDefaultStyle (wxTextAttr (wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOWTEXT),
+                                         wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOW), oFont));
             // Advanced ?
             WriteText (wxT (" "));
             WriteText (oRecord.Item (1));

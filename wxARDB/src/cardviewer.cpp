@@ -112,37 +112,37 @@ void CardViewer::DisplayImage(int i)
         filename = wxString(buffer, *wxConvCurrent);
 #endif
 
-	//fileName will be in the format set/cardname.jpg
-	//we need to split this up and format into set.zip#zip:cardname.jpg
+        //fileName will be in the format set/cardname.jpg
+        //we need to split this up and format into set.zip#zip:cardname.jpg
 
-	wxFileSystem* fileSystem;
-	wxFSFile* file;
-	wxString imageName;
+        wxFileSystem* fileSystem;
+        wxFSFile* file;
+        wxString imageName;
 
-	fileSystem = new wxFileSystem();
+        fileSystem = new wxFileSystem();
 
-	imageName = wxFileSystem::FileNameToURL(
-	     wxFileName(wxT("cardimages/") + filename.BeforeFirst('/'))) + 
-	     wxT(".zip#zip:") + filename.AfterFirst('/');
+        imageName = wxFileSystem::FileNameToURL(
+                        wxFileName(wxT("cardimages/") + filename.BeforeFirst('/'))) +
+                    wxT(".zip#zip:") + filename.AfterFirst('/');
 
-	file = fileSystem->OpenFile(imageName);
+        file = fileSystem->OpenFile(imageName);
 
-	if (file) {
-	     wxImage image(*file->GetStream(),wxBITMAP_TYPE_ANY);
-	     m_imagePanel->SetImage(image);
-	     imageFound = true;
-	     delete file;	 
-	}
+        if (file) {
+            wxImage image(*file->GetStream(),wxBITMAP_TYPE_ANY);
+            m_imagePanel->SetImage(image);
+            imageFound = true;
+            delete file;
+        }
 
-	delete fileSystem;
+        delete fileSystem;
 
-	if (imageFound) {
-	     break;	     
-	}
+        if (imageFound) {
+            break;
+        }
     }
 
     if (!imageFound) {
-	 m_imagePanel->Clear();
+        m_imagePanel->Clear();
     }
 }
 

@@ -73,12 +73,12 @@ ImagePanel::~ImagePanel()
  */
 void ImagePanel::SetImage(wxImage &newImage)
 {
-     if (image.IsOk()) {
-	  image.Destroy();
-     }
+    if (image.IsOk()) {
+        image.Destroy();
+    }
 
-     image = newImage;
-     Refresh();
+    image = newImage;
+    Refresh();
 }
 
 /**
@@ -104,13 +104,13 @@ void ImagePanel::OnSize(wxSizeEvent &event)
 
 void ImagePanel::Click(wxMouseEvent &event)
 {
-     ImageDialog dialog;
-     
-     if (image.IsOk()) {
-	  dialog.SetImage(image);
-	  dialog.CentreOnParent();
-	  dialog.ShowModal();
-     }
+    ImageDialog dialog;
+
+    if (image.IsOk()) {
+        dialog.SetImage(image);
+        dialog.CentreOnParent();
+        dialog.ShowModal();
+    }
 }
 
 /// Draw the image in the panel if it exists

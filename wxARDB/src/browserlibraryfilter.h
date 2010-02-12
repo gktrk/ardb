@@ -2,7 +2,7 @@
  *
  *  Copyright (C) 2002 Francois Gombault
  *  gombault.francois@wanadoo.fr
- *  
+ *
  *  Official project page: https://savannah.nongnu.org/projects/anarchdb/
  *
  *
@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  
+ * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
 
@@ -35,19 +35,19 @@ class BrowserLibraryController;
 WX_DEFINE_ARRAY(wxCheckBox *, wxArrayOfCheckboxes);
 
 // This class is the dialog that will allow to filter the cards
-// The magic that happens when the user clicks the OK button is 
+// The magic that happens when the user clicks the OK button is
 // in the LibraryBrowserController class
 class BrowserLibraryFilter: public wxDialog
 {
-friend class BrowserLibraryController;
+    friend class BrowserLibraryController;
 
- public:
+public:
     BrowserLibraryFilter(BrowserLibraryController *pController);
 
     void SetDialogTitle (int iMode);
     void Reset ();
 
- private:
+private:
     wxCheckBox   *m_apLibraryReqs[100];
     wxCheckBox   *m_apLibraryTexts[100];
     wxButton     *m_pCancelButton;
@@ -82,14 +82,13 @@ friend class BrowserLibraryController;
     void OnDisclessClick (wxCommandEvent& WXUNUSED (event));
     void OnOKButtonClick (wxCommandEvent& WXUNUSED (event));
 
-    enum
-      {
-	ID_OK_BUTTON = wxID_HIGHEST + 1,
-	ID_CANCEL_BUTTON,
-	ID_CLEAR_BUTTON,
-	ID_CHECK_CLANLESS,
-	ID_CHECK_DISCLESS
-      };
+    enum {
+        ID_OK_BUTTON = wxID_HIGHEST + 1,
+        ID_CANCEL_BUTTON,
+        ID_CLEAR_BUTTON,
+        ID_CHECK_CLANLESS,
+        ID_CHECK_DISCLESS
+    };
 
     DECLARE_EVENT_TABLE()
 };

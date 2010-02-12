@@ -2,7 +2,7 @@
  *
  *  Copyright (C) 2002 Francois Gombault
  *  gombault.francois@wanadoo.fr
- *  
+ *
  *  Official project page: http://code.google.com/p/ardb/
  *
  *
@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  
+ * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
 #ifndef _amountdialoh_h
@@ -29,29 +29,28 @@
 
 class AmountDialog : public wxDialog
 {
- public:
-  AmountDialog (wxArrayString *pNameArray, wxArrayInt *pAmountArray);
-  ~AmountDialog () { };
+public:
+    AmountDialog (wxArrayString *pNameArray, wxArrayInt *pAmountArray);
+    ~AmountDialog () { };
 
- private:
-  wxArrayPtrVoid  m_oSpinnerArray;
+private:
+    wxArrayPtrVoid  m_oSpinnerArray;
 
-  wxArrayInt     *m_pAmountArray;
-  wxArrayString  *m_pNameArray;
-  wxButton       *m_pCancelButton;
-  wxButton       *m_pOKButton;
+    wxArrayInt     *m_pAmountArray;
+    wxArrayString  *m_pNameArray;
+    wxButton       *m_pCancelButton;
+    wxButton       *m_pOKButton;
 
-  void OnCancelButtonClick (wxCommandEvent& WXUNUSED (event));
-  void OnOKButtonClick (wxCommandEvent& WXUNUSED (event));
+    void OnCancelButtonClick (wxCommandEvent& WXUNUSED (event));
+    void OnOKButtonClick (wxCommandEvent& WXUNUSED (event));
 
-  enum
-    {
-      ID_OK_BUTTON = wxID_HIGHEST + 1,
-      ID_CANCEL_BUTTON
+    enum {
+        ID_OK_BUTTON = wxID_HIGHEST + 1,
+        ID_CANCEL_BUTTON
     };
 
 
-  DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 

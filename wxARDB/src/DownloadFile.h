@@ -27,45 +27,45 @@
 class wxDownloadFile : public wxThread
 {
 private:
-     wxWindow *m_pParent;
-     wxString m_strURL;
-     wxArrayString m_strFiles;  //List of file names to download
-     bool m_bIsDownload;
-     wxInt64 m_nFileSize;
-     bool m_bNotifyDownloading;
-     wxInt64 m_nNotifyBytes;
-     wxInt32 m_nCurrentFile;
-     wxString m_strDstDir;
+    wxWindow *m_pParent;
+    wxString m_strURL;
+    wxArrayString m_strFiles;  //List of file names to download
+    bool m_bIsDownload;
+    wxInt64 m_nFileSize;
+    bool m_bNotifyDownloading;
+    wxInt64 m_nNotifyBytes;
+    wxInt32 m_nCurrentFile;
+    wxString m_strDstDir;
 
 public:
-     /**
-      * Constructor
-      * \param *pParent parent window pointer
-      * \param strURL URL from where to download the file
-      * \param strFiles list of files to download from strURL
-      * \param bNotify Enable or disable the downloading in progress notification.
-      * \param nBytes After how many number of bytes downloaded, to send the notification.
-      * \return
-      */
-     wxDownloadFile(wxWindow *pParent, wxString strURL, 
-		    wxArrayString &strFiles,
-		    wxString strDstDir,
-		    bool bNotify = false, wxInt64 nBytes = 1000);
-     /**
-      * Virtual destructor
-      * \param void
-      * \return
-      */
-     virtual ~wxDownloadFile(void);
-     
+    /**
+     * Constructor
+     * \param *pParent parent window pointer
+     * \param strURL URL from where to download the file
+     * \param strFiles list of files to download from strURL
+     * \param bNotify Enable or disable the downloading in progress notification.
+     * \param nBytes After how many number of bytes downloaded, to send the notification.
+     * \return
+     */
+    wxDownloadFile(wxWindow *pParent, wxString strURL,
+                   wxArrayString &strFiles,
+                   wxString strDstDir,
+                   bool bNotify = false, wxInt64 nBytes = 1000);
+    /**
+     * Virtual destructor
+     * \param void
+     * \return
+     */
+    virtual ~wxDownloadFile(void);
+
 public:
-     /// thread execution starts here
-     virtual void *Entry();
-	
-     /// called when the thread exits - whether it terminates normally or is
-     /// stopped with Delete() (but not when it is Kill()ed!)
-     virtual void OnExit();
-     
+    /// thread execution starts here
+    virtual void *Entry();
+
+    /// called when the thread exits - whether it terminates normally or is
+    /// stopped with Delete() (but not when it is Kill()ed!)
+    virtual void OnExit();
+
 public:
     /**
      * Function to cancel the download, by the user/program.

@@ -2,7 +2,7 @@
  *
  *  Copyright (C) 2009 Graham Smith
  *  graham.r.smith@gmail.com
- *  
+ *
  *  Official project page: http://code.google.com/p/ardb/
  *
  *
@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  
+ * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
 #ifndef DECKUPLOAD_H
@@ -28,12 +28,12 @@
 
 class DeckUpload
 {
-	public:
-		static bool Upload(wxString &sCrypt, wxString &sLibrary, wxString &sTitle, wxString &sAuthor, wxString &sDesc, wxString &sUserName, wxString &sPassword);
+public:
+    static bool Upload(wxString &sCrypt, wxString &sLibrary, wxString &sTitle, wxString &sAuthor, wxString &sDesc, wxString &sUserName, wxString &sPassword);
 
-	private:
-		static wxString UriEncode(const wxString &sSrc);
-	
+private:
+    static wxString UriEncode(const wxString &sSrc);
+
 };
 #endif
 
