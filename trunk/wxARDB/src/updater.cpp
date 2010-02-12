@@ -222,8 +222,8 @@ Updater::Instance ()
 int
 Updater::DoUpdate(UPDATE_TYPE utType)
 {
-    wxString sServer(wxT("www.white-wolf.com"));
-    wxString sFile =(wxT("/VTES/downloads/vtescsv.zip"));
+     wxString sServer = GetServerName();
+     wxString sFile =GetFileName();
     wxFileName vtesdatabase(wxT("vtescsv.zip"));
     wxDateTime localFileTime;
     wxDateTime remoteFileTime;
