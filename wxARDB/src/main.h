@@ -104,7 +104,7 @@ private:
     BrowserCryptModel   *m_pBrowserCryptModel;
     BrowserLibraryModel *m_pBrowserLibraryModel;
 
-    wxGauge     *gauge;
+    wxGauge     *m_pGauge;
     wxStatusBar *m_pStatbar;
     wxBoxSizer	*m_pPapaSizer;
     wxNotebook	*m_pNotebook;
