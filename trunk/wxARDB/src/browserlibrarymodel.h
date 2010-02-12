@@ -2,7 +2,7 @@
  *
  *  Copyright (C) 2002 Francois Gombault
  *  gombault.francois@wanadoo.fr
- *  
+ *
  *  Official project page: https://savannah.nongnu.org/projects/anarchdb/
  *
  *
@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  
+ * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
 
@@ -35,56 +35,58 @@ class BrowserLibraryTab;
 
 class BrowserLibraryModel
 {
- public:
-  // The queries
-  wxString m_sAddQuery;
-  wxString m_sKeepQuery;
-  wxString m_sRemoveQuery;
-  wxString m_sSortSuffix;
-  wxString m_sViewQuery;
-  wxString m_sWipeQuery;
+public:
+    // The queries
+    wxString m_sAddQuery;
+    wxString m_sKeepQuery;
+    wxString m_sRemoveQuery;
+    wxString m_sSortSuffix;
+    wxString m_sViewQuery;
+    wxString m_sWipeQuery;
 
-  // Constructor and destructor
-  BrowserLibraryModel (wxNotebook *pViewPanel, unsigned int uiNumber);
-  ~BrowserLibraryModel ();
+    // Constructor and destructor
+    BrowserLibraryModel (wxNotebook *pViewPanel, unsigned int uiNumber);
+    ~BrowserLibraryModel ();
 
-  // Get card data based on a certain query
-  void QueryCardData (const wxString &sQuery, const wxString &sSummary, bool bUpdateView = TRUE);
-  
-  // Accessors
-  unsigned int GetCardCount ();
-  RecordSet *GetCardList ();
-  unsigned int GetIDNumber () { return m_uiModelIDNumber; }
-  unsigned int GetFilterCount ();
-  wxString & GetFilterSummary (unsigned int uiFilterNumber);
-  bool IsFilterVisible (unsigned int uiFilterNumber);
+    // Get card data based on a certain query
+    void QueryCardData (const wxString &sQuery, const wxString &sSummary, bool bUpdateView = TRUE);
 
-  void Reset ();
+    // Accessors
+    unsigned int GetCardCount ();
+    RecordSet *GetCardList ();
+    unsigned int GetIDNumber () {
+        return m_uiModelIDNumber;
+    }
+    unsigned int GetFilterCount ();
+    wxString & GetFilterSummary (unsigned int uiFilterNumber);
+    bool IsFilterVisible (unsigned int uiFilterNumber);
 
-  // Undo stuff
-  void DeleteFilter (unsigned int uiFilterNumber, bool bUpdateView = TRUE);
-  void ExecFilterList (bool bUpdateView = TRUE);
-  void LowerFilter (unsigned int uiFilterNumber, bool bUpdateView = TRUE);
-  void RaiseFilter (unsigned int uiFilterNumber, bool bUpdateView = TRUE);
-  void Undo (bool bUpdateView = TRUE);
-  void SetFilterVisible (unsigned int uiFilterNumber, bool bVisible, bool bUpdateView = TRUE);
-  void SetSortColumn (int iColumn);
+    void Reset ();
 
- private:
-  // Card list
-  RecordSet                 m_oCardList;
+    // Undo stuff
+    void DeleteFilter (unsigned int uiFilterNumber, bool bUpdateView = TRUE);
+    void ExecFilterList (bool bUpdateView = TRUE);
+    void LowerFilter (unsigned int uiFilterNumber, bool bUpdateView = TRUE);
+    void RaiseFilter (unsigned int uiFilterNumber, bool bUpdateView = TRUE);
+    void Undo (bool bUpdateView = TRUE);
+    void SetFilterVisible (unsigned int uiFilterNumber, bool bVisible, bool bUpdateView = TRUE);
+    void SetSortColumn (int iColumn);
 
-  wxArrayString             m_oQueryList;
-  wxArrayString             m_oSummaryList;
-  wxArrayLong               m_oVisibilityList;
+private:
+    // Card list
+    RecordSet                 m_oCardList;
 
-  BrowserLibraryController *m_pController;
-  BrowserLibraryTab        *m_pView;
+    wxArrayString             m_oQueryList;
+    wxArrayString             m_oSummaryList;
+    wxArrayLong               m_oVisibilityList;
 
-  wxNotebook               *m_pViewPanel;
- 
-  unsigned int              m_uiCardCount;
-  unsigned int              m_uiModelIDNumber;
+    BrowserLibraryController *m_pController;
+    BrowserLibraryTab        *m_pView;
+
+    wxNotebook               *m_pViewPanel;
+
+    unsigned int              m_uiCardCount;
+    unsigned int              m_uiModelIDNumber;
 
 
 };

@@ -57,8 +57,8 @@ BrowserCryptModel::BrowserCryptModel (wxNotebook *pViewPanel, unsigned int uiNum
                               "GROUP BY name_ref, advanced "),
                          m_uiModelIDNumber);
 
-    m_sAddQuery.Printf (wxT ("INSERT INTO crypt_selection SELECT %d, card_ref, NULL FROM crypt_view %s"), 
-			m_uiModelIDNumber, wxT("%s"));
+    m_sAddQuery.Printf (wxT ("INSERT INTO crypt_selection SELECT %d, card_ref, NULL FROM crypt_view %s"),
+                        m_uiModelIDNumber, wxT("%s"));
 
     m_sRemoveQuery.Printf (wxT ("DELETE FROM crypt_selection WHERE browser_num = %d AND card_name IN (SELECT card_ref FROM crypt_view %s)"), m_uiModelIDNumber,  wxT("%s"));
 

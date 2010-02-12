@@ -2,7 +2,7 @@
  *
  *  Copyright (C) 2002 Francois Gombault
  *  gombault.francois@wanadoo.fr
- *  
+ *
  *  Official project page: https://savannah.nongnu.org/projects/anarchdb/
  *
  *
@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  
+ * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
 #ifndef _speling_h
@@ -31,13 +31,13 @@
  */
 
 typedef enum {
-  SP_IDENTICAL = 0,
-  SP_MISCAPITALIZED = 1,
-  SP_TRANSPOSITION = 2,
-  SP_MISSINGCHAR = 3,
-  SP_EXTRACHAR = 4,
-  SP_SIMPLETYPO = 5,
-  SP_VERYDIFFERENT = 6
+    SP_IDENTICAL = 0,
+    SP_MISCAPITALIZED = 1,
+    SP_TRANSPOSITION = 2,
+    SP_MISSINGCHAR = 3,
+    SP_EXTRACHAR = 4,
+    SP_SIMPLETYPO = 5,
+    SP_VERYDIFFERENT = 6
 } sp_reason;
 
 sp_reason spdist (wxString &s, wxString &t);

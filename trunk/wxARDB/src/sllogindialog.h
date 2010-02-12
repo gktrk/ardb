@@ -26,45 +26,41 @@
 ///////////////////////////////////////////////////////////////////////////////
 /// Class SLLoginDialog
 ///////////////////////////////////////////////////////////////////////////////
-class SLLoginDialog : public wxDialog 
+class SLLoginDialog : public wxDialog
 {
-	private:
+private:
 
-	
-	protected:
-		wxStaticText* m_staticText2;
-		wxTextCtrl* m_usernameEditbox;
-		wxStaticText* m_staticText3;
-		wxTextCtrl* m_PasswordEditBox;
-		wxCheckBox* m_SaveDetailscheckBox;
-		wxStdDialogButtonSizer* m_sdbSizer2;
-		wxButton* m_sdbSizer2OK;
-		wxButton* m_sdbSizer2Cancel;
-	
-	public:
-		SLLoginDialog(bool saveDetails, wxString &username, wxString &password);
-		~SLLoginDialog();
 
-		wxString Username()
-		{
-			return m_usernameEditbox->GetValue();
-		}
+protected:
+    wxStaticText* m_staticText2;
+    wxTextCtrl* m_usernameEditbox;
+    wxStaticText* m_staticText3;
+    wxTextCtrl* m_PasswordEditBox;
+    wxCheckBox* m_SaveDetailscheckBox;
+    wxStdDialogButtonSizer* m_sdbSizer2;
+    wxButton* m_sdbSizer2OK;
+    wxButton* m_sdbSizer2Cancel;
 
-		wxString Password()
-		{
-			return m_PasswordEditBox->GetValue();
-		}
+public:
+    SLLoginDialog(bool saveDetails, wxString &username, wxString &password);
+    ~SLLoginDialog();
 
-		bool SaveDetails()
-		{
-			return m_SaveDetailscheckBox->IsChecked();
-		}
+    wxString Username() {
+        return m_usernameEditbox->GetValue();
+    }
 
-		enum
-		{
-			ID_OK_BUTTON = wxID_HIGHEST + 1,
-			ID_CANCEL_BUTTON
-		};
+    wxString Password() {
+        return m_PasswordEditBox->GetValue();
+    }
+
+    bool SaveDetails() {
+        return m_SaveDetailscheckBox->IsChecked();
+    }
+
+    enum {
+        ID_OK_BUTTON = wxID_HIGHEST + 1,
+        ID_CANCEL_BUTTON
+    };
 };
 
 #endif //__noname__

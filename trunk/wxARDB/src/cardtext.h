@@ -2,7 +2,7 @@
  *
  *  Copyright (C) 2002 Francois Gombault
  *  gombault.francois@wanadoo.fr
- *  
+ *
  *  Official project page: http://code.google.com/p/ardb/
  *
  *
@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  
+ * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
 #ifndef _cardtext_h
@@ -28,15 +28,15 @@
 
 class CardText: public wxTextCtrl
 {
- public:
-  CardText (wxWindow* parent, wxWindowID id) :  wxTextCtrl (parent, id, wxT (""), wxDefaultPosition, wxDefaultSize, wxTE_RICH | wxTE_READONLY | wxTE_MULTILINE) { }
-  ~CardText () { }
-  
-  void DisplayCryptText(long lCardRef, wxArrayString *cardImageNames);
-  void DisplayLibraryText(long lCardRef, wxArrayString *cardImageNames);
+public:
+    CardText (wxWindow* parent, wxWindowID id) :  wxTextCtrl (parent, id, wxT (""), wxDefaultPosition, wxDefaultSize, wxTE_RICH | wxTE_READONLY | wxTE_MULTILINE) { }
+    ~CardText () { }
 
- private:
-	 wxString CardNameToFileName(wxString name);
+    void DisplayCryptText(long lCardRef, wxArrayString *cardImageNames);
+    void DisplayLibraryText(long lCardRef, wxArrayString *cardImageNames);
+
+private:
+    wxString CardNameToFileName(wxString name);
 };
 
 #endif

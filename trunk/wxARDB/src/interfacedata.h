@@ -2,7 +2,7 @@
  *
  *  Copyright (C) 2002 Francois Gombault
  *  gombault.francois@wanadoo.fr
- *  
+ *
  *  Official project page: https://savannah.nongnu.org/projects/anarchdb/
  *
  *
@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  
+ * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
 #ifndef _interfacedata_h
@@ -38,47 +38,70 @@ extern wxFrame *g_pMainWindow;
 
 extern unsigned int g_uiGroupCount;
 
-class InterfaceData {
- public:
-  // Singleton access
-  static InterfaceData *Instance ();
-  static void DeleteInstance ();
+class InterfaceData
+{
+public:
+    // Singleton access
+    static InterfaceData *Instance ();
+    static void DeleteInstance ();
 
-  wxArrayString *GetClans ()       { return &m_oClanArray; }
-  RecordSet     *GetDisciplines () { return &m_oDisciplineRecord; }
-  wxArrayString *GetEditions ()    { return &m_oEditionArray; }
-  wxString      *GetImageDir ()    { return &m_sImagedir; } 
-  RecordSet     *GetLibraryReqs () { return &m_oLibraryReqRecord; }
-  RecordSet     *GetLibraryTexts (){ return &m_oLibraryTextRecord; }
-  RecordSet     *GetRarities ()    { return &m_oRarityRecord; }
-  RecordSet     *GetSects ()       { return &m_oSectRecord; }
-  RecordSet     *GetSpecials ()    { return &m_oSpecialRecord; }
-  RecordSet     *GetTitles ()      { return &m_oTitleRecord; } 
-  wxArrayString *GetTypes ()       { return &m_oTypeArray; }
-  wxStaticBitmap *MakeStaticBitmap (wxWindow* pParent, wxString& sName);
+    wxArrayString *GetClans ()       {
+        return &m_oClanArray;
+    }
+    RecordSet     *GetDisciplines () {
+        return &m_oDisciplineRecord;
+    }
+    wxArrayString *GetEditions ()    {
+        return &m_oEditionArray;
+    }
+    wxString      *GetImageDir ()    {
+        return &m_sImagedir;
+    }
+    RecordSet     *GetLibraryReqs () {
+        return &m_oLibraryReqRecord;
+    }
+    RecordSet     *GetLibraryTexts () {
+        return &m_oLibraryTextRecord;
+    }
+    RecordSet     *GetRarities ()    {
+        return &m_oRarityRecord;
+    }
+    RecordSet     *GetSects ()       {
+        return &m_oSectRecord;
+    }
+    RecordSet     *GetSpecials ()    {
+        return &m_oSpecialRecord;
+    }
+    RecordSet     *GetTitles ()      {
+        return &m_oTitleRecord;
+    }
+    wxArrayString *GetTypes ()       {
+        return &m_oTypeArray;
+    }
+    wxStaticBitmap *MakeStaticBitmap (wxWindow* pParent, wxString& sName);
 
- protected:
-  InterfaceData ();
-  ~InterfaceData () { }
-  
- private:
-  // Singleton pointer
-  static InterfaceData *spInstance;
+protected:
+    InterfaceData ();
+    ~InterfaceData () { }
 
-  bool      m_bReady;
+private:
+    // Singleton pointer
+    static InterfaceData *spInstance;
 
-  wxArrayString   m_oClanArray;
-  wxArrayString   m_oEditionArray;
-  wxArrayString   m_oSectArray;
-  wxArrayString   m_oTypeArray;
-  wxString        m_sImagedir;
-  RecordSet       m_oDisciplineRecord;
-  RecordSet       m_oLibraryReqRecord;
-  RecordSet       m_oLibraryTextRecord;
-  RecordSet       m_oRarityRecord;
-  RecordSet       m_oSectRecord;
-  RecordSet       m_oSpecialRecord;
-  RecordSet       m_oTitleRecord;
+    bool      m_bReady;
+
+    wxArrayString   m_oClanArray;
+    wxArrayString   m_oEditionArray;
+    wxArrayString   m_oSectArray;
+    wxArrayString   m_oTypeArray;
+    wxString        m_sImagedir;
+    RecordSet       m_oDisciplineRecord;
+    RecordSet       m_oLibraryReqRecord;
+    RecordSet       m_oLibraryTextRecord;
+    RecordSet       m_oRarityRecord;
+    RecordSet       m_oSectRecord;
+    RecordSet       m_oSpecialRecord;
+    RecordSet       m_oTitleRecord;
 
 };
 

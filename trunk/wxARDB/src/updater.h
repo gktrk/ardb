@@ -54,45 +54,45 @@ typedef enum  {
 
 class Updater : public wxDialog
 {
- public:
-  // Singleton access
-  static Updater *Instance ();
-  static void DeleteInstance ();
+public:
+    // Singleton access
+    static Updater *Instance ();
+    static void DeleteInstance ();
 
 
-  int DoUpdate (UPDATE_TYPE utType);
-  static void decodeCSV (wxInputStream *file, char sep, char quote, 
-			 int maxrecords, int *numfields, 
-			 wxArrayString *pResult, bool bSkipFirstLine);
+    int DoUpdate (UPDATE_TYPE utType);
+    static void decodeCSV (wxInputStream *file, char sep, char quote,
+                           int maxrecords, int *numfields,
+                           wxArrayString *pResult, bool bSkipFirstLine);
 
-  protected:
-  // Constructor & destructor
-  Updater ();
-  ~Updater ();
+protected:
+    // Constructor & destructor
+    Updater ();
+    ~Updater ();
 
- private:
-  // Singleton pointer
-  static Updater   *spInstance;
+private:
+    // Singleton pointer
+    static Updater   *spInstance;
 
-  bool              m_bUpdating;
-  wxArrayString     m_oDisciplinesArray;
-  wxButton         *m_pOKButton;
-  wxScrolledWindow *m_pScrolledWindow;
-  wxSizer          *m_pScrolledSizer;
-  wxTextCtrl       *m_pStatusLabel;
-  wxString          m_sZipFile;
+    bool              m_bUpdating;
+    wxArrayString     m_oDisciplinesArray;
+    wxButton         *m_pOKButton;
+    wxScrolledWindow *m_pScrolledWindow;
+    wxSizer          *m_pScrolledSizer;
+    wxTextCtrl       *m_pStatusLabel;
+    wxString          m_sZipFile;
 
 
-  int FetchCSVFiles ();
-  int LoadDisciplinesFromCSV ();
-  int LoadTableFromCSV (wxString sTable, wxString sCSVFile, int iNulls);
-  void Log (wxString sText);
-  int UpdateDatabaseFromCSV ();
+    int FetchCSVFiles ();
+    int LoadDisciplinesFromCSV ();
+    int LoadTableFromCSV (wxString sTable, wxString sCSVFile, int iNulls);
+    void Log (wxString sText);
+    int UpdateDatabaseFromCSV ();
 
-  wxString GetServerName();
-  wxString GetFileName();
+    wxString GetServerName();
+    wxString GetFileName();
 
-  static wxChar MakeAscii(wxChar c);
+    static wxChar MakeAscii(wxChar c);
 
 };
 

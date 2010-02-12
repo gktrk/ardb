@@ -2,7 +2,7 @@
  *
  *  Copyright (C) 2002 Francois Gombault
  *  gombault.francois@wanadoo.fr
- *  
+ *
  *  Official project page: https://savannah.nongnu.org/projects/anarchdb/
  *
  *
@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  
+ * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
 #ifndef _deckmodel_h
@@ -34,158 +34,182 @@
 
 class DeckWindow;
 
-class HappyBucket 
+class HappyBucket
 {
- public:
-  HappyBucket () { }
-  HappyBucket (wxString &sName, unsigned int uiTotal, unsigned int uiCount = 0) : m_sName (sName), m_uiDiscTotal (uiTotal), m_uiCardCount (uiCount) { }
-  
-  static int Compare (const HappyBucket **arg1, const HappyBucket **arg2) 
-    {
-      return (*arg2)->m_uiDiscTotal - (*arg1)->m_uiDiscTotal;
+public:
+    HappyBucket () { }
+    HappyBucket (wxString &sName, unsigned int uiTotal, unsigned int uiCount = 0) : m_sName (sName), m_uiDiscTotal (uiTotal), m_uiCardCount (uiCount) { }
+
+    static int Compare (const HappyBucket **arg1, const HappyBucket **arg2) {
+        return (*arg2)->m_uiDiscTotal - (*arg1)->m_uiDiscTotal;
     }
 
-  wxString m_sName;
-  unsigned int m_uiDiscTotal;
-  unsigned int m_uiCardCount;
+    wxString m_sName;
+    unsigned int m_uiDiscTotal;
+    unsigned int m_uiCardCount;
 };
 
 WX_DECLARE_LIST(HappyBucket, HappyList);
 
 class DeckModel
 {
- public:
-  static const wxString s_sDeckInfoQuery;
-  static const wxString s_sLibraryViewQuery;
-  static const wxString s_sCryptViewQuery;
+public:
+    static const wxString s_sDeckInfoQuery;
+    static const wxString s_sLibraryViewQuery;
+    static const wxString s_sCryptViewQuery;
 
-  // Singleton access
-  static DeckModel *Instance ();
-  static void DeleteInstance ();
+    // Singleton access
+    static DeckModel *Instance ();
+    static void DeleteInstance ();
 
-  DeckModel ();
-  ~DeckModel ();
+    DeckModel ();
+    ~DeckModel ();
 
-  void ComputeCryptHappiness ();
+    void ComputeCryptHappiness ();
 
-  // File operations
-  bool ExportToELD ();
-  bool ExportToHTML ();
-  bool ExportToJOL ();
-  bool ExportToPhpBB ();
-  bool ExportToText ();
-  bool ExportToXML ();
-  bool ExportToSecretLibrary(wxString &sUsername, wxString &sPassword);
-  bool ExportWithXSL (wxString &sFileName, wxString *pXSL);
-  bool XmlToXslt(wxString &sResult, wxString *pXSL);
-  bool ImportFromELD ();
-  bool ImportFromXML ();
-  bool ImportFromXML (wxString &sFileName, bool bImportAll = TRUE);
-  bool MergeFromXML ();
+    // File operations
+    bool ExportToELD ();
+    bool ExportToHTML ();
+    bool ExportToJOL ();
+    bool ExportToPhpBB ();
+    bool ExportToText ();
+    bool ExportToXML ();
+    bool ExportToSecretLibrary(wxString &sUsername, wxString &sPassword);
+    bool ExportWithXSL (wxString &sFileName, wxString *pXSL);
+    bool XmlToXslt(wxString &sResult, wxString *pXSL);
+    bool ImportFromELD ();
+    bool ImportFromXML ();
+    bool ImportFromXML (wxString &sFileName, bool bImportAll = TRUE);
+    bool MergeFromXML ();
 
-  // Database operations
-  bool OpenFromDatabase (wxString &sDeckName);
-  bool SaveToDatabase (wxString &sDeckName);
-  
-  // Accessors
-  wxString& GetAuthor ();
-  double GetCryptAvg () { return m_lCryptAvg; }
-  unsigned int GetCryptCount () { return m_lCryptCount; }
-  RecordSet *GetCryptList ();
-  long GetCryptMax () { return m_lCryptMax; }
-  long GetCryptMin () { return m_lCryptMin; }
-  wxString& GetDescription ();
-  HappyList *GetHappyList () { return &m_oHappyList; }
-  unsigned int GetLibraryCount () { return m_lLibraryCount; }
-  RecordSet *GetLibraryList ();
-  RecordSet *GetLibStatsClans () { return &m_oLibStatsClans; }
-  RecordSet *GetLibStatsDiscisplines () { return &m_oLibStatsDisciplines; }
-  RecordSet *GetLibStatsRequirements () { return &m_oLibStatsRequirements; }
-  long GetLibStatsBloodCost () { return m_lTotalBloodCost; }
-  long GetLibStatsPoolCost () { return m_lTotalPoolCost; }
-  wxString& GetName ();
-  void SetAuthor (wxString &sAuthor);
-  void SetDescription (wxString &sDescription);
-  void SetHappyDisciplineCount (unsigned int uiCount) 
-    { m_uiHappyDisciplineCount = uiCount; }
-  void SetHappyLibrarySize (unsigned int uiSize)
-    { m_uiHappyLibrarySize = uiSize;}
-  void SetHappyMasterPercentage (unsigned int uiPercent)
-    { m_uiHappyMasterPercentage = uiPercent; }
-  void SetName (wxString &sName);
+    // Database operations
+    bool OpenFromDatabase (wxString &sDeckName);
+    bool SaveToDatabase (wxString &sDeckName);
 
-  void Clear (); // clears the current deck
+    // Accessors
+    wxString& GetAuthor ();
+    double GetCryptAvg () {
+        return m_lCryptAvg;
+    }
+    unsigned int GetCryptCount () {
+        return m_lCryptCount;
+    }
+    RecordSet *GetCryptList ();
+    long GetCryptMax () {
+        return m_lCryptMax;
+    }
+    long GetCryptMin () {
+        return m_lCryptMin;
+    }
+    wxString& GetDescription ();
+    HappyList *GetHappyList () {
+        return &m_oHappyList;
+    }
+    unsigned int GetLibraryCount () {
+        return m_lLibraryCount;
+    }
+    RecordSet *GetLibraryList ();
+    RecordSet *GetLibStatsClans () {
+        return &m_oLibStatsClans;
+    }
+    RecordSet *GetLibStatsDiscisplines () {
+        return &m_oLibStatsDisciplines;
+    }
+    RecordSet *GetLibStatsRequirements () {
+        return &m_oLibStatsRequirements;
+    }
+    long GetLibStatsBloodCost () {
+        return m_lTotalBloodCost;
+    }
+    long GetLibStatsPoolCost () {
+        return m_lTotalPoolCost;
+    }
+    wxString& GetName ();
+    void SetAuthor (wxString &sAuthor);
+    void SetDescription (wxString &sDescription);
+    void SetHappyDisciplineCount (unsigned int uiCount) {
+        m_uiHappyDisciplineCount = uiCount;
+    }
+    void SetHappyLibrarySize (unsigned int uiSize) {
+        m_uiHappyLibrarySize = uiSize;
+    }
+    void SetHappyMasterPercentage (unsigned int uiPercent) {
+        m_uiHappyMasterPercentage = uiPercent;
+    }
+    void SetName (wxString &sName);
 
-  // Crypt manipulations
-  wxArrayString * AddToCrypt (wxString sName, wxString sAdvanced, wxString sSet, unsigned int uiCount = 1, bool bRefreshUI = TRUE);
-  wxArrayString * AddToCrypt (long lCardRef, unsigned int uiCount = 1, bool bRefreshUI = TRUE);
-  void DelFromCrypt (long lCardRef, int iCount = 1, bool bRefreshUI = TRUE);
-  void SetCryptRefAmount (long lCardRef, unsigned int uiCount, bool bRefreshUI = TRUE);
+    void Clear (); // clears the current deck
 
-  // Library manipultations
-  wxArrayString * AddToLibrary (wxString sName, wxString sSet, unsigned int uiCount = 1, bool bRefreshUI = TRUE);
-  wxArrayString * AddToLibrary (long lCardRef, unsigned int uiCount = 1, bool bRefreshUI = TRUE);
-  void DelFromLibrary (long lCardRef, int iCount = 1, bool bRefreshUI = TRUE);
-  void ResizeLibrary (unsigned int uiCount);
-  void SetLibraryRefAmount (long lCardRef, unsigned int uiCount, bool bRefreshUI = TRUE);
+    // Crypt manipulations
+    wxArrayString * AddToCrypt (wxString sName, wxString sAdvanced, wxString sSet, unsigned int uiCount = 1, bool bRefreshUI = TRUE);
+    wxArrayString * AddToCrypt (long lCardRef, unsigned int uiCount = 1, bool bRefreshUI = TRUE);
+    void DelFromCrypt (long lCardRef, int iCount = 1, bool bRefreshUI = TRUE);
+    void SetCryptRefAmount (long lCardRef, unsigned int uiCount, bool bRefreshUI = TRUE);
 
-  void ShouldSaveWarning();
+    // Library manipultations
+    wxArrayString * AddToLibrary (wxString sName, wxString sSet, unsigned int uiCount = 1, bool bRefreshUI = TRUE);
+    wxArrayString * AddToLibrary (long lCardRef, unsigned int uiCount = 1, bool bRefreshUI = TRUE);
+    void DelFromLibrary (long lCardRef, int iCount = 1, bool bRefreshUI = TRUE);
+    void ResizeLibrary (unsigned int uiCount);
+    void SetLibraryRefAmount (long lCardRef, unsigned int uiCount, bool bRefreshUI = TRUE);
 
- private:
+    void ShouldSaveWarning();
 
-  bool                    m_bReady;
-  bool                    m_bSaved;
+private:
 
-  // Singleton pointer
-  static DeckModel       *spInstance;
+    bool                    m_bReady;
+    bool                    m_bSaved;
 
-  // The associated View
-  DeckWindow             *m_pView;
+    // Singleton pointer
+    static DeckModel       *spInstance;
 
-  // Crypt stats
-  double                  m_lCryptAvg;
-  long                    m_lCryptMax;
-  long                    m_lCryptMin;
+    // The associated View
+    DeckWindow             *m_pView;
 
-  // number of cards
-  long                    m_lCryptCount;
-  long                    m_lLibraryCount;
-  
-  // Library and crypt lists
-  RecordSet               m_oCryptList;
-  HappyList               m_oHappyList;
-  RecordSet               m_oLibraryList;
-  // Stats
-  RecordSet               m_oLibStatsClans;
-  RecordSet               m_oLibStatsDisciplines;
-  RecordSet               m_oLibStatsRequirements;
-  long                    m_lTotalBloodCost;
-  long                    m_lTotalPoolCost;
+    // Crypt stats
+    double                  m_lCryptAvg;
+    long                    m_lCryptMax;
+    long                    m_lCryptMin;
 
-  // Misc. info
-  wxString                m_sAuthor;
-  wxString                m_sDescription;
-  wxString                m_sName;
-  //  wxString                m_sLastModified;
+    // number of cards
+    long                    m_lCryptCount;
+    long                    m_lLibraryCount;
 
-  // Happy Families parameters
-  unsigned int            m_uiHappyDisciplineCount;
-  unsigned int            m_uiHappyLibrarySize;
-  unsigned int            m_uiHappyMasterPercentage;
+    // Library and crypt lists
+    RecordSet               m_oCryptList;
+    HappyList               m_oHappyList;
+    RecordSet               m_oLibraryList;
+    // Stats
+    RecordSet               m_oLibStatsClans;
+    RecordSet               m_oLibStatsDisciplines;
+    RecordSet               m_oLibStatsRequirements;
+    long                    m_lTotalBloodCost;
+    long                    m_lTotalPoolCost;
 
-  void ComputeLibraryStats ();
-  void RefreshModel (bool bRefreshUI = FALSE);
+    // Misc. info
+    wxString                m_sAuthor;
+    wxString                m_sDescription;
+    wxString                m_sName;
+    //  wxString                m_sLastModified;
 
-  wxString StripInvalidFilename(wxString name);
+    // Happy Families parameters
+    unsigned int            m_uiHappyDisciplineCount;
+    unsigned int            m_uiHappyLibrarySize;
+    unsigned int            m_uiHappyMasterPercentage;
 
-  // XML stuff that needs wrapping
-  xmlNodePtr my_xmlNewChild (xmlNodePtr parent, 
-			     xmlNsPtr ns, 
-			     wxString sName, 
-			     wxString sContent);
-  xmlAttrPtr my_xmlNewProp (xmlNodePtr node, 
-			    wxString sName, 
-			    wxString sValue);
+    void ComputeLibraryStats ();
+    void RefreshModel (bool bRefreshUI = FALSE);
+
+    wxString StripInvalidFilename(wxString name);
+
+    // XML stuff that needs wrapping
+    xmlNodePtr my_xmlNewChild (xmlNodePtr parent,
+                               xmlNsPtr ns,
+                               wxString sName,
+                               wxString sContent);
+    xmlAttrPtr my_xmlNewProp (xmlNodePtr node,
+                              wxString sName,
+                              wxString sValue);
 
 };
 

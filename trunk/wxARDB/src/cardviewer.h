@@ -29,35 +29,34 @@
 ///////////////////////////////////////////////////////////////////////////////
 /// Class CardViewer
 ///////////////////////////////////////////////////////////////////////////////
-class CardViewer : public wxPanel 
+class CardViewer : public wxPanel
 {
-	private:
+private:
 
-		void ChangeImage(wxSpinEvent& WXUNUSED (event));
-		void DisplayImage(int i);
+    void ChangeImage(wxSpinEvent& WXUNUSED (event));
+    void DisplayImage(int i);
 
-		enum
-    {
-      ID_SPIN_BUTTON = wxID_HIGHEST + 1,
+    enum {
+        ID_SPIN_BUTTON = wxID_HIGHEST + 1,
     };
-	
-	protected:
-		ImagePanel* m_imagePanel;
-				
-		wxSpinButton* m_nextPrevImage;
 
-		wxArrayString cardImages;
+protected:
+    ImagePanel* m_imagePanel;
 
-		DECLARE_EVENT_TABLE()
-		
-	
-	public:
-		CardViewer( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 227,281 ), long style = wxTAB_TRAVERSAL );
-		~CardViewer();
+    wxSpinButton* m_nextPrevImage;
 
-		void SetImage(wxArrayString *cardNames);
-		void Clear();
-	
+    wxArrayString cardImages;
+
+    DECLARE_EVENT_TABLE()
+
+
+public:
+    CardViewer( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 227,281 ), long style = wxTAB_TRAVERSAL );
+    ~CardViewer();
+
+    void SetImage(wxArrayString *cardNames);
+    void Clear();
+
 };
 
 #endif //__noname__

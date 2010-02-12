@@ -2,7 +2,7 @@
  *
  *  Copyright (C) 2002 Francois Gombault
  *  gombault.francois@wanadoo.fr
- *  
+ *
  *  Official project page: https://savannah.nongnu.org/projects/anarchdb/
  *
  *
@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  
+ * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
 #include <wx/wx.h>
@@ -26,36 +26,35 @@
 
 class DrawSimulator : public wxFrame
 {
- public:
-  DrawSimulator ();
-  ~DrawSimulator ();
+public:
+    DrawSimulator ();
+    ~DrawSimulator ();
 
-  static void DeleteInstance ();
-  static DrawSimulator * Instance ();
+    static void DeleteInstance ();
+    static DrawSimulator * Instance ();
 
- private:
-  wxArrayString    m_oDrawnCards;
-  wxArrayString    m_oDrawnVampires;
-  wxArrayString    m_oRemainingCards;
-  wxArrayString    m_oRemainingVampires;
-  wxTextCtrl *     m_pDrawnCardsText;
-  wxTextCtrl *     m_pDrawnVampiresText;
-  wxTextCtrl *     m_pRemainingCardsText;
-  wxTextCtrl *     m_pRemainingVampiresText;
-  
-  static DrawSimulator * s_pInstance;
+private:
+    wxArrayString    m_oDrawnCards;
+    wxArrayString    m_oDrawnVampires;
+    wxArrayString    m_oRemainingCards;
+    wxArrayString    m_oRemainingVampires;
+    wxTextCtrl *     m_pDrawnCardsText;
+    wxTextCtrl *     m_pDrawnVampiresText;
+    wxTextCtrl *     m_pRemainingCardsText;
+    wxTextCtrl *     m_pRemainingVampiresText;
 
-  void Draw ();
-  void OnButtonClose (wxCommandEvent & WXUNUSED (event));
-  void OnButtonDraw (wxCommandEvent & WXUNUSED (event));
-  int Random (int iMax);
+    static DrawSimulator * s_pInstance;
 
-  enum
-    {
-      ID_CLOSE_BUTTON = wxID_HIGHEST + 1,
-      ID_DRAW_BUTTON
+    void Draw ();
+    void OnButtonClose (wxCommandEvent & WXUNUSED (event));
+    void OnButtonDraw (wxCommandEvent & WXUNUSED (event));
+    int Random (int iMax);
+
+    enum {
+        ID_CLOSE_BUTTON = wxID_HIGHEST + 1,
+        ID_DRAW_BUTTON
     };
 
 
-  DECLARE_EVENT_TABLE ()
+    DECLARE_EVENT_TABLE ()
 };

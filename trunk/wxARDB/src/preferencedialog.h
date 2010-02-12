@@ -41,28 +41,28 @@
 ///////////////////////////////////////////////////////////////////////////////
 /// Class prefDialog
 ///////////////////////////////////////////////////////////////////////////////
-class PrefDialog : public wxDialog 
+class PrefDialog : public wxDialog
 {
-	private:
-	
-	protected:
+private:
+
+protected:
 #if 0 //Not supported in v3.0.0    	
-		wxCheckBox* m_cbDownloadImages;
+    wxCheckBox* m_cbDownloadImages;
 #endif
-		wxCheckBox* m_cbDownloadCards;
-		
-		wxStdDialogButtonSizer* m_sdbSizer2;
-		wxButton* m_pbtnOK;
-		wxButton* m_sdbSizer2Cancel;
+    wxCheckBox* m_cbDownloadCards;
 
-                void SaveSettings( wxCommandEvent& event );
-	
-	public:
-		PrefDialog();
-		~PrefDialog();
+    wxStdDialogButtonSizer* m_sdbSizer2;
+    wxButton* m_pbtnOK;
+    wxButton* m_sdbSizer2Cancel;
+
+    void SaveSettings( wxCommandEvent& event );
+
+public:
+    PrefDialog();
+    ~PrefDialog();
 
 
-	
+
 };
 
 #endif //__prefdialog__

@@ -24,21 +24,21 @@ DEFINE_EVENT_TYPE( wxEVT_DOWNLOAD )
 IMPLEMENT_DYNAMIC_CLASS(wxDownloadEvent, wxNotifyEvent)
 
 wxDownloadEvent::wxDownloadEvent(wxEventType commandType, int id)
-: wxNotifyEvent(commandType, id)
-, m_downloadStatus(DOWNLOAD_NONE)
-, m_nFileSize(0)
-, m_nBytesDownloaded(0)
+    : wxNotifyEvent(commandType, id)
+    , m_downloadStatus(DOWNLOAD_NONE)
+    , m_nFileSize(0)
+    , m_nBytesDownloaded(0)
 {
 }
 
 wxDownloadEvent::wxDownloadEvent(const wxDownloadEvent& event)
-: wxNotifyEvent(event)
+    : wxNotifyEvent(event)
 {
-	m_downloadStatus =event.m_downloadStatus;
-	m_nFileSize =event.m_nFileSize;
-	m_nBytesDownloaded =event.m_nBytesDownloaded;
-	m_strURL =event.m_strURL;
-	m_strFILE =event.m_strFILE;
+    m_downloadStatus =event.m_downloadStatus;
+    m_nFileSize =event.m_nFileSize;
+    m_nBytesDownloaded =event.m_nBytesDownloaded;
+    m_strURL =event.m_strURL;
+    m_strFILE =event.m_strFILE;
 }
 
 wxDownloadEvent::~wxDownloadEvent(void)
@@ -47,50 +47,50 @@ wxDownloadEvent::~wxDownloadEvent(void)
 
 int wxDownloadEvent::GetDownLoadStatus(void)
 {
-	return (int)m_downloadStatus;
+    return (int)m_downloadStatus;
 }
 
 void wxDownloadEvent::SetDownLoadStatus(int status)
 {
-	m_downloadStatus = (DownloadSTATUS)status;
+    m_downloadStatus = (DownloadSTATUS)status;
 }
 
 wxString wxDownloadEvent::GetDownLoadURL(void)
 {
-	return m_strURL;
+    return m_strURL;
 }
 
 void wxDownloadEvent::SetDownLoadURL(wxString strURL)
 {
-	m_strURL = strURL;
+    m_strURL = strURL;
 }
 
 wxString wxDownloadEvent::GetDownLoadedFile(void)
 {
-	return m_strFILE;
+    return m_strFILE;
 }
 
 void wxDownloadEvent::SetDownLoadedFile(wxString strFILE)
 {
-	m_strFILE = strFILE;
+    m_strFILE = strFILE;
 }
 
 wxInt64 wxDownloadEvent::GetDownLoadedBytesCount(void)
 {
-	return m_nBytesDownloaded;
+    return m_nBytesDownloaded;
 }
 
 void wxDownloadEvent::SetDownLoadedBytesCount(wxInt64 nBytes)
 {
-	m_nBytesDownloaded = nBytes;
+    m_nBytesDownloaded = nBytes;
 }
 
 wxInt64 wxDownloadEvent::GetFileSize(void)
 {
-	return m_nFileSize;
+    return m_nFileSize;
 }
 
 void wxDownloadEvent::SetFileSize(wxInt64 nSize)
 {
-	m_nFileSize = nSize;
+    m_nFileSize = nSize;
 }

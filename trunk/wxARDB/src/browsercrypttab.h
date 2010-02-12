@@ -2,7 +2,7 @@
  *
  *  Copyright (C) 2002 Francois Gombault
  *  gombault.francois@wanadoo.fr
- *  
+ *
  *  Official project page: https://savannah.nongnu.org/projects/anarchdb/
  *
  *
@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  
+ * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
 
@@ -44,79 +44,78 @@ class BrowserCryptModel;
 
 class BrowserCryptTab : public wxPanel
 {
-  friend class BrowserCryptController;
-  friend class BrowserCryptModel;
-  friend class BrowserCryptCardGrid;
+    friend class BrowserCryptController;
+    friend class BrowserCryptModel;
+    friend class BrowserCryptCardGrid;
 
 private:
-  BrowserCryptTab (BrowserCryptModel *pModel, BrowserCryptController *pController, wxNotebook* pParent, unsigned int uiNumber);
-  ~BrowserCryptTab ();
+    BrowserCryptTab (BrowserCryptModel *pModel, BrowserCryptController *pController, wxNotebook* pParent, unsigned int uiNumber);
+    ~BrowserCryptTab ();
 
 public:
-  void Init ();
-  void UpdateView ();
-  void SetFocus();
+    void Init ();
+    void UpdateView ();
+    void SetFocus();
 
 private:
-  long               m_acGroupCounts[50];
-  bool               m_bDisplayInventory;
-  long               m_lSplitterPosition;
+    long               m_acGroupCounts[50];
+    bool               m_bDisplayInventory;
+    long               m_lSplitterPosition;
 
-  wxArrayString      m_oArrayOfNames;
-  wxMenu             m_oPopupMenu;
-  wxSize             m_oTabSize;
+    wxArrayString      m_oArrayOfNames;
+    wxMenu             m_oPopupMenu;
+    wxSize             m_oTabSize;
 
-  wxButton *         m_pAddButton;
-  BrowserCryptController *m_pController;
-  BrowserCryptFilterGrid *m_pFilterGrid;
-  wxButton *         m_pInventoryButton;
-  wxButton *         m_pKeepButton;
-  BrowserCryptModel *m_pModel;
-  wxButton *         m_pRemoveButton;
-  wxButton *         m_pResetButton;
-  wxNotebook *       m_pParent;
-  wxSizer *          m_pPapaSizer;
-  wxSplitterWindow * m_pSplitterWindow;
-  wxTextCtrl *       m_pFindText;
-  wxStaticText *     m_pCardCountLabel;
-  BrowserCryptCardGrid * m_pCardGrid;
-  CardText *         m_pCardText;
-  CardViewer*		m_pCardViewer;
-    
-  unsigned int       m_uiCapacityTotal;
-  unsigned int       m_uiFilterListHeight;
-  unsigned int       m_uiNumber;
-  unsigned int       m_uiSortColumn;
+    wxButton *         m_pAddButton;
+    BrowserCryptController *m_pController;
+    BrowserCryptFilterGrid *m_pFilterGrid;
+    wxButton *         m_pInventoryButton;
+    wxButton *         m_pKeepButton;
+    BrowserCryptModel *m_pModel;
+    wxButton *         m_pRemoveButton;
+    wxButton *         m_pResetButton;
+    wxNotebook *       m_pParent;
+    wxSizer *          m_pPapaSizer;
+    wxSplitterWindow * m_pSplitterWindow;
+    wxTextCtrl *       m_pFindText;
+    wxStaticText *     m_pCardCountLabel;
+    BrowserCryptCardGrid * m_pCardGrid;
+    CardText *         m_pCardText;
+    CardViewer*		m_pCardViewer;
 
-  void FillCardList ();
+    unsigned int       m_uiCapacityTotal;
+    unsigned int       m_uiFilterListHeight;
+    unsigned int       m_uiNumber;
+    unsigned int       m_uiSortColumn;
 
-  void OnAddButtonClick (wxCommandEvent& WXUNUSED (event));
-  void OnFindTextChange (wxCommandEvent& WXUNUSED (event));
-  void OnInventoryButtonClick (wxCommandEvent& WXUNUSED (event));
-  void OnKeepButtonClick (wxCommandEvent& WXUNUSED (event));
-  void OnRemoveButtonClick (wxCommandEvent& WXUNUSED (event));
-  void OnResetButtonClick (wxCommandEvent& WXUNUSED (event));
-  void OnSplitterMoved (wxSplitterEvent& event);
-  void OnTabResize (wxSizeEvent &event);
+    void FillCardList ();
 
-  void SetCardCount (unsigned int uiCount);
-  void SetCardText (long lCardRef = -1);
+    void OnAddButtonClick (wxCommandEvent& WXUNUSED (event));
+    void OnFindTextChange (wxCommandEvent& WXUNUSED (event));
+    void OnInventoryButtonClick (wxCommandEvent& WXUNUSED (event));
+    void OnKeepButtonClick (wxCommandEvent& WXUNUSED (event));
+    void OnRemoveButtonClick (wxCommandEvent& WXUNUSED (event));
+    void OnResetButtonClick (wxCommandEvent& WXUNUSED (event));
+    void OnSplitterMoved (wxSplitterEvent& event);
+    void OnTabResize (wxSizeEvent &event);
 
-  void UpdateFilterList ();
+    void SetCardCount (unsigned int uiCount);
+    void SetCardText (long lCardRef = -1);
 
-  enum
-    {
-      ID_ADD_BUTTON = wxID_HIGHEST + 1,
-      ID_KEEP_BUTTON,
-      ID_REMOVE_BUTTON,
-      ID_RESET_BUTTON,
-      ID_FIND_TEXTCTRL,
-      ID_VAMPIRE_GRID,
-      ID_SPLITTER_WINDOW,
-      ID_INVENTORY_BUTTON
+    void UpdateFilterList ();
+
+    enum {
+        ID_ADD_BUTTON = wxID_HIGHEST + 1,
+        ID_KEEP_BUTTON,
+        ID_REMOVE_BUTTON,
+        ID_RESET_BUTTON,
+        ID_FIND_TEXTCTRL,
+        ID_VAMPIRE_GRID,
+        ID_SPLITTER_WINDOW,
+        ID_INVENTORY_BUTTON
     };
 
-  DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 
@@ -124,30 +123,29 @@ private:
 class BrowserCryptFilterGrid : public wxGrid
 {
 public:
-  BrowserCryptFilterGrid (BrowserCryptModel *pModel, BrowserCryptTab *pParent);
-  ~BrowserCryptFilterGrid ();
+    BrowserCryptFilterGrid (BrowserCryptModel *pModel, BrowserCryptTab *pParent);
+    ~BrowserCryptFilterGrid ();
 
 private:
-  wxMenu             m_oFilterPopupMenu;
+    wxMenu             m_oFilterPopupMenu;
 
-  BrowserCryptModel *m_pModel;
-  BrowserCryptTab *  m_pParent;
+    BrowserCryptModel *m_pModel;
+    BrowserCryptTab *  m_pParent;
 
-  void OnFilterPopupHide (wxCommandEvent& WXUNUSED (event));
-  void OnFilterPopupMoveLeft (wxCommandEvent& WXUNUSED (event));
-  void OnFilterPopupMoveRight (wxCommandEvent& WXUNUSED (event));
-  void OnFilterPopupRemove (wxCommandEvent& WXUNUSED (event));
-  void OnFilterRightClick (wxGridEvent &event);
+    void OnFilterPopupHide (wxCommandEvent& WXUNUSED (event));
+    void OnFilterPopupMoveLeft (wxCommandEvent& WXUNUSED (event));
+    void OnFilterPopupMoveRight (wxCommandEvent& WXUNUSED (event));
+    void OnFilterPopupRemove (wxCommandEvent& WXUNUSED (event));
+    void OnFilterRightClick (wxGridEvent &event);
 
-  enum
-    {
-      ID_POPUP_REMOVE = wxID_HIGHEST + 1,
-      ID_POPUP_HIDE,
-      ID_POPUP_MOVELEFT,
-      ID_POPUP_MOVERIGHT
+    enum {
+        ID_POPUP_REMOVE = wxID_HIGHEST + 1,
+        ID_POPUP_HIDE,
+        ID_POPUP_MOVELEFT,
+        ID_POPUP_MOVERIGHT
     };
 
-  DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 
@@ -155,42 +153,41 @@ private:
 class BrowserCryptCardGrid : public wxGrid
 {
 public:
-  BrowserCryptCardGrid (BrowserCryptModel *pModel, BrowserCryptTab *pTab, wxWindow *pPanel);
-  ~BrowserCryptCardGrid ();
+    BrowserCryptCardGrid (BrowserCryptModel *pModel, BrowserCryptTab *pTab, wxWindow *pPanel);
+    ~BrowserCryptCardGrid ();
 
-  wxArrayInt MyGetSelectedRows ();
+    wxArrayInt MyGetSelectedRows ();
 
 private:
-  bool               m_bReverseSortOrder;
+    bool               m_bReverseSortOrder;
 
-  wxArrayInt         m_oSelection;
-  wxMenu             m_oCardPopupMenu;
+    wxArrayInt         m_oSelection;
+    wxMenu             m_oCardPopupMenu;
 
-  BrowserCryptModel *m_pModel;
-  wxWindow *         m_pParent;
-  BrowserCryptTab *  m_pTab;
+    BrowserCryptModel *m_pModel;
+    wxWindow *         m_pParent;
+    BrowserCryptTab *  m_pTab;
 
-  unsigned int       m_uiSortColumn;
+    unsigned int       m_uiSortColumn;
 
-  void OnCardActivated (wxGridEvent &event);
-  void OnCardRightClick (wxGridEvent &event);
-  void OnCardSelect (wxGridEvent &event);
-  void OnColumnClick (wxGridEvent &event);
-  void OnInventoryChange (wxGridEvent& event);
-  void OnPopupAddAllToDeck (wxCommandEvent& WXUNUSED (event));
-  void OnPopupAddToDeck (wxCommandEvent& WXUNUSED (event));
-  void OnPopupCopyAll (wxCommandEvent& WXUNUSED (event));
-  void OnPopupRemove (wxCommandEvent& WXUNUSED (event));
+    void OnCardActivated (wxGridEvent &event);
+    void OnCardRightClick (wxGridEvent &event);
+    void OnCardSelect (wxGridEvent &event);
+    void OnColumnClick (wxGridEvent &event);
+    void OnInventoryChange (wxGridEvent& event);
+    void OnPopupAddAllToDeck (wxCommandEvent& WXUNUSED (event));
+    void OnPopupAddToDeck (wxCommandEvent& WXUNUSED (event));
+    void OnPopupCopyAll (wxCommandEvent& WXUNUSED (event));
+    void OnPopupRemove (wxCommandEvent& WXUNUSED (event));
 
-  enum
-    {
-      ID_POPUP_ADD = wxID_HIGHEST + 1,
-      ID_POPUP_ADD_ALL,
-      ID_POPUP_REMOVE,
-      ID_POPUP_COPY_ALL
+    enum {
+        ID_POPUP_ADD = wxID_HIGHEST + 1,
+        ID_POPUP_ADD_ALL,
+        ID_POPUP_REMOVE,
+        ID_POPUP_COPY_ALL
     };
 
-  DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif

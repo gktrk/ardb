@@ -42,23 +42,27 @@
 
 class MyApp: public wxApp
 {
- public:
-  MyApp () {
+public:
+    MyApp () {
 
-           }
+    }
 
-  class MyAppTraits : public wxGUIAppTraits
-  {
-      virtual GSocketGUIFunctionsTable* GetSocketGUIFunctionsTable() { return NULL;};
-  };
+    class MyAppTraits : public wxGUIAppTraits
+    {
+        virtual GSocketGUIFunctionsTable* GetSocketGUIFunctionsTable() {
+            return NULL;
+        };
+    };
 
-  virtual wxAppTraits *CreateTraits() {return new MyAppTraits;}
+    virtual wxAppTraits *CreateTraits() {
+        return new MyAppTraits;
+    }
 
-  virtual bool OnInit();
-  virtual int OnExit ();
+    virtual bool OnInit();
+    virtual int OnExit ();
 
 
-  DECLARE_NO_COPY_CLASS(MyApp)
+    DECLARE_NO_COPY_CLASS(MyApp)
 };
 
 
@@ -66,71 +70,70 @@ class MyApp: public wxApp
 class BrowserFrame: public wxFrame
 {
 public:
-  BrowserFrame (const wxString& title, const wxPoint& pos, const wxSize& size);
-  ~BrowserFrame ();
+    BrowserFrame (const wxString& title, const wxPoint& pos, const wxSize& size);
+    ~BrowserFrame ();
 
-  void OnClose (wxCloseEvent& WXUNUSED(event));
-  void OnBrowserCloseTab (wxCommandEvent& WXUNUSED (event));
-  void OnBrowserNewCrypt (wxCommandEvent& WXUNUSED (event));
-  void OnBrowserNewLibrary (wxCommandEvent& WXUNUSED (event));
-  void OnFileExit (wxCommandEvent& WXUNUSED (event));
-  void OnFileDeckBuilder (wxCommandEvent& WXUNUSED (event));
-  void OnFileEditions (wxCommandEvent& WXUNUSED (event));
-  void OnFilePreferences (wxCommandEvent& WXUNUSED (event));
-  void OnFileUpdateDatabase (wxCommandEvent& WXUNUSED (event));
+    void OnClose (wxCloseEvent& WXUNUSED(event));
+    void OnBrowserCloseTab (wxCommandEvent& WXUNUSED (event));
+    void OnBrowserNewCrypt (wxCommandEvent& WXUNUSED (event));
+    void OnBrowserNewLibrary (wxCommandEvent& WXUNUSED (event));
+    void OnFileExit (wxCommandEvent& WXUNUSED (event));
+    void OnFileDeckBuilder (wxCommandEvent& WXUNUSED (event));
+    void OnFileEditions (wxCommandEvent& WXUNUSED (event));
+    void OnFilePreferences (wxCommandEvent& WXUNUSED (event));
+    void OnFileUpdateDatabase (wxCommandEvent& WXUNUSED (event));
 
-  void OnFileImageDownload (wxCommandEvent& event);
-  void OnFileImageDownloadEvent (wxDownloadEvent& event);
+    void OnFileImageDownload (wxCommandEvent& event);
+    void OnFileImageDownloadEvent (wxDownloadEvent& event);
 
-  void OnHelpManual (wxCommandEvent& WXUNUSED (event));
-  void OnHelpAbout (wxCommandEvent& WXUNUSED (event));
-  void OnInventoryExportCSV (wxCommandEvent& WXUNUSED (event));
-  void OnInventoryExportHTML (wxCommandEvent& WXUNUSED (event));
-  void OnInventoryImport (wxCommandEvent& WXUNUSED (event));
-  void OnInventoryOpen (wxCommandEvent& WXUNUSED (event));
-  void OnInventorySave (wxCommandEvent& WXUNUSED (event));
+    void OnHelpManual (wxCommandEvent& WXUNUSED (event));
+    void OnHelpAbout (wxCommandEvent& WXUNUSED (event));
+    void OnInventoryExportCSV (wxCommandEvent& WXUNUSED (event));
+    void OnInventoryExportHTML (wxCommandEvent& WXUNUSED (event));
+    void OnInventoryImport (wxCommandEvent& WXUNUSED (event));
+    void OnInventoryOpen (wxCommandEvent& WXUNUSED (event));
+    void OnInventorySave (wxCommandEvent& WXUNUSED (event));
 
-  void TabChanged(wxNotebookEvent &event);
-
-
- private:
-  BrowserCryptModel   *m_pBrowserCryptModel;
-  BrowserLibraryModel *m_pBrowserLibraryModel;
-
-  wxGauge             *gauge;
-  wxStatusBar         *statbar;
-  wxBoxSizer		  *m_pPapaSizer;
-  wxNotebook		  *m_pNotebook;
+    void TabChanged(wxNotebookEvent &event);
 
 
+private:
 
-  unsigned int		   m_uiCryptBrowserCount;
-  unsigned int		   m_uiLibraryBrowserCount;
+    void EnableDownLoadMenu(bool fEnabled);
 
-  enum
-	{
-	  ID_BROWSER_NEW_CRYPT = wxID_HIGHEST + 1,
-	  ID_BROWSER_NEW_LIBRARY,
-	  ID_BROWSER_CLOSE_TAB,
-	  ID_FILE_EXIT,
-	  ID_FILE_DECKBUILDER,
-	  ID_FILE_EDITIONS,
-	  ID_FILE_PREFERENCES,
-	  ID_FILE_UPDATEDB,
-	  ID_FILE_IMAGE_DOWNLOAD,
-	  ID_HELP_MANUAL,
-	  ID_HELP_ABOUT,
-	  ID_INV_OPEN,
-	  ID_INV_SAVE,
-	  ID_INV_IMPORT,
-	  ID_INV_EXPORT_CSV,
-	  ID_INV_EXPORT_HTML,
-	  ID_BROWSER_NOTEBOOK,
-      ID_EVENT_DOWNLOAD
-	};
+    BrowserCryptModel   *m_pBrowserCryptModel;
+    BrowserLibraryModel *m_pBrowserLibraryModel;
 
-  DECLARE_EVENT_TABLE()
-  DECLARE_NO_COPY_CLASS(BrowserFrame)
+    wxGauge     *gauge;
+    wxStatusBar *statbar;
+    wxBoxSizer	*m_pPapaSizer;
+    wxNotebook	*m_pNotebook;
+    unsigned int	m_uiCryptBrowserCount;
+    unsigned int	m_uiLibraryBrowserCount;
+
+    enum {
+        ID_BROWSER_NEW_CRYPT = wxID_HIGHEST + 1,
+        ID_BROWSER_NEW_LIBRARY,
+        ID_BROWSER_CLOSE_TAB,
+        ID_FILE_EXIT,
+        ID_FILE_DECKBUILDER,
+        ID_FILE_EDITIONS,
+        ID_FILE_PREFERENCES,
+        ID_FILE_UPDATEDB,
+        ID_FILE_IMAGE_DOWNLOAD,
+        ID_HELP_MANUAL,
+        ID_HELP_ABOUT,
+        ID_INV_OPEN,
+        ID_INV_SAVE,
+        ID_INV_IMPORT,
+        ID_INV_EXPORT_CSV,
+        ID_INV_EXPORT_HTML,
+        ID_BROWSER_NOTEBOOK,
+        ID_EVENT_DOWNLOAD
+    };
+
+    DECLARE_EVENT_TABLE()
+    DECLARE_NO_COPY_CLASS(BrowserFrame)
 };
 
 #endif

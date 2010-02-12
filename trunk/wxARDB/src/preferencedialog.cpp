@@ -30,76 +30,76 @@
 
 PrefDialog::PrefDialog() : wxDialog(0, -1, wxT("Preferences"), wxDefaultPosition, wxSize( 245,142 ),  wxDEFAULT_DIALOG_STYLE)
 {
-     wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get();
+    wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get();
 #if 0 //Not supported in v3.0.0    	
-     bool fUpdateImages = FALSE;
+    bool fUpdateImages = FALSE;
 #endif
-     bool fUpdateCards = FALSE;
+    bool fUpdateCards = FALSE;
 
-     if (pConfig) {
+    if (pConfig) {
 #if 0 //Not supported in v3.0.0    	
-          pConfig->Read(wxT("UpdateImages"), &fUpdateImages, FALSE);
+        pConfig->Read(wxT("UpdateImages"), &fUpdateImages, FALSE);
 #endif
-          pConfig->Read(wxT("UpdateCards"), &fUpdateCards, FALSE);
-     }
+        pConfig->Read(wxT("UpdateCards"), &fUpdateCards, FALSE);
+    }
 
-     this->SetSizeHints( wxDefaultSize, wxDefaultSize );
-     
-     wxBoxSizer* bSizer4;
-     bSizer4 = new wxBoxSizer( wxVERTICAL );
+    this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+    wxBoxSizer* bSizer4;
+    bSizer4 = new wxBoxSizer( wxVERTICAL );
 
 #if 0 //Not supported in v3.0.0    	
-     m_cbDownloadImages = new wxCheckBox(this, wxID_ANY, 
-                                         wxT("Automatic Image Download"), 
-                                         wxDefaultPosition, wxDefaultSize, 
-                                         0);
-     m_cbDownloadImages->SetValue(fUpdateImages);
-     bSizer4->Add(m_cbDownloadImages, 0, wxALL, 5);
-#endif
-     
-     m_cbDownloadCards = new wxCheckBox(this, wxID_ANY, 
-                                        wxT("Automatic Card Text Download"),
-                                        wxDefaultPosition, wxDefaultSize, 
+    m_cbDownloadImages = new wxCheckBox(this, wxID_ANY,
+                                        wxT("Automatic Image Download"),
+                                        wxDefaultPosition, wxDefaultSize,
                                         0);
+    m_cbDownloadImages->SetValue(fUpdateImages);
+    bSizer4->Add(m_cbDownloadImages, 0, wxALL, 5);
+#endif
 
-     m_cbDownloadCards->SetValue(fUpdateCards);
-     bSizer4->Add( m_cbDownloadCards, 0, wxALL, 5 );
-     bSizer4->Add( 0, 0, 1, wxEXPAND, 5 );
-	
-     m_sdbSizer2 = new wxStdDialogButtonSizer();
-     m_pbtnOK = new wxButton( this, wxID_OK );
-     m_sdbSizer2->AddButton(m_pbtnOK);
-     m_sdbSizer2Cancel = new wxButton( this, wxID_CANCEL );
-     m_sdbSizer2->AddButton( m_sdbSizer2Cancel );
-     m_sdbSizer2->Realize();
-     bSizer4->Add( m_sdbSizer2, 1, wxEXPAND, 5 );
-	
-     this->SetSizer( bSizer4 );
-     this->Layout();
+    m_cbDownloadCards = new wxCheckBox(this, wxID_ANY,
+                                       wxT("Automatic Card Text Download"),
+                                       wxDefaultPosition, wxDefaultSize,
+                                       0);
 
-     m_pbtnOK->Connect(wxEVT_COMMAND_BUTTON_CLICKED, 
-		       wxCommandEventHandler(PrefDialog::SaveSettings ), 
-		       NULL, this);
+    m_cbDownloadCards->SetValue(fUpdateCards);
+    bSizer4->Add( m_cbDownloadCards, 0, wxALL, 5 );
+    bSizer4->Add( 0, 0, 1, wxEXPAND, 5 );
+
+    m_sdbSizer2 = new wxStdDialogButtonSizer();
+    m_pbtnOK = new wxButton( this, wxID_OK );
+    m_sdbSizer2->AddButton(m_pbtnOK);
+    m_sdbSizer2Cancel = new wxButton( this, wxID_CANCEL );
+    m_sdbSizer2->AddButton( m_sdbSizer2Cancel );
+    m_sdbSizer2->Realize();
+    bSizer4->Add( m_sdbSizer2, 1, wxEXPAND, 5 );
+
+    this->SetSizer( bSizer4 );
+    this->Layout();
+
+    m_pbtnOK->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
+                      wxCommandEventHandler(PrefDialog::SaveSettings ),
+                      NULL, this);
 
 }
 
 PrefDialog::~PrefDialog()
 {
-     m_pbtnOK->Disconnect(wxEVT_COMMAND_CHECKBOX_CLICKED, 
-                          wxCommandEventHandler( PrefDialog::SaveSettings ), 
-                          NULL, this);
+    m_pbtnOK->Disconnect(wxEVT_COMMAND_CHECKBOX_CLICKED,
+                         wxCommandEventHandler( PrefDialog::SaveSettings ),
+                         NULL, this);
 }
 
 void PrefDialog::SaveSettings(wxCommandEvent& event)
-{ 
-     wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get();
+{
+    wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get();
 
-     if (pConfig) {
+    if (pConfig) {
 #if 0 //Not supported in v3.0.0    	
-          pConfig->Write(wxT("UpdateImages"), m_cbDownloadImages->GetValue());
+        pConfig->Write(wxT("UpdateImages"), m_cbDownloadImages->GetValue());
 #endif
-          pConfig->Write(wxT("UpdateCards"), m_cbDownloadCards->GetValue());
-     }
+        pConfig->Write(wxT("UpdateCards"), m_cbDownloadCards->GetValue());
+    }
 
-     event.Skip();
+    event.Skip();
 }

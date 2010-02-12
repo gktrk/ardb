@@ -206,8 +206,8 @@ BrowserLibraryTab::Init ()
     m_pCardViewer = NULL;
 
     //if (wxDir::Exists(CARD_IMAGE_DIR)) {
-        m_pCardViewer = new CardViewer(pCardTextPanel);
-	//}
+    m_pCardViewer = new CardViewer(pCardTextPanel);
+    //}
 
     pCardTextSizer->Add(m_pCardText, 3, wxEXPAND);
 
@@ -369,7 +369,7 @@ BrowserLibraryTab::FillCardList ()
             sCopy.Replace (wxT ("\n"), wxT (" "));
 
             m_pCardGrid->SetCellValue (iLine, iCol, sCopy);
-	}
+        }
     }
 
     //  Fit ();
