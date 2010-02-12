@@ -206,7 +206,7 @@ MyApp::OnInit ()
 
     if (fUpdateCards) {
 	 Updater *pUpdater = Updater::Instance ();
-	 pUpdater->DoUpdate(UPDATE_FROM_STARTUP);	 
+	 pUpdater->DoUpdate(UPDATE_FROM_STARTUP);
     }
 
     if (pSplash != NULL) delete pSplash;
@@ -451,12 +451,11 @@ BrowserFrame::OnFileImageDownload (wxCommandEvent& event)
 {
 #define CARD_SETS_QUERY wxT ("SELECT full_name, set_name FROM cards_sets WHERE cards_sets.full_name NOT LIKE 'Proxy%' AND cards_sets.full_name NOT LIKE 'promo%' ORDER BY release_date DESC")
 #define ALL_SETS_SELECTED 0
-     
+
      Database *pDatabase = Database::Instance();
      RecordSet *pResult;
      wxArrayString strings;
      wxArrayString filesToDownload;
-
      strings.Add(wxT("ALL"));
 
      pResult = pDatabase->Query (CARD_SETS_QUERY, NULL);
@@ -473,36 +472,38 @@ BrowserFrame::OnFileImageDownload (wxCommandEvent& event)
 
      if (pickset.ShowModal()== wxID_OK) {
 
-	  wxArrayInt selections = pickset.GetSelections();
-	  wxString msg;
-	  msg.Printf(wxT("You selected %u items:\n"), selections.GetCount());
-
+       wxArrayInt selections = pickset.GetSelections();
+	   wxString msg;
+	   msg.Printf(wxT("You selected %u items:\n"), selections.GetCount())
+       ;
 	  for (size_t n=0;n<selections.GetCount();n++) {
-	       
-	       //If user has selected ALL break out of 
+
+	       //If user has selected ALL break out of
 	       //the loop after loading all the sets into
 	       //the file list
 	       if (selections[n] == ALL_SETS_SELECTED) {
 		    filesToDownload.Clear();
 		    for (unsigned int i = 0; i < pResult->GetCount(); i++) {
-			 filesToDownload.Add(pResult->Item(i).Item(1).Lower() + 
+			 filesToDownload.Add(pResult->Item(i).Item(1).Lower() +
 					     wxT(".zip"));
 		    }
 		    break;
 	       }
-	       
-	       filesToDownload.Add(pResult->Item(n).Item(1).Lower() + wxT(".zip"));
+
+	       filesToDownload.Add(pResult->Item(selections[n]-1).Item(1).Lower() + wxT(".zip"));
+
 	  }
+
      }
 
      wxDownloadFile *pDownloadFile;
-     pDownloadFile = new wxDownloadFile(this, 
-					wxT("http://www.powerbase-bath.com/files/"), 
+     pDownloadFile = new wxDownloadFile(this,
+					wxT("http://www.powerbase-bath.com/files/"),
 					filesToDownload, wxT("cardimages"), true, 1000);
 
      statbar = new wxStatusBar(g_pMainWindow, wxID_ANY,wxST_SIZEGRIP);
-     gauge = new wxGauge(statbar, 1, 285, wxPoint(100, 1), wxSize(100,20), 
-			 wxGA_HORIZONTAL, wxDefaultValidator, 
+     gauge = new wxGauge(statbar, 1, 285, wxPoint(125, 1), wxSize(100,20),
+			 wxGA_HORIZONTAL, wxDefaultValidator,
 			 wxT("Downloading Images"));
 
      g_pMainWindow->SetStatusBar(statbar);
