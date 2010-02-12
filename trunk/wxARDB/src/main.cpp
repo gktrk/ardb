@@ -503,13 +503,13 @@ BrowserFrame::OnFileImageDownload (wxCommandEvent& event)
                                                wxT("http://www.powerbase-bath.com/files/"),
                                                filesToDownload, wxT("cardimages"), true, 1000);
 
-            statbar = new wxStatusBar(g_pMainWindow, wxID_ANY,wxST_SIZEGRIP);
-            gauge = new wxGauge(statbar, 1, 285, wxPoint(125, 1), wxSize(100,20),
+            m_pStatbar = new wxStatusBar(g_pMainWindow, wxID_ANY,wxST_SIZEGRIP);
+            gauge = new wxGauge(m_pStatbar, 1, 285, wxPoint(125, 1), wxSize(100,20),
                                 wxGA_HORIZONTAL, wxDefaultValidator,
                                 wxT("Downloading Images"));
 
-            g_pMainWindow->SetStatusBar(statbar);
-            statbar->SetStatusText(wxT("Downloading Files"), 0);
+            g_pMainWindow->SetStatusBar(m_pStatbar);
+            m_pStatbar->SetStatusText(wxT("Downloading Files"), 0);
             gauge->SetRange(0);
             gauge->SetValue(0);
 	    
@@ -523,7 +523,7 @@ void BrowserFrame::OnFileImageDownloadEvent (wxDownloadEvent& event)
 {
     if(event.GetDownLoadStatus() == wxDownloadEvent::DOWNLOAD_COMPLETE) {
 
-        statbar->SetStatusText(wxT("Downloads Complete"),0);
+        m_pStatbar->SetStatusText(wxT("Downloads Complete"),0);
 
 	EnableDownLoadMenu(TRUE);
 
@@ -541,7 +541,7 @@ void BrowserFrame::OnFileImageDownloadEvent (wxDownloadEvent& event)
         bigstring+= wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),
                                      nFileSize/1000000);
         bigstring+= wxT("MB");
-        statbar->SetStatusText(bigstring,0);
+        m_pStatbar->SetStatusText(bigstring,0);
 
         wxString MBFileSize=wxString::Format(wxT("%") wxLongLongFmtSpec wxT("d"),
                                              nFileSize/1000000);
