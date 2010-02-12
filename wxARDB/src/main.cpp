@@ -451,12 +451,14 @@ BrowserFrame::OnFileImageDownload (wxCommandEvent& event)
 {
 #define CARD_SETS_QUERY wxT ("SELECT full_name, set_name FROM cards_sets WHERE cards_sets.full_name NOT LIKE 'Proxy%' AND cards_sets.full_name NOT LIKE 'promo%' ORDER BY release_date DESC")
 #define ALL_SETS_SELECTED 0
+#define PROMO_SET_SELECTED 1
 
      Database *pDatabase = Database::Instance();
      RecordSet *pResult;
      wxArrayString strings;
      wxArrayString filesToDownload;
      strings.Add(wxT("ALL"));
+     strings.Add(wxT("Promo"));
 
      pResult = pDatabase->Query (CARD_SETS_QUERY, NULL);
      if (pResult) {
@@ -465,6 +467,8 @@ BrowserFrame::OnFileImageDownload (wxCommandEvent& event)
 	  }
      }
 
+
+
      wxMultiChoiceDialog pickset(this,
 				 wxT("Please select the image sets you wish to download"),
 				 wxT("Download Select"),
@@ -472,10 +476,7 @@ BrowserFrame::OnFileImageDownload (wxCommandEvent& event)
 
      if (pickset.ShowModal()== wxID_OK) {
 
-       wxArrayInt selections = pickset.GetSelections();
-	   wxString msg;
-	   msg.Printf(wxT("You selected %u items:\n"), selections.GetCount())
-       ;
+	  wxArrayInt selections = pickset.GetSelections();
 	  for (size_t n=0;n<selections.GetCount();n++) {
 
 	       //If user has selected ALL break out of
@@ -487,13 +488,16 @@ BrowserFrame::OnFileImageDownload (wxCommandEvent& event)
 			 filesToDownload.Add(pResult->Item(i).Item(1).Lower() +
 					     wxT(".zip"));
 		    }
+		    filesToDownload.Add(wxT("promo.zip"));
 		    break;
+		 
+	       } else if (selections[n] == PROMO_SET_SELECTED) {
+		    filesToDownload.Add(wxT("promo.zip"));
+	       } else  {
+		    filesToDownload.Add(pResult->Item(selections[n]-2).
+					Item(1).Lower() + wxT(".zip"));
 	       }
-
-	       filesToDownload.Add(pResult->Item(selections[n]-1).Item(1).Lower() + wxT(".zip"));
-
 	  }
-
      }
 
      wxDownloadFile *pDownloadFile;
