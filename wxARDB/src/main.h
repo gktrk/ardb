@@ -105,7 +105,7 @@ private:
     BrowserLibraryModel *m_pBrowserLibraryModel;
 
     wxGauge     *gauge;
-    wxStatusBar *statbar;
+    wxStatusBar *m_pStatbar;
     wxBoxSizer	*m_pPapaSizer;
     wxNotebook	*m_pNotebook;
     unsigned int	m_uiCryptBrowserCount;
