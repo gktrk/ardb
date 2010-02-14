@@ -585,7 +585,7 @@ DeckModel::ExportToHTML ()
 
     sXSL << pDatabase->GetDatabaseDirectory ()
          << wxFileName::GetPathSeparator ()
-         << wxT("deck2html_eldb.xsl");
+         << wxT("xsl/deck2html_eldb.xsl");
 
     sFile.Append (wxT (".html"));
 
@@ -614,7 +614,7 @@ DeckModel::ExportToJOL ()
 
     sXSL << pDatabase->GetDatabaseDirectory ()
          << wxFileName::GetPathSeparator ()
-         << wxT("deck2jol.xsl");
+         << wxT("xsl/deck2jol.xsl");
 
     sFile.Append (wxT (".jol"));
 
@@ -643,7 +643,7 @@ DeckModel::ExportToPhpBB ()
 
     sXSL << pDatabase->GetDatabaseDirectory ()
          << wxFileName::GetPathSeparator ()
-         << wxT("deck2phpbb.xsl");
+         << wxT("xsl/deck2phpbb.xsl");
 
     sFile.Append (wxT ("-phpBB.txt"));
 
@@ -673,7 +673,7 @@ DeckModel::ExportToText ()
 
     sXSL << pDatabase->GetDatabaseDirectory ()
          << wxFileName::GetPathSeparator ()
-         << wxT("deck2text.xsl");
+         << wxT("xsl/deck2text.xsl");
 
     sFile.Append(wxT (".txt"));
     wxFileDialog oFileDialog (m_pView, wxT ("Export deck..."),
@@ -732,23 +732,23 @@ DeckModel::ExportToSecretLibrary(wxString &sUsername, wxString &sPassword)
 
     sCryptXSL << pDatabase->GetDatabaseDirectory ()
               << wxFileName::GetPathSeparator ()
-              << wxT("crypt2text.xsl");
+              << wxT("xsl/crypt2text.xsl");
 
     sLibraryXSL << pDatabase->GetDatabaseDirectory ()
                 << wxFileName::GetPathSeparator ()
-                << wxT("library2text.xsl");
+                << wxT("xsl/library2text.xsl");
 
     sTitleXSL  << pDatabase->GetDatabaseDirectory ()
                << wxFileName::GetPathSeparator ()
-               << wxT("title2text.xsl");
+               << wxT("xsl/title2text.xsl");
 
     sAuthorXSL  << pDatabase->GetDatabaseDirectory ()
                 << wxFileName::GetPathSeparator ()
-                << wxT("author2text.xsl");
+                << wxT("xsl/author2text.xsl");
 
     sDescXSL  << pDatabase->GetDatabaseDirectory ()
               << wxFileName::GetPathSeparator ()
-              << wxT("desc2text.xsl");
+              << wxT("xsl/desc2text.xsl");
 
     result = XmlToXslt(sCrypt, &sCryptXSL);
 
@@ -808,7 +808,7 @@ DeckModel::XmlToXslt(wxString &sResult, wxString *pXSL)
                               NULL, BAD_CAST "AnarchRevoltDeck.dtd");
 
     // Creates a default stylesheet declaration
-    nStylesheet = xmlNewPI (BAD_CAST "xml-stylesheet", BAD_CAST "type=\"text/xsl\" href=\"deck2html_eldb.xsl\"");
+    nStylesheet = xmlNewPI (BAD_CAST "xml-stylesheet", BAD_CAST "type=\"text/xsl\" href=\"xsl/deck2html_eldb.xsl\"");
     xmlAddPrevSibling (nRoot, nStylesheet);
 
     // Add the deck's information nodes
@@ -1005,7 +1005,7 @@ DeckModel::ExportWithXSL (wxString &sFileName, wxString *pXSL)
                               NULL, BAD_CAST "AnarchRevoltDeck.dtd");
 
     // Creates a default stylesheet declaration
-    nStylesheet = xmlNewPI (BAD_CAST "xml-stylesheet", BAD_CAST "type=\"text/xsl\" href=\"deck2html_eldb.xsl\"");
+    nStylesheet = xmlNewPI (BAD_CAST "xml-stylesheet", BAD_CAST "type=\"text/xsl\" href=\"xsl/deck2html_eldb.xsl\"");
     xmlAddPrevSibling (nRoot, nStylesheet);
 
     // Add the deck's information nodes
@@ -1791,18 +1791,20 @@ DeckModel::SetAuthor (wxString &sAuthor)
     RecordSet oResultSet;
     wxString sQuery, sEscapedValue;
 
-    m_sAuthor = sAuthor;
-    sEscapedValue = sAuthor;
-    sEscapedValue.Replace (wxT ("'"), wxT ("''"));
+    if (m_sAuthor.Cmp(sAuthor) != 0) {
+	 m_sAuthor = sAuthor;
+	 sEscapedValue = sAuthor;
+	 sEscapedValue.Replace (wxT ("'"), wxT ("''"));
+	 
+	 sQuery.Printf (wxT ("UPDATE decks "
+			     "SET deck_creator = '%s' "
+			     "WHERE record_num = 0"),
+			sEscapedValue.c_str ());
 
-    sQuery.Printf (wxT ("UPDATE decks "
-                        "SET deck_creator = '%s' "
-                        "WHERE record_num = 0"),
-                   sEscapedValue.c_str ());
+	 pDatabase->Query (sQuery, &oResultSet);
 
-    pDatabase->Query (sQuery, &oResultSet);
-
-    m_bSaved = FALSE;
+	 m_bSaved = FALSE;
+    }
 }
 
 
@@ -1838,18 +1840,23 @@ DeckModel::SetDescription (wxString &sDescription)
     RecordSet oResultSet;
     wxString sQuery, sEscapedValue;
 
-    m_sDescription = sDescription;
-    sEscapedValue = sDescription;
-    sEscapedValue.Replace (wxT ("'"), wxT ("''"));
+    if (m_sDescription.Cmp(sDescription) != 0) {
 
-    sQuery.Printf (wxT ("UPDATE decks "
-                        "SET deck_desc = '%s' "
-                        "WHERE record_num = 0"),
-                   sEscapedValue.c_str ());
+	 m_sDescription = sDescription;	 
+	 
 
-    pDatabase->Query (sQuery, &oResultSet);
+	 sEscapedValue = sDescription;
+	 sEscapedValue.Replace (wxT ("'"), wxT ("''"));
 
-    m_bSaved = FALSE;
+	 sQuery.Printf (wxT ("UPDATE decks "
+			     "SET deck_desc = '%s' "
+			     "WHERE record_num = 0"),
+			sEscapedValue.c_str ());
+
+	 pDatabase->Query (sQuery, &oResultSet);
+
+	 m_bSaved = FALSE;
+    }
 }
 
 
@@ -1885,18 +1892,21 @@ DeckModel::SetName (wxString &sName)
     RecordSet oResultSet;
     wxString sQuery, sEscapedValue;
 
-    m_sName = sName;
-    sEscapedValue = sName;
-    sEscapedValue.Replace (wxT ("'"), wxT ("''"));
+    if (m_sName.Cmp(sName) != 0) {
+	 
+	 m_sName = sName;
+	 sEscapedValue = sName;
+	 sEscapedValue.Replace (wxT ("'"), wxT ("''"));
 
-    sQuery.Printf (wxT ("UPDATE decks "
-                        "SET deck_name = '%s' "
-                        "WHERE record_num = 0"),
-                   sEscapedValue.c_str ());
+	 sQuery.Printf (wxT ("UPDATE decks "
+			     "SET deck_name = '%s' "
+			     "WHERE record_num = 0"),
+			sEscapedValue.c_str ());
 
-    pDatabase->Query (sQuery, &oResultSet);
+	 pDatabase->Query (sQuery, &oResultSet);
 
-    m_bSaved = FALSE;
+	 m_bSaved = FALSE;
+    }
 }
 
 
@@ -1904,11 +1914,15 @@ void
 DeckModel::ShouldSaveWarning ()
 {
     if (!m_bSaved) {
-        wxMessageDialog oWarningDialog (NULL, wxT ("Do you want to save this deck before proceeding ?"), wxT ("Save deck ?"), wxYES | wxNO | wxICON_QUESTION);
+        wxMessageDialog oWarningDialog (NULL, 
+					wxT ("Do you want to save this deck before proceeding ?"), 
+					wxT ("Save deck ?"), 
+					wxYES | wxNO | wxICON_QUESTION);
 
         if (oWarningDialog.ShowModal () == wxID_YES) {
             ExportToXML ();
         }
+
         m_bSaved = TRUE;
     }
 }

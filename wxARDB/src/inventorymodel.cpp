@@ -93,7 +93,7 @@ InventoryModel::ExportToCSV ()
 
     sXSL << pDatabase->GetDatabaseDirectory ()
          << wxFileName::GetPathSeparator ()
-         << wxT("inv2csv.xsl");
+         << wxT("xsl/inv2csv.xsl");
 
     wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get ();
     if (pConfig) {
@@ -130,7 +130,7 @@ InventoryModel::ExportToHTML ()
 
     sXSL << pDatabase->GetDatabaseDirectory ()
          << wxFileName::GetPathSeparator ()
-         << wxT("inv2html.xsl");
+         << wxT("xsl/inv2html.xsl");
 
     wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get ();
     if (pConfig) {
@@ -167,7 +167,7 @@ InventoryModel::ExportToText ()
 
     sXSL << pDatabase->GetDatabaseDirectory ()
          << wxFileName::GetPathSeparator ()
-         << wxT("inv2text.xsl");
+         << wxT("xsl/inv2text.xsl");
 
     wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get ();
     if (pConfig) {
@@ -272,7 +272,7 @@ InventoryModel::ExportWithXSL (wxString &sFileName, wxString *pXSL)
                               NULL, BAD_CAST "AnarchRevoltInv.dtd");
 
     // Creates a default stylesheet declaration
-    nStylesheet = xmlNewPI (BAD_CAST "xml-stylesheet", BAD_CAST "type=\"text/xsl\" href=\"inv2html.xsl\"");
+    nStylesheet = xmlNewPI (BAD_CAST "xml-stylesheet", BAD_CAST "type=\"text/xsl\" href=\"xsl/inv2html.xsl\"");
     xmlAddPrevSibling (nRoot, nStylesheet);
 
     // Add the inventory's information nodes
