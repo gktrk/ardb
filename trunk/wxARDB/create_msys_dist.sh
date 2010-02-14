@@ -4,6 +4,7 @@ fi
 mkdir ardb_dist
 strip src/ardb.exe
 cp src/ardb.exe ardb_dist
+cp /c/MinGW/bin/mingwm10.dll ardb_dist
 mkdir ardb_dist/cardimages
 mkdir ardb_dist/vtesicons
 mkdir ardb_dist/xsl
