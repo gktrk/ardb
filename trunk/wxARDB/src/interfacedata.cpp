@@ -224,8 +224,8 @@ InterfaceData::InterfaceData () :
     sConfEntry = wxT ("HighestGroup");
     if (pConfig) {
         if (!pConfig->Read (sConfEntry, (int *) &g_uiGroupCount)) {
-            pConfig->Write (sConfEntry, 5);
-            g_uiGroupCount = 5;
+            pConfig->Write (sConfEntry, 6);
+            g_uiGroupCount = 6;
             pConfig->Flush (TRUE);
         }
     }
