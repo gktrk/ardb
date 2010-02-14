@@ -76,7 +76,6 @@ Updater::~Updater ()
 
 }
 
-
 // function adapted from the SQLiteBrowser project - I LOVE the GPL
 void
 Updater::decodeCSV(wxInputStream *file, char sep, char quote, int maxrecords, int *numfields, wxArrayString *pResult, bool bSkipFirstLine = true)
@@ -191,13 +190,6 @@ Updater::decodeCSV(wxInputStream *file, char sep, char quote, int maxrecords, in
     }
 }
 
-
-
-
-
-
-
-
 void
 Updater::DeleteInstance ()
 {
@@ -217,8 +209,6 @@ Updater::Instance ()
     return spInstance;
 }
 
-//TODO This function is now getting to big and difficult to understand
-//need to clean up and make much much nicer
 int
 Updater::DoUpdate(UPDATE_TYPE utType)
 {
@@ -258,7 +248,7 @@ Updater::DoUpdate(UPDATE_TYPE utType)
 
 	    if (oFileDialog.ShowModal() != wxID_OK) {
 		Hide ();
-		m_bUpdating = FALSE;
+		m_bUpdating = false;
 		return -1;
 	    }
 
