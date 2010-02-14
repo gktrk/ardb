@@ -88,6 +88,7 @@ private:
     int LoadTableFromCSV (wxString sTable, wxString sCSVFile, int iNulls);
     void Log (wxString sText);
     int UpdateDatabaseFromCSV ();
+    bool UpdateDatabase();
 
     wxString GetServerName();
     wxString GetFileName();

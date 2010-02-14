@@ -222,12 +222,7 @@ Updater::Instance ()
 int
 Updater::DoUpdate(UPDATE_TYPE utType)
 {
-    wxString sServer = GetServerName();
-    wxString sFile =GetFileName();
-    wxFileName vtesdatabase(wxT("vtescsv.zip"));
-    wxDateTime localFileTime;
-    wxDateTime remoteFileTime;
-    wxString localDisplayTime;
+    bool fUpdateDb;
 
     m_pStatusLabel->Clear();
     m_pOKButton->Disable();
@@ -236,7 +231,70 @@ Updater::DoUpdate(UPDATE_TYPE utType)
         return -1;
     }
 
-    Log (wxT ("Checking dates of databases..."));
+    if (utType == UPDATE_FROM_MENU) {
+	fUpdateDb = TRUE;
+    } else {
+	Log (wxT ("Checking dates of databases..."));
+	fUpdateDb = UpdateDatabase();
+    }
+
+    if (fUpdateDb) {
+
+	Show();
+	wxYield ();
+
+	Log (wxT ("Downloading..."));
+	m_bUpdating = true;
+	wxSafeYield(this);
+
+	if (FetchCSVFiles() < 0) {
+
+	    Log (wxT ("Failed.\n"));
+
+	    wxFileDialog oFileDialog(NULL,
+				     wxT ("Please locate vtescsv.zip"),
+				     wxT (""), wxT ("vtescsv.zip"),
+				     wxT ("*.zip"), wxOPEN);
+
+	    if (oFileDialog.ShowModal() != wxID_OK) {
+		Hide ();
+		m_bUpdating = FALSE;
+		return -1;
+	    }
+
+	    m_sZipFile = oFileDialog.GetDirectory()
+		<< wxFileName::GetPathSeparator()
+		<< oFileDialog.GetFilename();
+
+	    Log(wxT ("Opening "));
+	    Log(m_sZipFile);
+	    Log(wxT ("\n"));
+
+	}
+
+	Log(wxT ("\n"));
+	UpdateDatabaseFromCSV();
+	m_bUpdating = false;
+
+	Log(wxT ("Database update has ended.\n"
+		 "You may need to restart ARDB.\n"));
+    }
+
+    m_pOKButton->Enable();
+
+    return 0;
+}
+
+bool Updater::UpdateDatabase()
+{
+    bool fUpdate = FALSE;
+    wxString sServer = GetServerName();
+    wxString sFile = GetFileName();
+    wxFileName vtesdatabase(wxT("vtescsv.zip"));
+
+    wxDateTime localFileTime;
+    wxDateTime remoteFileTime;
+    wxString localDisplayTime;
 
     if (vtesdatabase.FileExists()) {
         localFileTime = vtesdatabase.GetModificationTime();
@@ -257,9 +315,6 @@ Updater::DoUpdate(UPDATE_TYPE utType)
 
     wxURL url(wxT("http://") + sServer + sFile);
 
-
-
-
     if (url.GetError() == wxURL_NOERR) {
 
         wxInputStream *data;
@@ -272,16 +327,9 @@ Updater::DoUpdate(UPDATE_TYPE utType)
         Log (wxT ("\n"));
 
     } else {
-        //Error.  Probably no network access. Assume the user is trying
-        //to force an update from a local copy of the csv file.
-        //Only do this if called from the menu
-        if (utType == UPDATE_FROM_MENU) {
-            remoteFileTime = wxDateTime::Now();
-        } else {
-            remoteFileTime = localFileTime;
-        }
+        //Error.  Probably no network access.  Lets not do an update
+	remoteFileTime = localFileTime;
     }
-
 
     if (remoteFileTime.IsLaterThan(localFileTime) == TRUE) {
 
@@ -293,61 +341,12 @@ Updater::DoUpdate(UPDATE_TYPE utType)
                                  wxOK | wxCANCEL | wxICON_QUESTION);
 
         if (oUpdate.ShowModal () == wxID_OK) {
-
-            Show ();
-            wxYield ();
-
-            Log (wxT ("Downloading..."));
-            m_bUpdating = true;
-            wxSafeYield(this);
-
-            if (FetchCSVFiles() < 0) {
-
-                Log (wxT ("Failed.\n"));
-
-                wxFileDialog oFileDialog(NULL,
-                                         wxT ("Please locate vtescsv.zip"),
-                                         wxT (""), wxT ("vtescsv.zip"),
-                                         wxT ("*.zip"), wxOPEN);
-
-                if (oFileDialog.ShowModal() != wxID_OK) {
-                    Hide ();
-                    return -1;
-                }
-
-                m_sZipFile = oFileDialog.GetDirectory()
-                             << wxFileName::GetPathSeparator()
-                             << oFileDialog.GetFilename();
-
-                Log(wxT ("Opening "));
-                Log(m_sZipFile);
-                Log(wxT ("\n"));
-
-            }
-
-            Log(wxT ("\n"));
-            m_bUpdating = true;
-            UpdateDatabaseFromCSV();
-            Log(wxT ("Database update has ended.\n"
-                     "You may need to restart ARDB.\n"));
-        }
-
-        m_pOKButton->Enable();
-
-    } else {
-
-        if (utType == UPDATE_FROM_MENU) {
-            wxMessageDialog oUpToDate(NULL,
-                                      wxT("Your database is up to date"),
-                                      wxT ("Update to Date"),
-                                      wxOK);
-            oUpToDate.ShowModal();
-        }
+	    fUpdate = TRUE;
+	}
     }
 
-    m_bUpdating = false;
+    return fUpdate;
 
-    return 0;
 }
 
 wxString Updater::GetServerName()
