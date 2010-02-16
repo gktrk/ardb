@@ -574,7 +574,7 @@ void
 BrowserFrame::OnHelpAbout (wxCommandEvent& WXUNUSED (event))
 {
     wxString about;
-    about.Printf(wxT ("The Anarch Revolt Deck Builder\nVersion %s\r\nby Francois Gombault & Graham Smith\r\nEmail: graham.r.smith@gmail.com\r\nBuilt: %s"),VERSION_NUMBER,BUILD_DATE);
+    about.Printf(wxT ("The Anarch Revolt Deck Builder\nVersion %s\r\nby Francois Gombault, Graham Smith & Rob Woodruff\r\nEmail: graham.r.smith@gmail.com\r\nBuilt: %s"),VERSION_NUMBER,BUILD_DATE);
     wxMessageBox(about, wxT ("About"));
 }
 
