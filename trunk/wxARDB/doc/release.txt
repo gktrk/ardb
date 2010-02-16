@@ -1,0 +1,48 @@
+Hi All, 
+
+The Windows version of Ardb Version 3.0.0 is available for 
+download. 
+
+This version: 
+
+  - Adds the cards for Heirs to the Blood.
+  - Adds multiple card browser support
+  - Adds automatic update of out of date card database
+    on start up
+  - Adds download card images option to the File menu
+
+Notes:
+
+If you have an "Anarch Revolt Deck Builder" directory in your user
+directory you will need to delete it to make sure the correct ardb.ini file
+and cardimages are used.
+
+You can disable the automatic card database check using Preferences
+option on the File menu.
+
+The way in which ardb handles card images has been changed.  To use
+card images you will need to either:
+
+     1. Download the new card zip files using the 
+     	File | Download	Images option and select the 
+	card sets to download  
+	
+	or
+
+     2. Create the image zip files yourself from local card
+        images.  Ardb expects to find a directory called cardimages
+	in the directory it is installed in.  Inside this
+	directory it expects to find a zip file for each set.
+	The name of the zip files are <set abbreviation>.zip i.e
+	Heirs to the Blood images are found in the file 
+	httb.zip.  If you have the old cardimages directory just
+	zip up each of the card set sub directories (without paths) 
+	and save them under the cardimages directory. 
+
+Download:
+http://ardb.googlecode.com/files/ardb_release_3_0_0.zip
+
+Homepage: 
+http://code.google.com/p/ardb/ 
+
+Graham. 
