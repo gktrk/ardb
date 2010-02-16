@@ -418,10 +418,8 @@ Updater::LoadDisciplinesFromCSV ()
              i < iZipLength - 1);
     // add the last discipline
     if (sCurrent.Length () > 1) m_oDisciplinesArray.Add (sCurrent);
-
+    
     delete pCopyBuffer;
-
-
 
     // make sure we have something
     if (m_oDisciplinesArray.GetCount () > uiCrap) {

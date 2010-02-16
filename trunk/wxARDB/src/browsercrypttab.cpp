@@ -55,22 +55,22 @@ class BrowserFrame;
 
 BEGIN_EVENT_TABLE (BrowserCryptTab, wxPanel)
 // the top buttons
-    EVT_BUTTON (ID_ADD_BUTTON, BrowserCryptTab::OnAddButtonClick)
-    EVT_BUTTON (ID_REMOVE_BUTTON, BrowserCryptTab::OnRemoveButtonClick)
-    EVT_BUTTON (ID_KEEP_BUTTON, BrowserCryptTab::OnKeepButtonClick)
-    EVT_BUTTON (ID_RESET_BUTTON, BrowserCryptTab::OnResetButtonClick)
-    EVT_BUTTON (ID_INVENTORY_BUTTON, BrowserCryptTab::OnInventoryButtonClick)
+EVT_BUTTON (ID_ADD_BUTTON, BrowserCryptTab::OnAddButtonClick)
+EVT_BUTTON (ID_REMOVE_BUTTON, BrowserCryptTab::OnRemoveButtonClick)
+EVT_BUTTON (ID_KEEP_BUTTON, BrowserCryptTab::OnKeepButtonClick)
+EVT_BUTTON (ID_RESET_BUTTON, BrowserCryptTab::OnResetButtonClick)
+EVT_BUTTON (ID_INVENTORY_BUTTON, BrowserCryptTab::OnInventoryButtonClick)
 // the find text field
-    EVT_TEXT (ID_FIND_TEXTCTRL, BrowserCryptTab::OnFindTextChange)
+EVT_TEXT (ID_FIND_TEXTCTRL, BrowserCryptTab::OnFindTextChange)
 
-    EVT_SPLITTER_SASH_POS_CHANGED(ID_SPLITTER_WINDOW, BrowserCryptTab::OnSplitterMoved)
+EVT_SPLITTER_SASH_POS_CHANGED(ID_SPLITTER_WINDOW, BrowserCryptTab::OnSplitterMoved)
 //  EVT_SIZE (BrowserCryptTab::OnTabResize)
 
 END_EVENT_TABLE ()
 
 
 BrowserCryptTab::BrowserCryptTab(BrowserCryptModel *pModel, BrowserCryptController *pController, wxNotebook *pParent, unsigned int uiNumber) :
-    wxPanel (pParent, -1),
+wxPanel (pParent, -1),
 // Initialisation of member objects and variables
     m_bDisplayInventory (FALSE),
     m_lSplitterPosition (430),
@@ -183,7 +183,7 @@ BrowserCryptTab::Init ()
 
     // Insert the splitter window
     m_pSplitterWindow = new wxSplitterWindow (this, ID_SPLITTER_WINDOW, wxDefaultPosition, wxDefaultSize,
-            wxSP_3D | wxSP_LIVE_UPDATE);
+                                              wxSP_3D | wxSP_LIVE_UPDATE);
 
     m_pSplitterWindow->SetMinimumPaneSize (20);
 
@@ -274,7 +274,7 @@ BrowserCryptTab::UpdateView ()
     wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get ();
     if (pConfig) {
         wxString sDisplayInventory
-        = wxT ("DisplayInventory");
+            = wxT ("DisplayInventory");
         if (!pConfig->Read (sDisplayInventory, &m_bDisplayInventory)) {
             pConfig->Write (sDisplayInventory, m_bDisplayInventory);
             pConfig->Flush (TRUE);
@@ -476,23 +476,30 @@ BrowserCryptTab::SetCardCount (unsigned int uiCount)
         }
 
         if (pDatabase &&
-                m_pModel->GetCardCount () < (unsigned int) iMaxCards) {
+            m_pModel->GetCardCount () < (unsigned int) iMaxCards) {
             HappyList oHappyList;
             HappyBucket *pBucket, *pLastBucket;
             wxString sQuery, sLowerCaseDiscName;
             long lCount;
             RecordSet *pRecordSet;
 
-            for (unsigned int i = 0; i < pUIData->GetDisciplines ()->GetCount (); i++) {
-                sLowerCaseDiscName = pUIData->GetDisciplines ()->Item (i)[0];
-                sLowerCaseDiscName = sLowerCaseDiscName.MakeLower ();
+            for (unsigned int i = 0; i < pUIData->GetDisciplines()->GetCount(); i++) {
+                //Hack.  We do not want to query the Maleficia or Striga
+                //disciplines as they donot exist
 
-                sQuery.Printf (wxT ("SELECT '%s ', sum(cards_crypt.%s) FROM cards_crypt WHERE cards_crypt.record_num IN (SELECT card_name FROM crypt_selection WHERE browser_num='%d');"), pUIData->GetDisciplines ()->Item (i)[0].c_str (), sLowerCaseDiscName.c_str (), m_pModel->GetIDNumber ());
+                if ((pUIData->GetDisciplines()->Item(i)[0].CmpNoCase(wxT("Maleficia")) !=0) &&
+                    (pUIData->GetDisciplines()->Item(i)[0].CmpNoCase(wxT("Striga")) != 0)) {
 
-                pRecordSet = pDatabase->Query (sQuery);
-                if (pRecordSet && pRecordSet->Count ()) {
-                    if (pRecordSet->Item (0).Item (1).ToLong (&lCount) && lCount > 0) {
-                        oHappyList.Append (new HappyBucket (pRecordSet->Item (0).Item (0), lCount));
+                    sLowerCaseDiscName = pUIData->GetDisciplines()->Item (i)[0];
+                    sLowerCaseDiscName = sLowerCaseDiscName.MakeLower();
+
+                    sQuery.Printf (wxT ("SELECT '%s ', sum(cards_crypt.%s) FROM cards_crypt WHERE cards_crypt.record_num IN (SELECT card_name FROM crypt_selection WHERE browser_num='%d');"), pUIData->GetDisciplines ()->Item (i)[0].c_str (), sLowerCaseDiscName.c_str (), m_pModel->GetIDNumber ());
+
+                    pRecordSet = pDatabase->Query (sQuery);
+                    if (pRecordSet && pRecordSet->Count ()) {
+                        if (pRecordSet->Item (0).Item (1).ToLong (&lCount) && lCount > 0) {
+                            oHappyList.Append (new HappyBucket (pRecordSet->Item (0).Item (0), lCount));
+                        }
                     }
                 }
             }
@@ -615,7 +622,7 @@ BrowserCryptTab::OnSplitterMoved (wxSplitterEvent& event)
     }
 
     if (m_pSplitterWindow &&
-            m_pSplitterWindow->GetSashPosition () > 0)
+        m_pSplitterWindow->GetSashPosition () > 0)
         m_lSplitterPosition = m_pSplitterWindow->GetSashPosition ();
 
     event.Skip ();
@@ -698,16 +705,16 @@ BrowserCryptTab::OnFindTextChange (wxCommandEvent& WXUNUSED (event))
 
 
 BEGIN_EVENT_TABLE (BrowserCryptFilterGrid, wxGrid)
-    EVT_GRID_CELL_RIGHT_CLICK (BrowserCryptFilterGrid::OnFilterRightClick)
-    EVT_MENU (ID_POPUP_REMOVE, BrowserCryptFilterGrid::OnFilterPopupRemove)
-    EVT_MENU (ID_POPUP_HIDE, BrowserCryptFilterGrid::OnFilterPopupHide)
-    EVT_MENU (ID_POPUP_MOVELEFT, BrowserCryptFilterGrid::OnFilterPopupMoveLeft)
-    EVT_MENU (ID_POPUP_MOVERIGHT, BrowserCryptFilterGrid::OnFilterPopupMoveRight)
+EVT_GRID_CELL_RIGHT_CLICK (BrowserCryptFilterGrid::OnFilterRightClick)
+EVT_MENU (ID_POPUP_REMOVE, BrowserCryptFilterGrid::OnFilterPopupRemove)
+EVT_MENU (ID_POPUP_HIDE, BrowserCryptFilterGrid::OnFilterPopupHide)
+EVT_MENU (ID_POPUP_MOVELEFT, BrowserCryptFilterGrid::OnFilterPopupMoveLeft)
+EVT_MENU (ID_POPUP_MOVERIGHT, BrowserCryptFilterGrid::OnFilterPopupMoveRight)
 END_EVENT_TABLE ()
 
 
 BrowserCryptFilterGrid::BrowserCryptFilterGrid (BrowserCryptModel *pModel, BrowserCryptTab *pParent) :
-    wxGrid (pParent, -1),
+wxGrid (pParent, -1),
     m_oFilterPopupMenu (),
     m_pModel (pModel),
     m_pParent (pParent)
@@ -829,20 +836,20 @@ BrowserCryptFilterGrid::OnFilterRightClick (wxGridEvent &event)
  ****************************************************************** */
 
 BEGIN_EVENT_TABLE (BrowserCryptCardGrid, wxGrid)
-    EVT_GRID_CELL_CHANGE(BrowserCryptCardGrid::OnInventoryChange)
-    EVT_GRID_CELL_RIGHT_CLICK (BrowserCryptCardGrid::OnCardRightClick)
-    EVT_GRID_LABEL_LEFT_CLICK (BrowserCryptCardGrid::OnColumnClick)
-    EVT_GRID_CELL_LEFT_DCLICK (BrowserCryptCardGrid::OnCardActivated)
-    EVT_GRID_SELECT_CELL(BrowserCryptCardGrid::OnCardSelect)
-    EVT_MENU (ID_POPUP_ADD, BrowserCryptCardGrid::OnPopupAddToDeck)
-    EVT_MENU (ID_POPUP_ADD_ALL, BrowserCryptCardGrid::OnPopupAddAllToDeck)
-    EVT_MENU (ID_POPUP_REMOVE, BrowserCryptCardGrid::OnPopupRemove)
-    EVT_MENU (ID_POPUP_COPY_ALL, BrowserCryptCardGrid::OnPopupCopyAll)
+EVT_GRID_CELL_CHANGE(BrowserCryptCardGrid::OnInventoryChange)
+EVT_GRID_CELL_RIGHT_CLICK (BrowserCryptCardGrid::OnCardRightClick)
+EVT_GRID_LABEL_LEFT_CLICK (BrowserCryptCardGrid::OnColumnClick)
+EVT_GRID_CELL_LEFT_DCLICK (BrowserCryptCardGrid::OnCardActivated)
+EVT_GRID_SELECT_CELL(BrowserCryptCardGrid::OnCardSelect)
+EVT_MENU (ID_POPUP_ADD, BrowserCryptCardGrid::OnPopupAddToDeck)
+EVT_MENU (ID_POPUP_ADD_ALL, BrowserCryptCardGrid::OnPopupAddAllToDeck)
+EVT_MENU (ID_POPUP_REMOVE, BrowserCryptCardGrid::OnPopupRemove)
+EVT_MENU (ID_POPUP_COPY_ALL, BrowserCryptCardGrid::OnPopupCopyAll)
 END_EVENT_TABLE ()
 
 
 BrowserCryptCardGrid::BrowserCryptCardGrid (BrowserCryptModel *pModel, BrowserCryptTab *pTab, wxWindow *pParent) :
-    wxGrid (pParent, -1),
+wxGrid (pParent, -1),
     m_bReverseSortOrder (FALSE),
     m_oSelection (),
     m_oCardPopupMenu (),
@@ -876,7 +883,7 @@ BrowserCryptCardGrid::MyGetSelectedRows ()
     m_oSelection.Clear ();
     for(size_t i = 0; i < upperlefts.Count (); ++i) {
         for (int j = upperlefts.Item (i).GetRow ();
-                j <= lowerrights.Item (i).GetRow (); ++j) {
+             j <= lowerrights.Item (i).GetRow (); ++j) {
             m_oSelection.Add (j);
         }
     }
@@ -956,7 +963,7 @@ BrowserCryptCardGrid::OnInventoryChange (wxGridEvent& event)
     InventoryModel *pInventoryModel = InventoryModel::Instance ();
 
     unsigned int uiCol = event.GetCol (),
-                 uiRow = event.GetRow ();
+        uiRow = event.GetRow ();
     long lHave, lWant, lSpare;
     wxString sName, sAdv;
 

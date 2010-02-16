@@ -405,18 +405,26 @@ DeckModel::ComputeCryptHappiness ()
     if (m_uiHappyDisciplineCount == 0 || m_lCryptCount == 0) return;
 
     for (unsigned int i = 0; i < pUIData->GetDisciplines ()->GetCount (); i++) {
-        sLowerCaseDiscName = pUIData->GetDisciplines ()->Item (i)[0];
-        sLowerCaseDiscName = sLowerCaseDiscName.MakeLower ();
 
-        // Count disciplines
-        sQuery.Printf (wxT ("SELECT '%s ', sum(decks_crypts.number_used * cards_crypt.%s) FROM decks_crypts, cards_crypt WHERE (decks_crypts.deck_ref = 0) AND (decks_crypts.card_ref = cards_crypt.record_num);"), pUIData->GetDisciplines ()->Item (i)[0].c_str (), sLowerCaseDiscName.c_str ());
+	//Hack.  We do not want to query the Maleficia or Striga
+	//disciplines as they donot exist
 
-        pRecordSet = pDatabase->Query (sQuery);
-        if (pRecordSet) {
-            if (pRecordSet->Item (0).Item (1).ToLong (&lCount) && lCount > 0) {
-                m_oHappyList.Append (new HappyBucket (pRecordSet->Item (0).Item (0), lCount));
-            }
-        }
+	if ((pUIData->GetDisciplines()->Item(i)[0].CmpNoCase(wxT("Maleficia")) !=0) &&
+	    (pUIData->GetDisciplines()->Item(i)[0].CmpNoCase(wxT("Striga")) != 0)) {
+
+	    sLowerCaseDiscName = pUIData->GetDisciplines ()->Item (i)[0];
+	    sLowerCaseDiscName = sLowerCaseDiscName.MakeLower ();
+
+	    // Count disciplines
+	    sQuery.Printf (wxT ("SELECT '%s ', sum(decks_crypts.number_used * cards_crypt.%s) FROM decks_crypts, cards_crypt WHERE (decks_crypts.deck_ref = 0) AND (decks_crypts.card_ref = cards_crypt.record_num);"), pUIData->GetDisciplines ()->Item (i)[0].c_str (), sLowerCaseDiscName.c_str ());
+
+	    pRecordSet = pDatabase->Query (sQuery);
+	    if (pRecordSet) {
+		if (pRecordSet->Item (0).Item (1).ToLong (&lCount) && lCount > 0) {
+		    m_oHappyList.Append (new HappyBucket (pRecordSet->Item (0).Item (0), lCount));
+		}
+	    }
+	}
     }
 
     // Sort and get the top ranked disciplines
