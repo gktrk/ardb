@@ -444,6 +444,13 @@ Updater::LoadDisciplinesFromCSV ()
         // handle the stupid Thanatosis discipline
         pDatabase->Query (wxT ("UPDATE disciplines SET infabbrev='thn', supabbrev='THN' WHERE name='Thanatosis';"));
 
+	// Insert virtual disciplines Maleficia and Striga
+        pDatabase->Query(wxT("INSERT INTO disciplines"
+			     " VALUES ('Maleficia', 'mal', 'MAL', NULL);" ));
+
+        pDatabase->Query(wxT("INSERT INTO disciplines"
+			     " VALUES ('Striga', 'str', 'STR', NULL);" ));
+
         pDatabase->Query (wxT ("END TRANSACTION;"));
 
 //       pDatabase->ToggleVerbose ();
