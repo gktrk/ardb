@@ -31,7 +31,7 @@
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
-#define VERSION_NUMBER wxT("3.0.1")
+#define VERSION_NUMBER wxT("3.1.0")
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -60,6 +60,9 @@
 #include <wx/filesys.h>
 #include <wx/wfstream.h>
 #include <wx/choicdlg.h>
+#include <wx/dir.h>
+#include <wx/filefn.h>
+
 
 class BrowserFrame ;
 
@@ -82,38 +85,25 @@ wxDEFINE_SCOPED_PTR_TYPE(wxZipEntry);
 BEGIN_EVENT_TABLE (BrowserFrame, wxFrame)
 EVT_MENU (ID_BROWSER_CLOSE_TAB, BrowserFrame::OnBrowserCloseTab)
 
-EVT_MENU (ID_BROWSER_NEW_CRYPT, BrowserFrame::OnBrowserNewCrypt)
-EVT_MENU (ID_BROWSER_CLOSE_TAB, BrowserFrame::OnBrowserCloseTab)
-EVT_MENU (ID_BROWSER_NEW_LIBRARY, BrowserFrame::OnBrowserNewLibrary)
-EVT_MENU (ID_BROWSER_NEW_CRYPT, BrowserFrame::OnBrowserNewCrypt)
-EVT_MENU (ID_FILE_DECKBUILDER, BrowserFrame::OnFileDeckBuilder)
-EVT_MENU (ID_BROWSER_NEW_LIBRARY, BrowserFrame::OnBrowserNewLibrary)
-EVT_MENU (ID_FILE_DECKBUILDER, BrowserFrame::OnFileDeckBuilder)
 //EVT_MENU (ID_FILE_EDITIONS, BrowserFrame::OnFileEditions)
-wxEVT_DOWNLOAD (BrowserFrame::OnFileImageDownloadEvent)
-EVT_MENU (ID_FILE_UPDATEDB, BrowserFrame::OnFileUpdateDatabase)
+EVT_CLOSE (BrowserFrame::OnClose)
+EVT_MENU (ID_BROWSER_CLOSE_TAB, BrowserFrame::OnBrowserCloseTab)
+EVT_MENU (ID_BROWSER_NEW_CRYPT, BrowserFrame::OnBrowserNewCrypt)
+EVT_MENU (ID_BROWSER_NEW_LIBRARY, BrowserFrame::OnBrowserNewLibrary)
+EVT_MENU (ID_FILE_DECKBUILDER, BrowserFrame::OnFileDeckBuilder)
+EVT_MENU (ID_FILE_EXIT, BrowserFrame::OnFileExit)
 EVT_MENU (ID_FILE_IMAGE_DOWNLOAD,BrowserFrame::OnFileImageDownload)
 EVT_MENU (ID_FILE_PREFERENCES, BrowserFrame::OnFilePreferences)
-EVT_MENU (ID_FILE_EXIT, BrowserFrame::OnFileExit)
-EVT_MENU (ID_INV_OPEN, BrowserFrame::OnInventoryOpen)
-EVT_MENU (ID_INV_SAVE, BrowserFrame::OnInventorySave)
-EVT_MENU (ID_FILE_EXIT, BrowserFrame::OnFileExit)
-EVT_MENU (ID_INV_IMPORT, BrowserFrame::OnInventoryImport)
-EVT_MENU (ID_INV_OPEN, BrowserFrame::OnInventoryOpen)
-EVT_MENU (ID_INV_EXPORT_CSV, BrowserFrame::OnInventoryExportCSV)
-EVT_MENU (ID_INV_SAVE, BrowserFrame::OnInventorySave)
-EVT_MENU (ID_INV_EXPORT_HTML, BrowserFrame::OnInventoryExportHTML)
-EVT_MENU (ID_INV_IMPORT, BrowserFrame::OnInventoryImport)
-EVT_MENU (ID_HELP_ABOUT, BrowserFrame::OnHelpAbout)
-EVT_MENU (ID_INV_EXPORT_CSV, BrowserFrame::OnInventoryExportCSV)
-EVT_MENU (ID_HELP_MANUAL, BrowserFrame::OnHelpManual)
-EVT_MENU (ID_INV_EXPORT_HTML, BrowserFrame::OnInventoryExportHTML)
-EVT_CLOSE (BrowserFrame::OnClose)
+EVT_MENU (ID_FILE_UPDATEDB, BrowserFrame::OnFileUpdateDatabase)
 EVT_MENU (ID_HELP_ABOUT, BrowserFrame::OnHelpAbout)
 EVT_MENU (ID_HELP_MANUAL, BrowserFrame::OnHelpManual)
-EVT_CLOSE (BrowserFrame::OnClose)
-
+EVT_MENU (ID_INV_EXPORT_CSV, BrowserFrame::OnInventoryExportCSV)
+EVT_MENU (ID_INV_EXPORT_HTML, BrowserFrame::OnInventoryExportHTML)
+EVT_MENU (ID_INV_IMPORT, BrowserFrame::OnInventoryImport)
+EVT_MENU (ID_INV_OPEN, BrowserFrame::OnInventoryOpen)
+EVT_MENU (ID_INV_SAVE, BrowserFrame::OnInventorySave)
 EVT_NOTEBOOK_PAGE_CHANGED(ID_BROWSER_NOTEBOOK,BrowserFrame::TabChanged)
+wxEVT_DOWNLOAD (BrowserFrame::OnFileImageDownloadEvent)
 
 END_EVENT_TABLE ()
 
@@ -446,11 +436,28 @@ BrowserFrame::OnFileUpdateDatabase (wxCommandEvent& WXUNUSED (event))
     m_pBrowserLibraryModel->Reset ();
 }
 
+bool BrowserFrame::ImagesSetExists(wxString set)
+{
+     bool fRetVal = FALSE;
+
+     if(wxDirExists(wxT("cardimages"))) {
+
+	  wxDir imageDir(wxT("cardimages"));
+
+	  if (imageDir.HasFiles(set+wxT(".zip"))) {
+	       fRetVal = TRUE;
+	  }
+     }
+
+     return fRetVal;
+}
 
 void
-BrowserFrame::OnFileImageDownload (wxCommandEvent& event)
+BrowserFrame::OnFileImageDownload (wxCommandEvent& WXUNUSED (event))
 {
+
 #define CARD_SETS_QUERY wxT ("SELECT full_name, set_name FROM cards_sets WHERE cards_sets.full_name NOT LIKE 'Proxy%' AND cards_sets.full_name NOT LIKE 'promo%' ORDER BY release_date DESC")
+
 #define ALL_SETS_SELECTED 0
 #define PROMO_SET_SELECTED 1
 
@@ -458,20 +465,33 @@ BrowserFrame::OnFileImageDownload (wxCommandEvent& event)
     RecordSet *pResult;
     wxArrayString strings;
     wxArrayString filesToDownload;
+    wxArrayInt notDownloaded;
     strings.Add(wxT("ALL"));
     strings.Add(wxT("Promo"));
 
-    pResult = pDatabase->Query (CARD_SETS_QUERY, NULL);
+    if (!ImagesSetExists(wxT("promo"))) {
+	notDownloaded.Add(PROMO_SET_SELECTED);
+    }
+
+    pResult = pDatabase->Query(CARD_SETS_QUERY, NULL);
+
     if (pResult) {
-        for (unsigned int i = 0; i < pResult->GetCount (); i++) {
-            strings.Add(pResult->Item(i).Item(0));
-        }
+	for (unsigned int i = 0; i < pResult->GetCount (); i++) {
+
+	    strings.Add(pResult->Item(i).Item(0));
+		
+	    if (!ImagesSetExists(pResult->Item(i).Item(1).Lower())) {
+		notDownloaded.Add(strings.Count()-1);
+	    }
+	}
     }
 
     wxMultiChoiceDialog pickset(this,
                                 wxT("Please select the image sets you wish to download"),
                                 wxT("Download Select"),
                                 strings);
+
+    pickset.SetSelections(notDownloaded);
 
     if (pickset.ShowModal()== wxID_OK) {
 
