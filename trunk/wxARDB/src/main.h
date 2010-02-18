@@ -110,6 +110,7 @@ private:
     wxNotebook	*m_pNotebook;
     unsigned int	m_uiCryptBrowserCount;
     unsigned int	m_uiLibraryBrowserCount;
+    bool ImagesSetExists(wxString set);
 
     enum {
         ID_BROWSER_NEW_CRYPT = wxID_HIGHEST + 1,
