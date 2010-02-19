@@ -85,7 +85,7 @@ private:
 
     int FetchCSVFiles ();
     int LoadDisciplinesFromCSV ();
-    int LoadTableFromCSV (wxString sTable, wxString sCSVFile, int iNulls);
+    int LoadTableFromCSV (wxString sTable, wxString sCSVFile, int nClanCol);
     void Log (wxString sText);
     int UpdateDatabaseFromCSV ();
     bool UpdateDatabase();
