@@ -31,16 +31,13 @@
 PrefDialog::PrefDialog() : wxDialog(0, -1, wxT("Preferences"), wxDefaultPosition, wxSize( 245,142 ),  wxDEFAULT_DIALOG_STYLE)
 {
     wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get();
-#if 0 //Not supported in v3.0.0    	
-    bool fUpdateImages = FALSE;
-#endif
+
+    bool fUseProxy = FALSE;
     bool fUpdateCards = FALSE;
 
     if (pConfig) {
-#if 0 //Not supported in v3.0.0    	
-        pConfig->Read(wxT("UpdateImages"), &fUpdateImages, FALSE);
-#endif
         pConfig->Read(wxT("UpdateCards"), &fUpdateCards, FALSE);
+	pConfig->Read(wxT("UseProxy"), &fUseProxy, FALSE);
     }
 
     this->SetSizeHints( wxDefaultSize, wxDefaultSize );
@@ -48,13 +45,15 @@ PrefDialog::PrefDialog() : wxDialog(0, -1, wxT("Preferences"), wxDefaultPosition
     wxBoxSizer* bSizer4;
     bSizer4 = new wxBoxSizer( wxVERTICAL );
 
-#if 0 //Not supported in v3.0.0    	
-    m_cbDownloadImages = new wxCheckBox(this, wxID_ANY,
-                                        wxT("Automatic Image Download"),
+#ifdef __WXMSW__
+    m_cbUseProxy = new wxCheckBox(this, wxID_ANY,
+                                        wxT("Use IE's proxy settings"),
                                         wxDefaultPosition, wxDefaultSize,
                                         0);
-    m_cbDownloadImages->SetValue(fUpdateImages);
-    bSizer4->Add(m_cbDownloadImages, 0, wxALL, 5);
+    m_cbUseProxy->SetValue(fUseProxy);
+    bSizer4->Add(m_cbUseProxy, 0, wxALL, 5);
+#else
+    m_cbUseProxy = NULL;
 #endif
 
     m_cbDownloadCards = new wxCheckBox(this, wxID_ANY,
@@ -95,9 +94,11 @@ void PrefDialog::SaveSettings(wxCommandEvent& event)
     wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get();
 
     if (pConfig) {
-#if 0 //Not supported in v3.0.0    	
-        pConfig->Write(wxT("UpdateImages"), m_cbDownloadImages->GetValue());
-#endif
+
+	if (m_cbUseProxy != NULL) {
+	    pConfig->Write(wxT("UseProxy"), m_cbUseProxy->GetValue());
+	}
+
         pConfig->Write(wxT("UpdateCards"), m_cbDownloadCards->GetValue());
     }
 

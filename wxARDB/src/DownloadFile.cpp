@@ -18,6 +18,8 @@
  *********************************************************************/
 
 #include "DownloadFile.h"
+#include <wx/confbase.h>
+#include <wx/fileconf.h>
 #ifdef  __WXMSW__
 #include <wx/msw/registry.h>
 #endif
@@ -79,22 +81,33 @@ void* wxDownloadFile::Entry()
             wxInputStream *pIn_Stream = NULL;
 
 #ifdef __WXMSW__
-            wxRegKey *pRegKey = new wxRegKey(wxT("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Internet Settings"));
+	    wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get();
+	    bool fUseProxy;
 
-            if( pRegKey->Exists() && pRegKey->HasValue(wxT("ProxyEnable"))) {
-                long lProxyEnable;
-                pRegKey->QueryValue(wxT("ProxyEnable"), &lProxyEnable);
-                if(lProxyEnable == 1 && pRegKey->HasValue(wxT("ProxyServer"))) {
-                    wxString strProxyAddress;
-                    pRegKey->QueryValue(wxT("ProxyServer"), strProxyAddress);
-                    Url.SetProxy(strProxyAddress);
-                    pIn_Stream = Url.GetInputStream();
-                } else {
-                    pIn_Stream = Url.GetInputStream();
-                }
-            }
+	    pConfig->Read(wxT("UseProxy"), &fUseProxy, FALSE);
 
-            delete pRegKey;
+	    if (fUseProxy) {
+		
+		wxRegKey *pRegKey = new wxRegKey(wxT("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Internet Settings"));
+
+		if( pRegKey->Exists() && pRegKey->HasValue(wxT("ProxyEnable"))) {
+		    long lProxyEnable;
+		    pRegKey->QueryValue(wxT("ProxyEnable"), &lProxyEnable);
+		    if(lProxyEnable == 1 && pRegKey->HasValue(wxT("ProxyServer"))) {
+			wxString strProxyAddress;
+			pRegKey->QueryValue(wxT("ProxyServer"), strProxyAddress);
+			Url.SetProxy(strProxyAddress);
+			pIn_Stream = Url.GetInputStream();
+		    } else {
+			pIn_Stream = Url.GetInputStream();
+		    }
+		}
+		
+		delete pRegKey;
+
+	    } else {
+		pIn_Stream = Url.GetInputStream();
+	    }
 #else
             pIn_Stream = Url.GetInputStream();
 #endif

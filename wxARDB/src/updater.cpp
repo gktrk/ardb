@@ -533,7 +533,7 @@ Updater::LoadTableFromCSV(wxString sTable, wxString sCSVFile, int nClanCol = -1)
 		
 		if (sTemp.Last() == 's') {
 		    
-		    sItem = sTemp.RemoveLast() + ' ' + sItem.AfterFirst(' ');
+		    sItem << sTemp.RemoveLast() << ' ' << sItem.AfterFirst(' ');
 		    
 		}
 	    }
