@@ -54,8 +54,9 @@ meshee@lasombra:~ mkdir ~/.ardb
 
 Copy resources to config folder:
 {{{
+mkdir ~/.ardb/xsl
 meshee@lasombra:~ cp  resources/vtesicons/* ~/.ardb
-meshee@lasombra:~ cp  resources/*.xsl ~/.ardb
+meshee@lasombra:~ cp  resources/*.xsl ~/.ardb/xsl
 }}}
 
 = Run Ardb =
