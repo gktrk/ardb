@@ -462,11 +462,15 @@ Updater::LoadDisciplinesFromCSV ()
 }
 
 
+//nClanCol is a little hack so that we can format up the clan names
+//into the same format used by LSJ.  I do it here in C because I
+//can do it much more easily in C than SQL  - Graham.
 int
-Updater::LoadTableFromCSV (wxString sTable, wxString sCSVFile, int iNulls = 1)
+Updater::LoadTableFromCSV(wxString sTable, wxString sCSVFile, int nClanCol = -1)
 {
     Database *pDatabase = Database::Instance ();
 
+    int iNulls = 1;
     char *pCopyBuffer;
     int iZipLength, iNumFields;
     wxArrayString oList;
@@ -503,7 +507,38 @@ Updater::LoadTableFromCSV (wxString sTable, wxString sCSVFile, int iNulls = 1)
             sQuery.Append (sTable);
             sQuery.Append (wxT (" VALUES("));
         }
-        //      QuoteAsNeeded (&sItem);
+
+	if (colNum == nClanCol) {
+
+	    //This column is the clan column
+	    //The clan name will have "" around it
+	    //so we need to preserve these.
+	    //We need to do the following:
+	    //Remove any trailing 's' from the first word.
+	    //Remove any trailing 's' from the last word.
+
+	    //Remove trailing 's' last word
+	    if (sItem.Len() > 2) {
+		if (sItem[sItem.Len()-2] == 's') {
+		    sItem[sItem.Len()-2] = '"';
+		    sItem = sItem.Truncate(sItem.Len()-1);
+		}
+	    }
+
+	    //Remove trailing 's' first word
+	    int nPos = sItem.First(' ');
+	    if (nPos != -1) {
+		//Get the string before ' '
+		wxString sTemp = sItem.BeforeFirst(' ');
+		
+		if (sTemp.Last() == 's') {
+		    
+		    sItem = sTemp.RemoveLast() + ' ' + sItem.AfterFirst(' ');
+		    
+		}
+	    }
+	}
+
         sQuery.Append (sItem);
 
         colNum++;
@@ -568,7 +603,7 @@ Updater::UpdateDatabaseFromCSV ()
     Database *pDatabase = Database::Instance ();
     wxString sQuery;
 
-    LoadDisciplinesFromCSV ();
+    LoadDisciplinesFromCSV();
 
     pDatabase->Query (wxT ("BEGIN TRANSACTION;"));
 
@@ -660,12 +695,12 @@ Updater::UpdateDatabaseFromCSV ()
 
 
 
-    int iVamps = LoadTableFromCSV (wxT ("Crypt"), wxT ("vtescrypt.csv"));
+    int iVamps = LoadTableFromCSV (wxT ("Crypt"), wxT ("vtescrypt.csv"), 2);
 
     //Set any group ANY to 0
     pDatabase->Query (wxT ("UPDATE Crypt SET groupnumber = 0 WHERE groupnumber = '*';"));
 
-    int iCards = LoadTableFromCSV (wxT ("Library"), wxT ("vteslib.csv"));
+    int iCards = LoadTableFromCSV (wxT ("Library"), wxT ("vteslib.csv"), 2);
     int iSets = LoadTableFromCSV (wxT ("cards_sets_unsorted"), wxT ("vtessets.csv"));
 
     if (iVamps <= 0 || iCards <= 0 || iSets <= 0) {
@@ -696,6 +731,11 @@ Updater::UpdateDatabaseFromCSV ()
     pDatabase->Query (wxT ("UPDATE Library SET convictioncost = convictioncost || ' conv ' WHERE convictioncost != ''"));
     /* Handle "Burn Option card text notice" before copy of data*/
     pDatabase->Query (wxT ("UPDATE Library SET cardtext = cardtext || ' Burn option.' WHERE burn_option = 'Y'"));
+    pDatabase->Query (wxT ("UPDATE Crypt SET clan = 'Imbued' WHERE type = 'Imbued'"));
+
+    //Clean up the clan names.  We need to remove trailing 's' from the first word in the clan name
+    //and trailing 's' from teh last word in the clan name
+
     pDatabase->Query (wxT ("UPDATE Crypt SET clan = 'Imbued' WHERE type = 'Imbued'"));
 
     pDatabase->Query (wxT ("DELETE FROM cards_texts;"));
