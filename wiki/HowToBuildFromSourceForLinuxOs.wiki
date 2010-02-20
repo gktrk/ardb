@@ -14,7 +14,7 @@ _Some linux distribution packaging system could name those libs differently. Rpm
 
 = Get the source code =
 
-[http://code.google.com/p/ardb/source from svn_to build from source you need the source code_ 
+[http://code.google.com/p/ardb/source] from svn _to build from source you need the source code_ 
 
 = Compile sources = 
 How to build the ARDB program: Use one of the following methods
