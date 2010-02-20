@@ -81,7 +81,8 @@ public:
     void OnFileDeckBuilder (wxCommandEvent& WXUNUSED (event));
     void OnFileEditions (wxCommandEvent& WXUNUSED (event));
     void OnFilePreferences (wxCommandEvent& WXUNUSED (event));
-    void OnFileUpdateDatabase (wxCommandEvent& WXUNUSED (event));
+    void OnFileUpdateDatabaseRemote (wxCommandEvent& WXUNUSED (event));
+    void OnFileUpdateDatabaseLocal (wxCommandEvent& WXUNUSED (event));
 
     void OnFileImageDownload (wxCommandEvent& event);
     void OnFileImageDownloadEvent (wxDownloadEvent& event);
@@ -120,7 +121,8 @@ private:
         ID_FILE_DECKBUILDER,
         ID_FILE_EDITIONS,
         ID_FILE_PREFERENCES,
-        ID_FILE_UPDATEDB,
+        ID_FILE_UPDATEDB_REMOTE,
+        ID_FILE_UPDATEDB_LOCAL,
         ID_FILE_IMAGE_DOWNLOAD,
         ID_HELP_MANUAL,
         ID_HELP_ABOUT,

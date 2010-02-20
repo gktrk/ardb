@@ -94,7 +94,8 @@ EVT_MENU (ID_FILE_DECKBUILDER, BrowserFrame::OnFileDeckBuilder)
 EVT_MENU (ID_FILE_EXIT, BrowserFrame::OnFileExit)
 EVT_MENU (ID_FILE_IMAGE_DOWNLOAD,BrowserFrame::OnFileImageDownload)
 EVT_MENU (ID_FILE_PREFERENCES, BrowserFrame::OnFilePreferences)
-EVT_MENU (ID_FILE_UPDATEDB, BrowserFrame::OnFileUpdateDatabase)
+EVT_MENU (ID_FILE_UPDATEDB_REMOTE, BrowserFrame::OnFileUpdateDatabaseRemote)
+EVT_MENU (ID_FILE_UPDATEDB_LOCAL, BrowserFrame::OnFileUpdateDatabaseLocal)
 EVT_MENU (ID_HELP_ABOUT, BrowserFrame::OnHelpAbout)
 EVT_MENU (ID_HELP_MANUAL, BrowserFrame::OnHelpManual)
 EVT_MENU (ID_INV_EXPORT_CSV, BrowserFrame::OnInventoryExportCSV)
@@ -238,12 +239,11 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos,
 
     pFileMenu->Append (ID_FILE_DECKBUILDER, wxT ("Deck Builder\tCtrl+D"), wxT (""));
     pFileMenu->AppendSeparator () ;
-    //   pFileMenu->Append (ID_FILE_EDITIONS, wxT ("VTES Sets..."), wxT (""));
-    pFileMenu->Append (ID_FILE_UPDATEDB, wxT ("Update Database"), wxT (""));
+    pFileMenu->Append (ID_FILE_UPDATEDB_REMOTE, wxT ("Update Database from Internet"), wxT (""));
+    pFileMenu->Append (ID_FILE_UPDATEDB_LOCAL, wxT ("Update Database from File"), wxT (""));
     pFileMenu->Append (ID_FILE_IMAGE_DOWNLOAD, wxT("Download Images"),wxT(""));
     pFileMenu->AppendSeparator () ;
 
-    //pFileMenu->Append (ID_FILE_EDITIONS, wxT ("VTES Sets..."), wxT (""));
     pFileMenu->Append (ID_FILE_PREFERENCES, wxT ("Preferences"), wxT (""));
     pFileMenu->AppendSeparator () ;
     pFileMenu->Append (ID_FILE_EXIT, wxT ("Quit\tCtrl+Q"), wxT (""));
@@ -421,19 +421,28 @@ BrowserFrame::OnFilePreferences (wxCommandEvent& WXUNUSED (event))
 
     pDialog->ShowModal();
     delete pDialog;
-
-    //Respond to menu here
 }
 
 
 void
-BrowserFrame::OnFileUpdateDatabase (wxCommandEvent& WXUNUSED (event))
+BrowserFrame::OnFileUpdateDatabaseRemote(wxCommandEvent& WXUNUSED (event))
 {
     Updater *pUpdater = Updater::Instance ();
     pUpdater->DoUpdate(UPDATE_FROM_MENU);
 
     m_pBrowserCryptModel->Reset ();
     m_pBrowserLibraryModel->Reset ();
+}
+
+void
+BrowserFrame::OnFileUpdateDatabaseLocal(wxCommandEvent& WXUNUSED (event))
+{
+    Updater *pUpdater = Updater::Instance ();
+
+    pUpdater->DoUpdateFromFile();
+    
+    m_pBrowserCryptModel->Reset();
+    m_pBrowserLibraryModel->Reset();
 }
 
 bool BrowserFrame::ImagesSetExists(wxString set)

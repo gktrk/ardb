@@ -61,6 +61,7 @@ public:
 
 
     int DoUpdate (UPDATE_TYPE utType);
+    int DoUpdateFromFile();
     static void decodeCSV (wxInputStream *file, char sep, char quote,
                            int maxrecords, int *numfields,
                            wxArrayString *pResult, bool bSkipFirstLine);
