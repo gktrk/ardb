@@ -210,6 +210,48 @@ Updater::Instance ()
 }
 
 int
+Updater::DoUpdateFromFile()
+{
+    wxFileDialog oFileDialog(NULL,
+			     wxT ("Please locate vtescsv.zip"),
+			     wxT (""), wxT ("vtescsv.zip"),
+			     wxT ("*.zip"), wxOPEN);
+
+    if (oFileDialog.ShowModal() != wxID_OK) {
+	Hide ();
+	m_bUpdating = false;
+	return -1;
+    }
+
+    m_sZipFile = oFileDialog.GetDirectory()
+	<< wxFileName::GetPathSeparator()
+	<< oFileDialog.GetFilename();
+
+    m_pStatusLabel->Clear();
+    m_pOKButton->Disable();
+
+    Show();
+    wxYield();
+    
+    m_bUpdating = true;
+
+    Log(wxT ("Opening "));
+    Log(m_sZipFile);
+    Log(wxT ("\n"));
+
+    wxSafeYield(this);
+    UpdateDatabaseFromCSV();
+    m_bUpdating = false;
+
+    Log(wxT ("Database update has ended.\n"
+	     "You may need to restart ARDB.\n"));
+
+    m_pOKButton->Enable();
+
+    return 0;
+}
+
+int
 Updater::DoUpdate(UPDATE_TYPE utType)
 {
     bool fUpdateDb;
@@ -514,28 +556,14 @@ Updater::LoadTableFromCSV(wxString sTable, wxString sCSVFile, int nClanCol = -1)
 	    //The clan name will have "" around it
 	    //so we need to preserve these.
 	    //We need to do the following:
-	    //Remove any trailing 's' from the first word.
 	    //Remove any trailing 's' from the last word.
+	    //TODO: Remove the trailing 's' from the first word
 
 	    //Remove trailing 's' last word
 	    if (sItem.Len() > 2) {
 		if (sItem[sItem.Len()-2] == 's') {
 		    sItem[sItem.Len()-2] = '"';
 		    sItem = sItem.Truncate(sItem.Len()-1);
-		}
-	    }
-
-	    //Remove trailing 's' first word
-	    int nPos = sItem.First(' ');
-	    if (nPos != -1) {
-		//Get the string before ' '
-		wxString sTemp = sItem.BeforeFirst(' ');
-		
-		if (sTemp.Last() == 's') {
-		    
-		    
-		    sItem = sTemp.RemoveLast() << ' ' << sItem.AfterFirst(' ');
-		    
 		}
 	    }
 	}
@@ -800,6 +828,7 @@ Updater::UpdateDatabaseFromCSV ()
         pDatabase->Query (wxT ("UPDATE Crypt SET edition = after (edition, ' ');"));
 
         Log (wxT ("."));
+	wxSafeYield (this);
     }
 
     // This adds all the 'proxy' sets, which double the existing ones
@@ -928,6 +957,7 @@ Updater::UpdateDatabaseFromCSV ()
         pDatabase->Query (wxT ("DELETE FROM Crypt WHERE edition ISNULL;"));
 
         Log (wxT ("."));
+	wxSafeYield (this);
     }
 
     Log (wxT ("\n"));
