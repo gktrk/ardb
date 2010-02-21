@@ -213,6 +213,13 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos,
     m_uiCryptBrowserCount (0),
     m_uiLibraryBrowserCount (0)
 {
+
+#ifdef __WXMAC__
+    wxApp::s_macAboutMenuItemId = ID_HELP_ABOUT;
+    wxApp::s_macPreferencesMenuItemId = ID_FILE_PREFERENCES;
+    wxApp::s_macHelpMenuTitleName = "Help";
+#endif
+
     SetSizeHints (640, 480);
 
     // create sizer
@@ -243,9 +250,9 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos,
     pFileMenu->Append (ID_FILE_UPDATEDB_LOCAL, wxT ("Update Database from File"), wxT (""));
     pFileMenu->Append (ID_FILE_IMAGE_DOWNLOAD, wxT("Download Images"),wxT(""));
     pFileMenu->AppendSeparator () ;
-#ifndef __WXMAC__
     pFileMenu->Append (ID_FILE_PREFERENCES, wxT ("Preferences"), wxT (""));
-    pFileMenu->AppendSeparator () ;
+#ifndef __WXMAC__
+    pFileMenu->AppendSeparator() ;
 #endif
     pFileMenu->Append (ID_FILE_EXIT, wxT ("Quit\tCtrl+Q"), wxT (""));
 
@@ -269,16 +276,9 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos,
     pMenuBar->Append (pFileMenu, wxT ("File"));
     pMenuBar->Append (pBrowserMenu, wxT ("Browser"));
     pMenuBar->Append (pInventoryMenu, wxT("Inventory"));
+    pMenuBar->Append(pHelpMenu, wxT ("Help"));
 
-#ifdef __WXMAC__
-    wxApp::s_macAboutMenuItemId = ID_HELP_ABOUT;
-    wxApp::s_macPreferencesMenuItemId = ID_FILE_PREFERENCES;
-    wxApp::s_macHelpMenuTitleName = "Help";
-#else
-    pMenuBar->Append (pHelpMenu, wxT ("Help"));
-#endif
-
-    SetMenuBar (pMenuBar);
+    SetMenuBar(pMenuBar);
 
     // Add Crypt Browser
     m_pBrowserCryptModel = new BrowserCryptModel(m_pNotebook,
