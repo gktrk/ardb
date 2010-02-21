@@ -392,15 +392,19 @@ BrowserLibraryController::ProcessTypes (BrowserLibraryFilter *pFilter)
         sExpression.Printf (wxT ("%s%s(card_type LIKE '%%/%%')"),
                             sExpression.c_str(),
                             sOperator.c_str());
-        AddToWhereClause (sExpression);
+
         sSummary.Printf (wxT ("Combo"));
         AddToFilterSummary (sSummary);
     }
     if (pFilter->m_pReflex->IsChecked ()) {
+        if (pFilter->m_pCombo->IsChecked())
+        {
+         sOperator=wxT(" OR ");
+        }
         sExpression.Printf (wxT ("%s%s(card_text LIKE '%%[REFLEX]%%')"),
                             sExpression.c_str(),
                             sOperator.c_str());
-        AddToWhereClause (sExpression);
+
         sSummary.Printf (wxT ("Reflex"));
         AddToFilterSummary (sSummary);
     }
