@@ -243,9 +243,10 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos,
     pFileMenu->Append (ID_FILE_UPDATEDB_LOCAL, wxT ("Update Database from File"), wxT (""));
     pFileMenu->Append (ID_FILE_IMAGE_DOWNLOAD, wxT("Download Images"),wxT(""));
     pFileMenu->AppendSeparator () ;
-
+#ifndef __WXMAC__
     pFileMenu->Append (ID_FILE_PREFERENCES, wxT ("Preferences"), wxT (""));
     pFileMenu->AppendSeparator () ;
+#endif
     pFileMenu->Append (ID_FILE_EXIT, wxT ("Quit\tCtrl+Q"), wxT (""));
 
     wxMenu *pInventoryMenu = new wxMenu ();
@@ -268,7 +269,14 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos,
     pMenuBar->Append (pFileMenu, wxT ("File"));
     pMenuBar->Append (pBrowserMenu, wxT ("Browser"));
     pMenuBar->Append (pInventoryMenu, wxT("Inventory"));
+
+#ifdef __WXMAC__
+    wxApp::s_macAboutMenuItemId = ID_HELP_ABOUT;
+    wxApp::s_macPreferencesMenuItemId = ID_FILE_PREFERENCES;
+    wxApp::s_macHelpMenuTitleName = "Help";
+#else
     pMenuBar->Append (pHelpMenu, wxT ("Help"));
+#endif
 
     SetMenuBar (pMenuBar);
 
