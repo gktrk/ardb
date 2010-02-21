@@ -368,33 +368,43 @@ BrowserLibraryController::ProcessTitles (BrowserLibraryFilter *pFilter)
 void
 BrowserLibraryController::ProcessTypes (BrowserLibraryFilter *pFilter)
 {
-    wxString sExpression, sSummary;
+    wxString sExpression, sTempString, sOperator, sSummary;
     InterfaceData *pUIData = InterfaceData::Instance ();
 
     for (unsigned int i = 0; i < pUIData->GetTypes ()->GetCount (); i++) {
         if (pFilter->m_apTypes[i]->IsChecked ()) {
-            sExpression.Printf (wxT ("(card_type = '%s') OR (card_type LIKE '%s/%%') OR (card_type LIKE '%%/%s') OR (card_type LIKE '%s / %%') OR (card_type LIKE '%% / %s')"),
+            sTempString.Printf (wxT ("%s(card_type = '%s') OR (card_type LIKE '%s/%%') OR (card_type LIKE '%%/%s') OR (card_type LIKE '%s / %%') OR (card_type LIKE '%% / %s')"),
+                                sOperator.c_str(),
                                 pUIData->GetTypes ()->Item (i).c_str (),
                                 pUIData->GetTypes ()->Item (i).c_str (),
                                 pUIData->GetTypes ()->Item (i).c_str (),
                                 pUIData->GetTypes ()->Item (i).c_str (),
                                 pUIData->GetTypes ()->Item (i).c_str ());
-            AddToWhereClause (sExpression);
+
+            sExpression+=sTempString;
+            sOperator=wxT(" OR ");
             sSummary.Printf (wxT ("%s"), pUIData->GetTypes ()->Item (i).c_str ());
             AddToFilterSummary (sSummary);
         }
     }
 
     if (pFilter->m_pCombo->IsChecked ()) {
-        sExpression.Printf (wxT ("card_type LIKE '%%/%%'"));
+        sExpression.Printf (wxT ("%s%s(card_type LIKE '%%/%%')"),
+                            sExpression.c_str(),
+                            sOperator.c_str());
         AddToWhereClause (sExpression);
         sSummary.Printf (wxT ("Combo"));
         AddToFilterSummary (sSummary);
     }
     if (pFilter->m_pReflex->IsChecked ()) {
-        sExpression.Printf (wxT ("card_text LIKE '%%[REFLEX]%%'"));
+        sExpression.Printf (wxT ("%s%s(card_text LIKE '%%[REFLEX]%%')"),
+                            sExpression.c_str(),
+                            sOperator.c_str());
         AddToWhereClause (sExpression);
         sSummary.Printf (wxT ("Reflex"));
         AddToFilterSummary (sSummary);
+    }
+    if (!sExpression.IsEmpty ()) {
+        AddToWhereClause (sExpression);
     }
 }
