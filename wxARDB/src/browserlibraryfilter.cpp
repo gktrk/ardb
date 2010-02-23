@@ -25,17 +25,17 @@
 #include "browserlibraryfilter.h"
 
 BEGIN_EVENT_TABLE(BrowserLibraryFilter, wxDialog)
-    EVT_BUTTON (ID_OK_BUTTON, BrowserLibraryFilter::OnOKButtonClick)
-    EVT_BUTTON (ID_CANCEL_BUTTON, BrowserLibraryFilter::OnCancelButtonClick)
-    EVT_BUTTON (ID_CLEAR_BUTTON, BrowserLibraryFilter::OnClearButtonClick)
-    EVT_CHECKBOX (ID_CHECK_CLANLESS, BrowserLibraryFilter::OnClanlessClick)
-    EVT_CHECKBOX (ID_CHECK_DISCLESS, BrowserLibraryFilter::OnDisclessClick)
+EVT_BUTTON (ID_OK_BUTTON, BrowserLibraryFilter::OnOKButtonClick)
+EVT_BUTTON (ID_CANCEL_BUTTON, BrowserLibraryFilter::OnCancelButtonClick)
+EVT_BUTTON (ID_CLEAR_BUTTON, BrowserLibraryFilter::OnClearButtonClick)
+EVT_CHECKBOX (ID_CHECK_CLANLESS, BrowserLibraryFilter::OnClanlessClick)
+EVT_CHECKBOX (ID_CHECK_DISCLESS, BrowserLibraryFilter::OnDisclessClick)
 END_EVENT_TABLE()
 
 
 BrowserLibraryFilter::BrowserLibraryFilter(BrowserLibraryController *pController) :
-    wxDialog (0, -1, wxT ("Library Filter"), wxDefaultPosition, wxDefaultSize),
-    // Initialisation of member objects and variables
+wxDialog (0, -1, wxT ("Library Filter"), wxDefaultPosition, wxDefaultSize),
+// Initialisation of member objects and variables
     m_pCancelButton (NULL),
     m_pCardNameText (NULL),
     m_pClanLess (NULL),
@@ -66,18 +66,19 @@ BrowserLibraryFilter::BrowserLibraryFilter(BrowserLibraryController *pController
 
     wxBoxSizer *pPapaSizerV = new wxBoxSizer (wxVERTICAL);
     wxBoxSizer *pPapaSizer = new wxBoxSizer (wxHORIZONTAL);
-    pPapaSizerV->Add (pPapaSizer);
+    pPapaSizerV->Add(pPapaSizer);
 
-    SetAutoLayout (TRUE);
-    SetSizer (pPapaSizerV);
+    SetAutoLayout(TRUE);
+    SetSizer(pPapaSizerV);
 
     // The card types
-    wxStaticBox *pTypeStaticBox = new wxStaticBox (this, -1, wxT ("By card type"));
-    wxStaticBoxSizer *pTypeBox = new wxStaticBoxSizer (pTypeStaticBox, wxVERTICAL);
-    wxBoxSizer *pTypeOtherSizer = new wxBoxSizer (wxVERTICAL);
-    for (unsigned int i = 0; i < pUIData->GetTypes ()->GetCount (); i++) {
-        BuildType (i, pTypeBox);
+    wxStaticBoxSizer *pTypeBox = new wxStaticBoxSizer (new wxStaticBox (this, -1, wxT ("By card type")), wxVERTICAL);
+    wxBoxSizer *pCardTypeSizer = new wxBoxSizer(wxVERTICAL);
+
+    for (unsigned int i = 0; i < pUIData->GetTypes()->GetCount(); i++) {
+        BuildType(i, pTypeBox);
     }
+
     m_pCombo = new wxCheckBox (this, -1, wxT ("Combo"));
     wxBoxSizer *pComboSizer = new wxBoxSizer (wxHORIZONTAL);
     wxString sComboIconName (wxT ("Type Combo"));
@@ -87,8 +88,8 @@ BrowserLibraryFilter::BrowserLibraryFilter(BrowserLibraryController *pController
     m_pReflex = new wxCheckBox (this, -1, wxT ("Reflex"));
     wxBoxSizer *pReflexSizer = new wxBoxSizer (wxHORIZONTAL);
     wxString sReflexIconName (wxT ("Type Reflex"));
-    wxStaticBitmap *pReflexIcon = pUIData->MakeStaticBitmap (this, sReflexIconName);
-    if (pReflexIcon) pReflexSizer->Add (pReflexIcon, 0, wxRIGHT, 5);
+    wxStaticBitmap *pReflexIcon = pUIData->MakeStaticBitmap(this, sReflexIconName);
+    if (pReflexIcon) pReflexSizer->Add(pReflexIcon, 0, wxRIGHT, 5);
     pReflexSizer->Add (m_pReflex);
 
 #ifdef __WXMSW__
@@ -99,16 +100,16 @@ BrowserLibraryFilter::BrowserLibraryFilter(BrowserLibraryController *pController
     pTypeBox->Add (pComboSizer);
     pTypeBox->Add (pReflexSizer);
 #endif
-    pPapaSizer->Add (pTypeOtherSizer, 0, wxEXPAND | wxALL, 5);
-    pTypeOtherSizer->Add (pTypeBox, 0, wxEXPAND);
+
+    pPapaSizer->Add(pCardTypeSizer, 0, wxEXPAND | wxALL, 5);
+    pCardTypeSizer->Add(pTypeBox, 0, wxEXPAND);
 
     // The Clans and Disciplines Sizer
     wxBoxSizer *pClanDiscSizer = new wxBoxSizer (wxVERTICAL);
-    pPapaSizer->Add (pClanDiscSizer, 1, wxEXPAND | wxALL, 5);
+    pPapaSizer->Add(pClanDiscSizer, 1, wxEXPAND | wxALL, 5);
 
     // The Disciplines list
-    wxStaticBox *pDiscStaticBox = new wxStaticBox (this, -1, wxT ("By discipline"));
-    wxStaticBoxSizer *pDisciplineBox = new wxStaticBoxSizer (pDiscStaticBox, wxVERTICAL);
+    wxStaticBoxSizer *pDisciplineBox = new wxStaticBoxSizer (new wxStaticBox (this, -1, wxT ("By discipline")), wxVERTICAL);
     m_pDisciplineList = new wxListView (this, -1, wxDefaultPosition, wxSize (200, 75), wxLC_REPORT | wxLC_NO_HEADER);
     m_pDisciplineList->InsertColumn (0, wxEmptyString);
     for (unsigned int i = 0; i < pUIData->GetDisciplines ()->GetCount (); i++) {
@@ -132,8 +133,7 @@ BrowserLibraryFilter::BrowserLibraryFilter(BrowserLibraryController *pController
     pPapaSizer->Add (pTitleOtherSizer, 1, wxEXPAND | wxALL, 5);
 
     // Titles
-    wxStaticBox *pTitleStaticBox = new wxStaticBox (this, -1, wxT ("By title"));
-    wxStaticBoxSizer *pTitleBox = new wxStaticBoxSizer (pTitleStaticBox, wxVERTICAL);
+    wxStaticBoxSizer *pTitleBox = new wxStaticBoxSizer (new wxStaticBox (this, -1, wxT ("By title")), wxVERTICAL);
     m_pTitleList = new wxListView (this, -1, wxDefaultPosition, wxSize (200, 75), wxLC_REPORT | wxLC_NO_HEADER);
     m_pTitleList->InsertColumn (0, wxEmptyString);
     // here we won't include any of the wildcard titles
@@ -146,8 +146,7 @@ BrowserLibraryFilter::BrowserLibraryFilter(BrowserLibraryController *pController
     pTitleOtherSizer->Add (pTitleBox, 0, wxEXPAND);
 
     // Clans
-    wxStaticBox *pClanStaticBox = new wxStaticBox (this, -1, wxT ("By clan"));
-    wxStaticBoxSizer *pClanBox = new wxStaticBoxSizer (pClanStaticBox, wxVERTICAL);
+    wxStaticBoxSizer *pClanBox = new wxStaticBoxSizer (new wxStaticBox (this, -1, wxT ("By clan")), wxVERTICAL);
     m_pClanList = new wxListView (this, -1, wxDefaultPosition, wxSize (200, 75), wxLC_REPORT | wxLC_NO_HEADER);
     m_pClanList->InsertColumn (0, wxEmptyString);
     for (unsigned int i = 0; i < pUIData->GetClans ()->GetCount (); i++) {
@@ -166,8 +165,7 @@ BrowserLibraryFilter::BrowserLibraryFilter(BrowserLibraryController *pController
     pClanDiscSizer->Add (pClanBox, 1, wxEXPAND);
 
     // Editions
-    wxStaticBox *pEditionStaticBox = new wxStaticBox (this, -1, wxT ("By set"));
-    wxStaticBoxSizer *pEditionBox = new wxStaticBoxSizer (pEditionStaticBox, wxHORIZONTAL);
+    wxStaticBoxSizer *pEditionBox = new wxStaticBoxSizer (new wxStaticBox (this, -1, wxT ("By set")), wxHORIZONTAL);
     wxBoxSizer *pEditionSizer = new wxBoxSizer (wxVERTICAL);
     pEditionBox->Add (pEditionSizer, 1, wxEXPAND);
     m_pEditionList = new wxListView (this, -1, wxDefaultPosition, wxSize (200, 75), wxLC_REPORT | wxLC_NO_HEADER);
@@ -180,8 +178,7 @@ BrowserLibraryFilter::BrowserLibraryFilter(BrowserLibraryController *pController
 
 
     // Rarity
-    wxStaticBox *pRarityStaticBox = new wxStaticBox (this, -1, wxT ("By rarity"));
-    wxStaticBoxSizer *pRarityBox = new wxStaticBoxSizer (pRarityStaticBox, wxHORIZONTAL);
+    wxStaticBoxSizer *pRarityBox = new wxStaticBoxSizer (new wxStaticBox (this, -1, wxT ("By rarity")), wxHORIZONTAL);
     wxBoxSizer *pRaritySizer = new wxBoxSizer (wxVERTICAL);
     pRarityBox->Add (pRaritySizer, 1, wxEXPAND);
     m_pRarityList = new wxListView (this, -1, wxDefaultPosition, wxSize (200, 75), wxLC_REPORT | wxLC_NO_HEADER);
@@ -194,8 +191,7 @@ BrowserLibraryFilter::BrowserLibraryFilter(BrowserLibraryController *pController
 
 
     // Card text
-    wxStaticBox *pTextStaticBox = new wxStaticBox (this, -1, wxT ("By card text"));
-    wxStaticBoxSizer *pTextBox = new wxStaticBoxSizer (pTextStaticBox, wxVERTICAL);
+    wxStaticBoxSizer *pTextBox = new wxStaticBoxSizer (new wxStaticBox (this, -1, wxT ("By card text")), wxVERTICAL);
     wxFlexGridSizer *pTextSizer = new wxFlexGridSizer (2, 5, 5);
 
     wxStaticText *pLabel = new wxStaticText (this, -1, wxT ("Card name :"));
@@ -212,8 +208,7 @@ BrowserLibraryFilter::BrowserLibraryFilter(BrowserLibraryController *pController
     pTitleOtherSizer->Add (pTextBox, 0, wxEXPAND);
 
     // Other (cost blood, pool, burn option, etc..)
-    wxStaticBox *pOtherStaticBox = new wxStaticBox (this, -1, wxT ("Other"));
-    wxStaticBoxSizer *pOtherBox = new wxStaticBoxSizer (pOtherStaticBox, wxVERTICAL);
+    wxStaticBoxSizer *pOtherBox = new wxStaticBoxSizer (new wxStaticBox (this, -1, wxT ("Other")), wxVERTICAL);
     wxFlexGridSizer *pOtherSizer = new wxFlexGridSizer (2);
     pOtherBox->Add (pOtherSizer, 1, wxEXPAND | wxTOP, 5);
     for (unsigned int i = 0; i < pUIData->GetLibraryReqs ()->GetCount (); i++) {
@@ -230,7 +225,7 @@ BrowserLibraryFilter::BrowserLibraryFilter(BrowserLibraryController *pController
     pOtherSizer->Add(m_pCostBlood, 0, wxALL, 3);
     pOtherSizer->Add(m_pCostPool, 0, wxALL, 3);
 
-    pTypeOtherSizer->Add (pOtherBox, 0, wxEXPAND);
+    pClanDiscSizer->Add(pOtherBox, 0, wxEXPAND);
 
 
     // OK, Clear and Cancel buttons
@@ -297,13 +292,13 @@ BrowserLibraryFilter::BuildType (unsigned int uiTypeNumber, wxSizer *pContainer)
     wxCheckBox *pCheckBox;
     InterfaceData *pUIData = InterfaceData::Instance ();
 
-    pSizer = new wxBoxSizer (wxHORIZONTAL);
-    pCheckBox = new wxCheckBox (this, -1, pUIData->GetTypes ()->Item (uiTypeNumber));
+    pSizer = new wxBoxSizer(wxHORIZONTAL);
+    pCheckBox = new wxCheckBox(this, -1, pUIData->GetTypes()->Item(uiTypeNumber));
 
     wxString sIconName;
     sIconName.Printf (wxT ("Type %s"),
                       pUIData->GetTypes ()->Item (uiTypeNumber).c_str ());
-    wxStaticBitmap *pIcon = pUIData->MakeStaticBitmap (this, sIconName);
+    wxStaticBitmap *pIcon = pUIData->MakeStaticBitmap(this, sIconName);
     if (pIcon) pSizer->Add (pIcon, 0, wxRIGHT, 5);
 
     pSizer->Add (pCheckBox);
@@ -379,14 +374,14 @@ BrowserLibraryFilter::Reset ()
         m_pDisciplineList->Select (i, FALSE);
     }
     /*
-    m_pAnarchCheckbox->SetValue (FALSE);
-    m_pBlackHandCheckbox->SetValue (FALSE);
-    m_pSeraphCheckbox->SetValue (FALSE);
-    m_pBurnOption->SetValue (FALSE);
-    m_pCostBlood->SetValue (FALSE);
-    m_pCostPool->SetValue (FALSE);
-    m_pTrifle->SetValue (FALSE);
-    m_pTrophy->SetValue (FALSE);
+      m_pAnarchCheckbox->SetValue (FALSE);
+      m_pBlackHandCheckbox->SetValue (FALSE);
+      m_pSeraphCheckbox->SetValue (FALSE);
+      m_pBurnOption->SetValue (FALSE);
+      m_pCostBlood->SetValue (FALSE);
+      m_pCostPool->SetValue (FALSE);
+      m_pTrifle->SetValue (FALSE);
+      m_pTrophy->SetValue (FALSE);
     */
     m_pClanLess->SetValue (FALSE);
     m_pDisciplineLess->SetValue (FALSE);
@@ -401,15 +396,15 @@ BrowserLibraryFilter::SetDialogTitle (int iMode)
 {
     // Set the dialog's title
     switch (iMode) {
-    case LIBRARY_FILTER_ADD:
-        SetTitle (wxT ("Add cards..."));
-        break;
-    case LIBRARY_FILTER_REMOVE:
-        SetTitle (wxT ("Remove cards..."));
-        break;
-    case LIBRARY_FILTER_KEEP:
-        SetTitle (wxT ("Select cards..."));
-        break;
+        case LIBRARY_FILTER_ADD:
+            SetTitle (wxT ("Add cards..."));
+            break;
+        case LIBRARY_FILTER_REMOVE:
+            SetTitle (wxT ("Remove cards..."));
+            break;
+        case LIBRARY_FILTER_KEEP:
+            SetTitle (wxT ("Select cards..."));
+            break;
     }
 }
 
