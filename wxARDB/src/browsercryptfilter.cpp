@@ -24,6 +24,7 @@
 
 #include "browsercryptfilter.h"
 #include "speling.h"
+#include <wx/gdicmn.h>
 
 #include <wx/arrimpl.cpp> // this is a magic incantation which must be done!
 
@@ -41,7 +42,7 @@ END_EVENT_TABLE()
 
 
 BrowserCryptFilter::BrowserCryptFilter(BrowserCryptController *pController) :
-    wxDialog (0, -1, wxT ("Crypt Filter"), wxDefaultPosition, wxDefaultSize),
+wxDialog (0, -1, wxT ("Crypt Filter"), wxDefaultPosition, wxDefaultSize, wxRESIZE_BORDER | wxDEFAULT_DIALOG_STYLE),
 // Initialisation of member objects and variables
     m_bNoEvents (FALSE),
     m_iCycleCounter (-1),
@@ -86,9 +87,12 @@ BrowserCryptFilter::BrowserCryptFilter(BrowserCryptController *pController) :
     wxAcceleratorTable accel(3, entries);
     this->SetAcceleratorTable(accel);
 
-    InterfaceData *pUIData = InterfaceData::Instance ();
-
+    InterfaceData *pUIData = InterfaceData::Instance();
+    // The vertical sizer on the right side
+    wxBoxSizer *pUpperRightSizer = new wxBoxSizer (wxVERTICAL);
+    wxBoxSizer *pLowerRightSizer = new wxBoxSizer (wxVERTICAL);
     wxBoxSizer *pPapaSizer = new wxBoxSizer (wxVERTICAL);
+
     SetAutoLayout (TRUE);
     SetSizer (pPapaSizer);
 
@@ -97,13 +101,30 @@ BrowserCryptFilter::BrowserCryptFilter(BrowserCryptController *pController) :
 
     // create the criterion panel
     wxFlexGridSizer *pPrimoSizer = new wxFlexGridSizer (2, 5, 5);
+    wxBoxSizer *pTertioSizer = NULL;
     wxPanel *pPrimoPanel = new wxPanel (pNotebook, -1);
+    wxPanel *pTertioPanel = NULL;
+    wxPanel *pSpecialPanel = pPrimoPanel;
+    wxSizer *pSpecialSizer = pPrimoSizer;
+    wxSizer *pCapSizer;
+    int nScreenHeight;
 
     pNotebook->AddPage (pPrimoPanel, wxT ("Primo"));
 
+    ::wxDisplaySize(NULL,&nScreenHeight);
+
+    if (nScreenHeight < 700) {
+	pTertioPanel = new wxPanel (pNotebook, -1);
+	pTertioSizer = new wxBoxSizer(wxVERTICAL);
+	pSpecialPanel = pTertioPanel; 
+	pSpecialSizer = pTertioSizer;
+	pCapSizer = pTertioSizer;
+    } else {
+	pCapSizer = pLowerRightSizer;
+    }
+
     // The Disciplines ComboBoxes
-    wxStaticBox *pDiscStaticBox = new wxStaticBox (pPrimoPanel, -1, wxT ("By discipline"));
-    wxStaticBoxSizer *pDisciplineBox = new wxStaticBoxSizer (pDiscStaticBox, wxHORIZONTAL);
+    wxStaticBoxSizer *pDisciplineBox = new wxStaticBoxSizer (new wxStaticBox (pPrimoPanel, -1, wxT ("By discipline")), wxHORIZONTAL);
     wxBoxSizer *pDisCol1Sizer = new wxBoxSizer (wxVERTICAL);
     wxBoxSizer *pDisCol2Sizer = new wxBoxSizer (wxVERTICAL);
     pDisciplineBox->Add (pDisCol1Sizer, 0, wxRIGHT, 5);
@@ -120,13 +141,12 @@ BrowserCryptFilter::BrowserCryptFilter(BrowserCryptController *pController) :
     }
     pPrimoSizer->Add (pDisciplineBox, 1, wxEXPAND | wxALL, 5);
 
-    // The vertical sizer on the right side
-    wxBoxSizer *pUpperRightSizer = new wxBoxSizer (wxVERTICAL);
+
+
     pPrimoSizer->Add (pUpperRightSizer, 1, wxEXPAND | wxALL, 5);
 
     // Titles
-    wxStaticBox *pTitleStaticBox = new wxStaticBox (pPrimoPanel, -1, wxT ("By title"));
-    wxStaticBoxSizer *pTitleBox = new wxStaticBoxSizer (pTitleStaticBox, wxVERTICAL);
+    wxStaticBoxSizer *pTitleBox = new wxStaticBoxSizer (new wxStaticBox (pPrimoPanel, -1, wxT ("By title")), wxVERTICAL);
     m_pTitleList = new wxListView (pPrimoPanel, -1, wxDefaultPosition, wxSize (200, 75), wxLC_REPORT | wxLC_NO_HEADER);
     m_pTitleList->InsertColumn (0, wxEmptyString);
     for (unsigned int i = 0; i < pUIData->GetTitles ()->GetCount (); i++) {
@@ -137,8 +157,7 @@ BrowserCryptFilter::BrowserCryptFilter(BrowserCryptController *pController) :
     pUpperRightSizer->Add (pTitleBox, 0, wxEXPAND);
 
     // Clans
-    wxStaticBox *pClanStaticBox = new wxStaticBox (pPrimoPanel, -1, wxT ("By clan"));
-    wxStaticBoxSizer *pClanBox = new wxStaticBoxSizer (pClanStaticBox, wxVERTICAL);
+    wxStaticBoxSizer *pClanBox = new wxStaticBoxSizer (new wxStaticBox (pPrimoPanel, -1, wxT ("By clan")), wxVERTICAL);
     m_pClanList = new wxListView (pPrimoPanel, -1, wxDefaultPosition, wxSize (200, 75), wxLC_REPORT | wxLC_NO_HEADER);
     m_pClanList->InsertColumn (0, wxEmptyString);
     for (unsigned int i = 0; i < pUIData->GetClans ()->GetCount (); i++) {
@@ -147,38 +166,14 @@ BrowserCryptFilter::BrowserCryptFilter(BrowserCryptController *pController) :
     pClanBox->Add (m_pClanList, 1, wxEXPAND | wxTOP, 5);
     pUpperRightSizer->Add (pClanBox, 1, wxEXPAND);
 
-    // Special abilities & card text
-    wxStaticBox *pSpecialStaticBox = new wxStaticBox (pPrimoPanel, -1, wxT ("By card text"));
-    wxStaticBoxSizer *pSpecialBox = new wxStaticBoxSizer (pSpecialStaticBox, wxHORIZONTAL);
-    wxGridSizer *pSpecialSizer = new wxGridSizer (4);
-    wxBoxSizer *pSpecialSizerV = new wxBoxSizer (wxVERTICAL);
-    wxBoxSizer *pSpecialSizerOther = new wxBoxSizer (wxHORIZONTAL);
-    pSpecialBox->Add (pSpecialSizerV, 1, wxEXPAND | wxTOP, 5);
-    pSpecialSizerV->Add (pSpecialSizer, 1, wxEXPAND);
-    pSpecialSizerV->Add (pSpecialSizerOther, 0, wxEXPAND);
-    for (unsigned int i = 0; i < pUIData->GetSpecials ()->GetCount (); i++) {
-        BuildSpecial (i, pSpecialSizer, pPrimoPanel);
-    }
-
-    wxStaticText *pLabel = new wxStaticText (pPrimoPanel, -1, wxT ("Card name :"));
-    pSpecialSizerOther->Add (pLabel, 0, wxALIGN_CENTER);
-    m_pCardNameText = new wxTextCtrl (pPrimoPanel, -1);
-    pSpecialSizerOther->Add (m_pCardNameText, 1, wxALL, 5);
-
-    pLabel = new wxStaticText (pPrimoPanel, -1, wxT ("Other text :"));
-    pSpecialSizerOther->Add (pLabel, 0, wxALIGN_CENTER | wxLEFT, 10);
-    m_pOtherText = new wxTextCtrl (pPrimoPanel, -1);
-    pSpecialSizerOther->Add (m_pOtherText, 1, wxALL, 5);
-
-    pPrimoSizer->Add (pSpecialBox, 0, wxEXPAND | wxALL, 5);
+    CreateSpecialBox(pSpecialPanel, pSpecialSizer, pUIData);
 
     // the Sects and group sizer
     wxFlexGridSizer *pGroupSectSizer = new wxFlexGridSizer (2);
-    wxBoxSizer *pLowerRightSizer = new wxBoxSizer (wxVERTICAL);
+
     pPrimoSizer->Add (pLowerRightSizer, 1, wxEXPAND | wxALL, 5);
     // Sects
-    wxStaticBox *pSectStaticBox = new wxStaticBox (pPrimoPanel, -1, wxT ("By sect"));
-    wxStaticBoxSizer *pSectBox = new wxStaticBoxSizer (pSectStaticBox, wxHORIZONTAL);
+    wxStaticBoxSizer *pSectBox = new wxStaticBoxSizer (new wxStaticBox (pPrimoPanel, -1, wxT ("By sect")), wxHORIZONTAL);
     wxBoxSizer *pSectSizer = new wxBoxSizer (wxVERTICAL);
     pSectBox->Add (pSectSizer, 1, wxEXPAND);
     m_pSectList = new wxListView (pPrimoPanel, -1, wxDefaultPosition, wxSize (120, 60), wxLC_REPORT | wxLC_NO_HEADER);
@@ -190,8 +185,7 @@ BrowserCryptFilter::BrowserCryptFilter(BrowserCryptController *pController) :
     pGroupSectSizer->Add (pSectBox, 1, wxEXPAND);
 
     // Groups
-    wxStaticBox *pGroupStaticBox = new wxStaticBox (pPrimoPanel, -1, wxT ("By group"));
-    wxStaticBoxSizer *pGroupBox = new wxStaticBoxSizer (pGroupStaticBox, wxHORIZONTAL);
+    wxStaticBoxSizer *pGroupBox = new wxStaticBoxSizer (new wxStaticBox (pPrimoPanel, -1, wxT ("By group")), wxHORIZONTAL);
     wxBoxSizer *pGroupSizer = new wxBoxSizer (wxVERTICAL);
     pGroupBox->Add (pGroupSizer, 1, wxEXPAND);
 #ifdef __WXMAC__
@@ -210,30 +204,11 @@ BrowserCryptFilter::BrowserCryptFilter(BrowserCryptController *pController) :
     pUpperRightSizer->Add (pGroupSectSizer, 0, wxEXPAND, 5);
 
 
-    // Capacity
-    wxStaticBox *pCapStaticBox = new wxStaticBox (pPrimoPanel, -1, wxT ("By capacity"));
-    wxStaticBoxSizer *pCapBox = new wxStaticBoxSizer (pCapStaticBox, wxVERTICAL);
-    wxFlexGridSizer *pCapSizer = new wxFlexGridSizer (2);
-    pCapBox->Add (pCapSizer, 1, wxEXPAND | wxTOP, 5);
+    CreateCapacityBox(pSpecialPanel, pCapSizer, pUIData);
 
-    m_pCapLesserCheckbox = new wxCheckBox (pPrimoPanel, ID_CAP_LESS_CHECKBOX, wxT ("Capacity <="));
-    pCapSizer->Add (m_pCapLesserCheckbox, 0, wxALIGN_CENTER_VERTICAL);
-    m_pCapLesserSlider = new wxSlider (pPrimoPanel, ID_CAP_LESS_SCALE, 8, 1, 11, wxDefaultPosition, wxSize (100, -1), wxSL_HORIZONTAL | wxSL_AUTOTICKS | wxSL_LABELS);
-    pCapSizer->Add (m_pCapLesserSlider, 1, wxEXPAND);
-    m_pCapEqualCheckbox = new wxCheckBox (pPrimoPanel, ID_CAP_EQ_CHECKBOX, wxT ("Capacity ="));
-    pCapSizer->Add (m_pCapEqualCheckbox, 0, wxALIGN_CENTER_VERTICAL);
-    m_pCapEqualSlider = new wxSlider (pPrimoPanel, ID_CAP_EQ_SCALE, 6, 1, 11, wxDefaultPosition, wxSize (100, -1), wxSL_HORIZONTAL | wxSL_AUTOTICKS | wxSL_LABELS);
-    pCapSizer->Add (m_pCapEqualSlider, 1, wxEXPAND);
-    m_pCapGreaterCheckbox = new wxCheckBox (pPrimoPanel, ID_CAP_MORE_CHECKBOX, wxT ("Capacity >="));
-    pCapSizer->Add (m_pCapGreaterCheckbox, 0, wxALIGN_CENTER_VERTICAL);
-    m_pCapGreaterSlider = new wxSlider (pPrimoPanel, ID_CAP_MORE_SCALE, 4, 1, 11, wxDefaultPosition, wxSize (100, -1), wxSL_HORIZONTAL | wxSL_AUTOTICKS | wxSL_LABELS);
-    pCapSizer->Add (m_pCapGreaterSlider, 1, wxEXPAND);
-
-    pLowerRightSizer->Add (pCapBox, 1, wxEXPAND);
 
     pPrimoPanel->SetAutoLayout (TRUE);
     pPrimoPanel->SetSizer (pPrimoSizer);
-
 
     // The Secundo panel
     wxPanel *pSecundoPanel = new wxPanel (pNotebook, -1);
@@ -242,8 +217,7 @@ BrowserCryptFilter::BrowserCryptFilter(BrowserCryptController *pController) :
     wxBoxSizer *pSecundoSizer = new wxBoxSizer (wxHORIZONTAL);
 
     // Vampires like...
-    wxStaticBox *pFeatherStaticBox = new wxStaticBox (pSecundoPanel, -1, wxT ("Vampires like..."));
-    wxStaticBoxSizer *pFeatherBox = new wxStaticBoxSizer (pFeatherStaticBox, wxHORIZONTAL);
+    wxStaticBoxSizer *pFeatherBox = new wxStaticBoxSizer (new wxStaticBox (pSecundoPanel, -1, wxT ("Vampires like...")), wxHORIZONTAL);
     wxBoxSizer *pFeatherSizer = new wxBoxSizer (wxVERTICAL);
     pFeatherBox->Add (pFeatherSizer, 1, wxEXPAND);
     m_pCardText = new CardText (pSecundoPanel, -1);
@@ -278,10 +252,9 @@ BrowserCryptFilter::BrowserCryptFilter(BrowserCryptController *pController) :
 
     // Editions
     wxBoxSizer *pSecundoRightSizer = new wxBoxSizer (wxVERTICAL);
-    pSecundoSizer->Add (pSecundoRightSizer, 1, wxEXPAND | wxALL, 5);
+    pSecundoSizer->Add (pSecundoRightSizer, 1, wxEXPAND | wxRIGHT, 5);
 
-    wxStaticBox *pEditionStaticBox = new wxStaticBox (pSecundoPanel, -1, wxT ("By set"));
-    wxStaticBoxSizer *pEditionBox = new wxStaticBoxSizer (pEditionStaticBox, wxHORIZONTAL);
+    wxStaticBoxSizer *pEditionBox = new wxStaticBoxSizer (new wxStaticBox (pSecundoPanel, -1, wxT ("By set")), wxHORIZONTAL);
     wxBoxSizer *pEditionSizer = new wxBoxSizer (wxVERTICAL);
     pEditionBox->Add (pEditionSizer, 1, wxEXPAND);
     m_pEditionList = new wxListView (pSecundoPanel, -1, wxDefaultPosition, wxSize (250, 75), wxLC_REPORT | wxLC_NO_HEADER);
@@ -293,8 +266,7 @@ BrowserCryptFilter::BrowserCryptFilter(BrowserCryptController *pController) :
     pSecundoRightSizer->Add (pEditionBox, 1, wxEXPAND);
 
     // Rarity
-    wxStaticBox *pRarityStaticBox = new wxStaticBox (pSecundoPanel, -1, wxT ("By rarity"));
-    wxStaticBoxSizer *pRarityBox = new wxStaticBoxSizer (pRarityStaticBox, wxHORIZONTAL);
+    wxStaticBoxSizer *pRarityBox = new wxStaticBoxSizer (new wxStaticBox (pSecundoPanel, -1, wxT ("By rarity")), wxHORIZONTAL);
     wxBoxSizer *pRaritySizer = new wxBoxSizer (wxVERTICAL);
     pRarityBox->Add (pRaritySizer, 1, wxEXPAND);
     m_pRarityList = new wxListView (pSecundoPanel, -1, wxDefaultPosition, wxSize (250, 75), wxLC_REPORT | wxLC_NO_HEADER);
@@ -308,6 +280,11 @@ BrowserCryptFilter::BrowserCryptFilter(BrowserCryptController *pController) :
     pSecundoPanel->SetAutoLayout (TRUE);
     pSecundoPanel->SetSizer (pSecundoSizer);
 
+    if (pTertioPanel !=  NULL) {
+	pNotebook->AddPage(pTertioPanel, wxT ("Tertio"));
+	pTertioPanel->SetAutoLayout (TRUE);
+	pTertioPanel->SetSizer(pTertioSizer);
+    }
 
     // OK, Clear and Cancel buttons
     wxBoxSizer *pOKCancelSizer = new wxBoxSizer (wxHORIZONTAL);
@@ -331,8 +308,69 @@ BrowserCryptFilter::BrowserCryptFilter(BrowserCryptController *pController) :
     m_pGroupList->SetColumnWidth (0, m_pGroupList->GetClientSize ().GetWidth () - 20);
     m_pEditionList->SetColumnWidth (0, m_pEditionList->GetClientSize ().GetWidth () - 20);
     m_pRarityList->SetColumnWidth (0, m_pRarityList->GetClientSize ().GetWidth () - 20);
+
+    if (pTertioPanel !=  NULL) {
+	SetSize(wxSize(700,550));
+    }
+
 }
 
+void
+BrowserCryptFilter::CreateSpecialBox(wxPanel *pPanel, wxSizer *pSizer, 
+				     InterfaceData *pUIData)
+{
+    // Special abilities & card text
+    wxStaticBoxSizer *pSpecialBox = new wxStaticBoxSizer (new wxStaticBox (pPanel, -1, wxT ("By card text")), wxHORIZONTAL);
+    wxGridSizer *pSpecialSizer = new wxGridSizer (4);
+    wxBoxSizer *pSpecialSizerV = new wxBoxSizer (wxVERTICAL);
+    wxBoxSizer *pSpecialSizerOther = new wxBoxSizer (wxHORIZONTAL);
+    pSpecialBox->Add (pSpecialSizerV, 1, wxEXPAND | wxTOP, 5);
+    pSpecialSizerV->Add (pSpecialSizer, 1, wxEXPAND);
+    pSpecialSizerV->Add (pSpecialSizerOther, 0, wxEXPAND);
+
+    for (unsigned int i = 0; i < pUIData->GetSpecials ()->GetCount (); i++) {
+        BuildSpecial(i, pSpecialSizer, pPanel);
+    }
+
+    wxStaticText *pLabel = new wxStaticText (pPanel, -1, wxT ("Card name :"));
+    pSpecialSizerOther->Add (pLabel, 0, wxALIGN_CENTER);
+    m_pCardNameText = new wxTextCtrl (pPanel, -1);
+    pSpecialSizerOther->Add (m_pCardNameText, 1, wxALL, 5);
+
+    pLabel = new wxStaticText (pPanel, -1, wxT ("Other text :"));
+    pSpecialSizerOther->Add (pLabel, 0, wxALIGN_CENTER | wxLEFT, 10);
+    m_pOtherText = new wxTextCtrl (pPanel, -1);
+    pSpecialSizerOther->Add (m_pOtherText, 1, wxALL, 5);
+    pSizer->Add (pSpecialBox, 0, wxEXPAND | wxRIGHT, 5);
+
+}
+
+void
+BrowserCryptFilter::CreateCapacityBox(wxPanel *pPanel, wxSizer *pSizer, 
+				      InterfaceData *pUIData)
+{
+    // Capacity
+    wxStaticBoxSizer *pCapBox = new wxStaticBoxSizer (
+	new wxStaticBox (pPanel, -1, wxT ("By capacity")), wxVERTICAL);
+    wxFlexGridSizer *pCapSizer = new wxFlexGridSizer (2);
+    pCapBox->Add (pCapSizer, 1, wxEXPAND | wxTOP, 5);
+
+    m_pCapLesserCheckbox = new wxCheckBox (pPanel, ID_CAP_LESS_CHECKBOX, wxT ("Capacity <="));
+    pCapSizer->Add (m_pCapLesserCheckbox, 0, wxALIGN_CENTER_VERTICAL);
+    m_pCapLesserSlider = new wxSlider (pPanel, ID_CAP_LESS_SCALE, 8, 1, 11, wxDefaultPosition, wxSize (100, -1), wxSL_HORIZONTAL | wxSL_AUTOTICKS | wxSL_LABELS);
+    pCapSizer->Add (m_pCapLesserSlider, 1, wxEXPAND);
+    m_pCapEqualCheckbox = new wxCheckBox (pPanel, ID_CAP_EQ_CHECKBOX, wxT ("Capacity ="));
+    pCapSizer->Add (m_pCapEqualCheckbox, 0, wxALIGN_CENTER_VERTICAL);
+    m_pCapEqualSlider = new wxSlider (pPanel, ID_CAP_EQ_SCALE, 6, 1, 11, wxDefaultPosition, wxSize (100, -1), wxSL_HORIZONTAL | wxSL_AUTOTICKS | wxSL_LABELS);
+    pCapSizer->Add (m_pCapEqualSlider, 1, wxEXPAND);
+    m_pCapGreaterCheckbox = new wxCheckBox (pPanel, ID_CAP_MORE_CHECKBOX, wxT ("Capacity >="));
+    pCapSizer->Add (m_pCapGreaterCheckbox, 0, wxALIGN_CENTER_VERTICAL);
+    m_pCapGreaterSlider = new wxSlider (pPanel, ID_CAP_MORE_SCALE, 4, 1, 11, wxDefaultPosition, wxSize (100, -1), wxSL_HORIZONTAL | wxSL_AUTOTICKS | wxSL_LABELS);
+    pCapSizer->Add (m_pCapGreaterSlider, 1, wxEXPAND);
+
+    pSizer->Add (pCapBox, 1, wxEXPAND);
+
+}
 
 void
 BrowserCryptFilter::FillCardPicker ()
@@ -459,7 +497,6 @@ BrowserCryptFilter::BuildDiscipline (unsigned int uiDisciplineNumber, wxSizer *p
     pSizer->Add (pLabel, 1, wxALIGN_CENTER | wxRIGHT, 5);
     pSizer->Add (pCombo, 0);
     pContainer->Add (pSizer, 0, wxEXPAND);
-
     m_oDisciplinesCombos.Add (pCombo);
 
     return pSizer;
@@ -555,7 +592,7 @@ BrowserCryptFilter::OnCardInputChanged (wxCommandEvent& WXUNUSED (event))
             m_iCycleLowerValue = iIndex;
         }
         iIndex++;
-        if (iIndex >= m_pCardPicker->GetCount ()) {
+        if (iIndex >= (int)m_pCardPicker->GetCount()) {
             bSearchLower = FALSE;
         }
     }
@@ -568,7 +605,7 @@ BrowserCryptFilter::OnCardInputChanged (wxCommandEvent& WXUNUSED (event))
                 m_iCycleUpperValue = iIndex;
             }
             iIndex++;
-            if (iIndex >= m_pCardPicker->GetCount ()) {
+            if (iIndex >= (int)m_pCardPicker->GetCount ()) {
                 bSearchUpper = FALSE;
                 m_iCycleUpperValue = iIndex;
             }
