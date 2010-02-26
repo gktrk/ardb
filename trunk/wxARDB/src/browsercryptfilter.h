@@ -96,6 +96,11 @@ private:
     // helper functions to build the interface
     wxSizer *BuildDiscipline (unsigned int uiDisciplineNumber, wxSizer *pContainer, wxWindow *pWindow);
     void BuildSpecial (unsigned int uiSpecialNumber, wxSizer *pContainer, wxWindow *pWindow);
+    void CreateSpecialBox(wxPanel *pPanel, wxSizer *pSizer, 
+			  InterfaceData *pUIData);
+
+    void CreateCapacityBox(wxPanel *pPanel, wxSizer *pSizer, 
+		      InterfaceData *pUIData);
 
     void FillCardPicker ();
 
