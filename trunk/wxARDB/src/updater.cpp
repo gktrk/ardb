@@ -561,16 +561,22 @@ Updater::LoadTableFromCSV(wxString sTable, wxString sCSVFile, int nClanCol = -1)
 
 	    //Remove trailing 's' last word
 	    if (sItem.Len() > 2) {
-		if (sItem[sItem.Len()-2] == 's') {
-		    sItem[sItem.Len()-2] = '"';
-		    sItem = sItem.Truncate(sItem.Len()-1);
+		//Check if this a ravnos or Harbringer of Skulls
+		int nRavnos = sItem.CmpNoCase(wxT("\"Ravnos\""));
+		int nHoS = sItem.CmpNoCase(wxT("\"Harbinger of Skulls\""));
+
+		if (nRavnos != 0 && nHoS != 0) {
+		    
+		    if (sItem[sItem.Len()-2] == 's') {
+			sItem[sItem.Len()-2] = '"';
+			sItem = sItem.Truncate(sItem.Len()-1);
+		    }
 		}
 	    }
 	}
 
-        sQuery.Append (sItem);
-
-        colNum++;
+	sQuery.Append (sItem);
+	colNum++;
         if (colNum < iNumFields) {
             sQuery.Append (wxT(","));
         } else {
