@@ -217,7 +217,7 @@ BrowserFrame::BrowserFrame (const wxString& title, const wxPoint& pos,
 #ifdef __WXMAC__
     wxApp::s_macAboutMenuItemId = ID_HELP_ABOUT;
     wxApp::s_macPreferencesMenuItemId = ID_FILE_PREFERENCES;
-    wxApp::s_macHelpMenuTitleName = "Help";
+    wxApp::s_macHelpMenuTitleName = wxT("Help");
 #endif
 
     SetSizeHints (640, 480);
