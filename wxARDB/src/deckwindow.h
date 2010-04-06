@@ -56,6 +56,7 @@ private:
     void OnFileExportPhpBB (wxCommandEvent& event);
     void OnFileExportText (wxCommandEvent& event);
     void OnFileImportELD (wxCommandEvent& event);
+    void OnFileExportLackey(wxCommandEvent& event);
     void OnFileExportSecretLibrary(wxCommandEvent& event);
     void OnFileNew (wxCommandEvent& event);
     void OnFileOpen (wxCommandEvent& event);
@@ -83,7 +84,8 @@ private:
         ID_TOOLS_RESIZE,
         ID_TOOLS_MERGE,
         ID_TOOLS_DRAWPER,
-        ID_FILE_EXPORT_SL
+        ID_FILE_EXPORT_SL,
+	ID_FILE_EXPORT_LACKEY
     };
 
     DECLARE_EVENT_TABLE()

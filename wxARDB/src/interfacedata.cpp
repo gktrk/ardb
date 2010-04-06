@@ -115,7 +115,10 @@ InterfaceData::InterfaceData () :
     }
 
     // Get the disciplines
-    pResult = pDatabase->Query (wxT ("SELECT DISTINCT name, '%' ||  infabbrev || '%', '%' || supabbrev || '%' FROM disciplines ORDER BY name ASC"), &m_oDisciplineRecord);
+    pResult = pDatabase->Query (wxT ("SELECT DISTINCT name, '%' ||  infabbrev || '%', '%' || supabbrev || '%' FROM disciplines ORDER BY name ASC"), &m_oLibraryDisciplineRecord);
+
+    //We do not want Maleficia or Striga
+    pResult = pDatabase->Query (wxT ("SELECT DISTINCT name, '%' ||  infabbrev || '%', '%' || supabbrev || '%' FROM disciplines WHERE name <> 'Maleficia' AND name <> 'Striga' ORDER BY name ASC"), &m_oCryptDisciplineRecord);
 
 
     //  pDatabase->ToggleVerbose ();

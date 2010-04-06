@@ -71,6 +71,7 @@ public:
     bool ExportToELD ();
     bool ExportToHTML ();
     bool ExportToJOL ();
+    bool ExportToLackey();
     bool ExportToPhpBB ();
     bool ExportToText ();
     bool ExportToXML ();

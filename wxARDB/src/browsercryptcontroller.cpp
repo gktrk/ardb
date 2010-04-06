@@ -197,40 +197,40 @@ BrowserCryptController::ProcessDisciplines (BrowserCryptFilter *pFilter)
     InterfaceData *pUIData = InterfaceData::Instance ();
     wxString sExpression, sSummary;
 
-    for (unsigned int i = 0; i < pUIData->GetDisciplines ()->GetCount (); i++) {
+    for (unsigned int i = 0; i < pUIData->GetCryptDisciplines ()->GetCount (); i++) {
         switch (pFilter->m_oDisciplinesCombos[i]->GetSelection ()) {
         case 1:
             // Only inferior
             sExpression.Printf (wxT ("(inferior LIKE '%s') AND (superior NOT LIKE '%s')"),
-                                pUIData->GetDisciplines ()->Item (i)[1].c_str(),
-                                pUIData->GetDisciplines ()->Item (i)[2].c_str());
+                                pUIData->GetCryptDisciplines ()->Item (i)[1].c_str(),
+                                pUIData->GetCryptDisciplines ()->Item (i)[2].c_str());
             AddToWhereClause (sExpression);
-            sSummary.Printf (wxT ("inferior %s"), pUIData->GetDisciplines ()->Item (i)[0].c_str());
+            sSummary.Printf (wxT ("inferior %s"), pUIData->GetCryptDisciplines ()->Item (i)[0].c_str());
             AddToFilterSummary (sSummary);
             break;
         case 2:
             // Inferior or superior
             sExpression.Printf (wxT ("(inferior LIKE '%s') OR (superior LIKE '%s')"),
-                                pUIData->GetDisciplines ()->Item (i)[1].c_str(),
-                                pUIData->GetDisciplines ()->Item (i)[2].c_str());
+                                pUIData->GetCryptDisciplines ()->Item (i)[1].c_str(),
+                                pUIData->GetCryptDisciplines ()->Item (i)[2].c_str());
             AddToWhereClause (sExpression);
-            sSummary.Printf (wxT ("%s"), pUIData->GetDisciplines ()->Item (i)[0].c_str());
+            sSummary.Printf (wxT ("%s"), pUIData->GetCryptDisciplines ()->Item (i)[0].c_str());
             AddToFilterSummary (sSummary);
             break;
         case 3:
             // Only superior
             sExpression.Printf (wxT ("superior LIKE '%s'"),
-                                pUIData->GetDisciplines ()->Item (i)[2].c_str());
+                                pUIData->GetCryptDisciplines ()->Item (i)[2].c_str());
             AddToWhereClause (sExpression);
-            sSummary.Printf (wxT ("superior %s"), pUIData->GetDisciplines ()->Item (i)[0].c_str());
+            sSummary.Printf (wxT ("superior %s"), pUIData->GetCryptDisciplines ()->Item (i)[0].c_str());
             AddToFilterSummary (sSummary);
             break;
         case 4:
             // None
             sExpression.Printf (wxT ("disciplines NOT LIKE '%s'"),
-                                pUIData->GetDisciplines ()->Item (i)[1].c_str());
+                                pUIData->GetCryptDisciplines ()->Item (i)[1].c_str());
             AddToWhereClause (sExpression);
-            sSummary.Printf (wxT ("%s-less"), pUIData->GetDisciplines ()->Item (i)[0].c_str());
+            sSummary.Printf (wxT ("%s-less"), pUIData->GetCryptDisciplines ()->Item (i)[0].c_str());
             AddToFilterSummary (sSummary);
             break;
         default:
@@ -293,8 +293,8 @@ BrowserCryptController::ProcessFeather (BrowserCryptFilter *pFilter)
 
         // SELECT <all disciplines>, groupnumber from cards_crypt WHERE record_num= ref
         sQuery = wxT ("SELECT ");
-        for (unsigned int c=0; c<pUIData->GetDisciplines ()->GetCount (); c++) {
-            sQuery.Append (pUIData->GetDisciplines ()->Item (c)[0].Lower ());
+        for (unsigned int c=0; c<pUIData->GetCryptDisciplines ()->GetCount (); c++) {
+            sQuery.Append (pUIData->GetCryptDisciplines ()->Item (c)[0].Lower ());
             sQuery.Append (wxT (", "));
         }
         sTmp.Printf (wxT ("groupnumber from cards_crypt WHERE record_num='%ld'"),
@@ -310,16 +310,16 @@ BrowserCryptController::ProcessFeather (BrowserCryptFilter *pFilter)
                                      "ORDER BY ("
                                      "abs (capacity - %d) / 2 +"),
                                 !pFilter->m_pFeatherGrpCheckbox->IsChecked (),
-                                oDisciplinesEtc.Item (0).Item (pUIData->GetDisciplines ()->GetCount ()).c_str (),
+                                oDisciplinesEtc.Item (0).Item (pUIData->GetCryptDisciplines ()->GetCount ()).c_str (),
                                 pFilter->m_pFeatherCapSlider->GetValue ());
 
-            for (unsigned int c=0; c<pUIData->GetDisciplines ()->GetCount (); c++) {
+            for (unsigned int c=0; c<pUIData->GetCryptDisciplines ()->GetCount (); c++) {
                 sExpression.Append (wxT ("abs ("));
-                sExpression.Append (pUIData->GetDisciplines ()->Item (c)[0].Lower ());
+                sExpression.Append (pUIData->GetCryptDisciplines ()->Item (c)[0].Lower ());
                 sExpression.Append (wxT (" - "));
                 sExpression.Append (oDisciplinesEtc.Item (0).Item (c));
                 sExpression.Append (wxT (") "));
-                if (c < pUIData->GetDisciplines ()->GetCount () - 1)
+                if (c < pUIData->GetCryptDisciplines ()->GetCount () - 1)
                     sExpression.Append (wxT ("+"));
                 else
                     sExpression.Append (wxT (") "));

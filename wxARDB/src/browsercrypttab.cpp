@@ -483,17 +483,14 @@ BrowserCryptTab::SetCardCount (unsigned int uiCount)
             long lCount;
             RecordSet *pRecordSet;
 
-            for (unsigned int i = 0; i < pUIData->GetDisciplines()->GetCount(); i++) {
+            for (unsigned int i = 0; i < pUIData->GetCryptDisciplines()->GetCount(); i++) {
                 //Hack.  We do not want to query the Maleficia or Striga
                 //disciplines as they donot exist
 
-                if ((pUIData->GetDisciplines()->Item(i)[0].CmpNoCase(wxT("Maleficia")) !=0) &&
-                    (pUIData->GetDisciplines()->Item(i)[0].CmpNoCase(wxT("Striga")) != 0)) {
-
-                    sLowerCaseDiscName = pUIData->GetDisciplines()->Item (i)[0];
+                    sLowerCaseDiscName = pUIData->GetCryptDisciplines()->Item (i)[0];
                     sLowerCaseDiscName = sLowerCaseDiscName.MakeLower();
 
-                    sQuery.Printf (wxT ("SELECT '%s ', sum(cards_crypt.%s) FROM cards_crypt WHERE cards_crypt.record_num IN (SELECT card_name FROM crypt_selection WHERE browser_num='%d');"), pUIData->GetDisciplines ()->Item (i)[0].c_str (), sLowerCaseDiscName.c_str (), m_pModel->GetIDNumber ());
+                    sQuery.Printf (wxT ("SELECT '%s ', sum(cards_crypt.%s) FROM cards_crypt WHERE cards_crypt.record_num IN (SELECT card_name FROM crypt_selection WHERE browser_num='%d');"), pUIData->GetCryptDisciplines ()->Item (i)[0].c_str (), sLowerCaseDiscName.c_str (), m_pModel->GetIDNumber ());
 
                     pRecordSet = pDatabase->Query (sQuery);
                     if (pRecordSet && pRecordSet->Count ()) {
@@ -501,7 +498,6 @@ BrowserCryptTab::SetCardCount (unsigned int uiCount)
                             oHappyList.Append (new HappyBucket (pRecordSet->Item (0).Item (0), lCount));
                         }
                     }
-                }
             }
             // Sort and get the top ranked disciplines
             oHappyList.Sort (HappyBucket::Compare);
