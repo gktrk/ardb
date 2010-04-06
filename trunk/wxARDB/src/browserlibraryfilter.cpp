@@ -112,8 +112,8 @@ wxDialog (0, -1, wxT ("Library Filter"), wxDefaultPosition, wxDefaultSize),
     wxStaticBoxSizer *pDisciplineBox = new wxStaticBoxSizer (new wxStaticBox (this, -1, wxT ("By discipline")), wxVERTICAL);
     m_pDisciplineList = new wxListView (this, -1, wxDefaultPosition, wxSize (200, 75), wxLC_REPORT | wxLC_NO_HEADER);
     m_pDisciplineList->InsertColumn (0, wxEmptyString);
-    for (unsigned int i = 0; i < pUIData->GetDisciplines ()->GetCount (); i++) {
-        m_pDisciplineList->InsertItem (i, pUIData->GetDisciplines ()->Item (i)[0]);
+    for (unsigned int i = 0; i < pUIData->GetLibraryDisciplines ()->GetCount (); i++) {
+        m_pDisciplineList->InsertItem (i, pUIData->GetLibraryDisciplines ()->Item (i)[0]);
     }
     pDisciplineBox->Add (m_pDisciplineList, 1, wxEXPAND | wxTOP, 5);
     m_pMultiDiscipline = new wxCheckBox (this, -1, wxT ("Multi Discipline"));

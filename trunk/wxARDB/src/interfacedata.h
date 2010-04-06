@@ -48,9 +48,14 @@ public:
     wxArrayString *GetClans ()       {
         return &m_oClanArray;
     }
-    RecordSet     *GetDisciplines () {
-        return &m_oDisciplineRecord;
+    RecordSet     *GetCryptDisciplines () {
+        return &m_oCryptDisciplineRecord;
     }
+
+    RecordSet     *GetLibraryDisciplines () {
+        return &m_oLibraryDisciplineRecord;
+    }
+
     wxArrayString *GetEditions ()    {
         return &m_oEditionArray;
     }
@@ -95,7 +100,8 @@ private:
     wxArrayString   m_oSectArray;
     wxArrayString   m_oTypeArray;
     wxString        m_sImagedir;
-    RecordSet       m_oDisciplineRecord;
+    RecordSet       m_oLibraryDisciplineRecord;
+    RecordSet       m_oCryptDisciplineRecord;
     RecordSet       m_oLibraryReqRecord;
     RecordSet       m_oLibraryTextRecord;
     RecordSet       m_oRarityRecord;

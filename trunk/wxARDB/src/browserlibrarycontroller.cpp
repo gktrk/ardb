@@ -184,12 +184,12 @@ BrowserLibraryController::ProcessDisciplines (BrowserLibraryFilter *pFilter)
         sSummary.Printf (wxT ("Disciplineless"));
         AddToFilterSummary (sSummary);
     } else {
-        for (unsigned int i = 0; i < pUIData->GetDisciplines ()->GetCount (); i++) {
+        for (unsigned int i = 0; i < pUIData->GetLibraryDisciplines ()->GetCount (); i++) {
             if (pFilter->m_pDisciplineList->IsSelected (i)) {
                 sTempString.Printf (wxT ("%s%s(discipline LIKE '%%%s%%')"),
-                                    sExpression.c_str (), sOperator.c_str (), pUIData->GetDisciplines ()->Item (i)[0].c_str ());
+                                    sExpression.c_str (), sOperator.c_str (), pUIData->GetLibraryDisciplines ()->Item (i)[0].c_str ());
                 sExpression = sTempString;
-                sTempString.Printf (wxT ("%s%s "), sSummary.c_str (), pUIData->GetDisciplines ()->Item (i)[0].c_str ());
+                sTempString.Printf (wxT ("%s%s "), sSummary.c_str (), pUIData->GetLibraryDisciplines ()->Item (i)[0].c_str ());
                 sSummary = sTempString;
                 sOperator.Printf (wxT (" OR "));
             }

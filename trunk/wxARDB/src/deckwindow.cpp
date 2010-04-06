@@ -40,6 +40,7 @@ BEGIN_EVENT_TABLE (DeckWindow, wxFrame)
     EVT_MENU (ID_FILE_EXPORT_BBCODE, DeckWindow::OnFileExportPhpBB)
     EVT_MENU (ID_FILE_EXPORT_TEXT, DeckWindow::OnFileExportText)
     EVT_MENU (ID_FILE_EXPORT_JOL, DeckWindow::OnFileExportJOL)
+    EVT_MENU (ID_FILE_EXPORT_LACKEY, DeckWindow::OnFileExportLackey)
     EVT_MENU (ID_FILE_EXPORT_SL, DeckWindow::OnFileExportSecretLibrary)
     EVT_MENU (ID_FILE_IMPORT_ELD, DeckWindow::OnFileImportELD)
     EVT_MENU (ID_FILE_CLOSE, DeckWindow::OnFileClose)
@@ -84,6 +85,7 @@ DeckWindow::DeckWindow (DeckModel *pModel, const wxPoint& pos, const wxSize& siz
     pFileMenu->Append (ID_FILE_EXPORT_BBCODE, wxT ("Export deck to phpBB\tCtrl+P"));
     pFileMenu->Append (ID_FILE_EXPORT_TEXT, wxT ("Export deck to text\tCtrl+T"));
     pFileMenu->Append (ID_FILE_EXPORT_JOL, wxT ("Export deck to JOL\tCtrl+J"));
+    pFileMenu->Append (ID_FILE_EXPORT_LACKEY, wxT ("Export deck to Lackey CCG\tCtrl+K"));
     pFileMenu->Append (ID_FILE_EXPORT_SL, wxT ("Export deck to Secret Library\tCtrl+L"));
     pFileMenu -> AppendSeparator () ;
     pFileMenu->Append (ID_FILE_IMPORT_ELD, wxT ("Import ELD deck\tCtrl+E"));
@@ -162,8 +164,6 @@ DeckWindow::OnFileClose (wxCommandEvent& WXUNUSED (event))
     Close();
 }
 
-
-
 void
 DeckWindow::OnFileExportHTML (wxCommandEvent& WXUNUSED (event))
 {
@@ -171,7 +171,6 @@ DeckWindow::OnFileExportHTML (wxCommandEvent& WXUNUSED (event))
         wxLogError (wxT ("An error occured while saving"));
     }
 }
-
 
 void
 DeckWindow::OnFileExportJOL (wxCommandEvent& WXUNUSED (event))
@@ -181,7 +180,6 @@ DeckWindow::OnFileExportJOL (wxCommandEvent& WXUNUSED (event))
     }
 }
 
-
 void
 DeckWindow::OnFileExportPhpBB (wxCommandEvent& WXUNUSED (event))
 {
@@ -190,11 +188,18 @@ DeckWindow::OnFileExportPhpBB (wxCommandEvent& WXUNUSED (event))
     }
 }
 
-
 void
 DeckWindow::OnFileExportText (wxCommandEvent& WXUNUSED (event))
 {
     if (!m_pModel->ExportToText ()) {
+        wxLogError (wxT ("An error occured while saving"));
+    }
+}
+
+void
+DeckWindow::OnFileExportLackey(wxCommandEvent& WXUNUSED (event))
+{
+    if (!m_pModel->ExportToLackey ()) {
         wxLogError (wxT ("An error occured while saving"));
     }
 }

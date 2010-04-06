@@ -404,19 +404,13 @@ DeckModel::ComputeCryptHappiness ()
 
     if (m_uiHappyDisciplineCount == 0 || m_lCryptCount == 0) return;
 
-    for (unsigned int i = 0; i < pUIData->GetDisciplines ()->GetCount (); i++) {
+    for (unsigned int i = 0; i < pUIData->GetCryptDisciplines ()->GetCount (); i++) {
 
-	//Hack.  We do not want to query the Maleficia or Striga
-	//disciplines as they donot exist
-
-	if ((pUIData->GetDisciplines()->Item(i)[0].CmpNoCase(wxT("Maleficia")) !=0) &&
-	    (pUIData->GetDisciplines()->Item(i)[0].CmpNoCase(wxT("Striga")) != 0)) {
-
-	    sLowerCaseDiscName = pUIData->GetDisciplines ()->Item (i)[0];
+	    sLowerCaseDiscName = pUIData->GetCryptDisciplines ()->Item (i)[0];
 	    sLowerCaseDiscName = sLowerCaseDiscName.MakeLower ();
 
 	    // Count disciplines
-	    sQuery.Printf (wxT ("SELECT '%s ', sum(decks_crypts.number_used * cards_crypt.%s) FROM decks_crypts, cards_crypt WHERE (decks_crypts.deck_ref = 0) AND (decks_crypts.card_ref = cards_crypt.record_num);"), pUIData->GetDisciplines ()->Item (i)[0].c_str (), sLowerCaseDiscName.c_str ());
+	    sQuery.Printf (wxT ("SELECT '%s ', sum(decks_crypts.number_used * cards_crypt.%s) FROM decks_crypts, cards_crypt WHERE (decks_crypts.deck_ref = 0) AND (decks_crypts.card_ref = cards_crypt.record_num);"), pUIData->GetCryptDisciplines ()->Item (i)[0].c_str (), sLowerCaseDiscName.c_str ());
 
 	    pRecordSet = pDatabase->Query (sQuery);
 	    if (pRecordSet) {
@@ -424,7 +418,6 @@ DeckModel::ComputeCryptHappiness ()
 		    m_oHappyList.Append (new HappyBucket (pRecordSet->Item (0).Item (0), lCount));
 		}
 	    }
-	}
     }
 
     // Sort and get the top ranked disciplines
@@ -639,6 +632,34 @@ DeckModel::ExportToJOL ()
     return ExportWithXSL (sFile, &sXSL);
 }
 
+bool
+DeckModel::ExportToLackey()
+{
+    Database *pDatabase = Database::Instance ();
+    wxString sXSL, sConfEntry = wxT("DeckLackeyTemplate");
+    wxString sFile = StripInvalidFilename(m_sName);
+
+    if (pDatabase == NULL) return false;
+
+    sXSL << pDatabase->GetDatabaseDirectory ()
+         << wxFileName::GetPathSeparator ()
+         << wxT("xsl/deck2lackey.xsl");
+
+    sFile.Append (wxT (".lackey"));
+
+    wxFileDialog oFileDialog (m_pView, wxT ("Export deck..."),
+                              wxT (""), sFile, wxT ("*.lackey"),
+                              wxSAVE | wxOVERWRITE_PROMPT);
+    if (oFileDialog.ShowModal () != wxID_OK) {
+        return true;
+    }
+
+    sFile = oFileDialog.GetDirectory () << wxFileName::GetPathSeparator ()
+            << oFileDialog.GetFilename ();
+
+    return ExportWithXSL (sFile, &sXSL);
+
+}
 
 bool
 DeckModel::ExportToPhpBB ()

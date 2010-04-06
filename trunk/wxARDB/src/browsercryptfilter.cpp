@@ -132,10 +132,10 @@ wxDialog (0, -1, wxT ("Crypt Filter"), wxDefaultPosition, wxDefaultSize, wxRESIZ
 
     {
         unsigned int i = 0;
-        for (; i < pUIData->GetDisciplines ()->GetCount () / 2; i++) {
+        for (; i < pUIData->GetCryptDisciplines ()->GetCount () / 2; i++) {
             BuildDiscipline (i, pDisCol1Sizer, pPrimoPanel);
         }
-        for (; i < pUIData->GetDisciplines ()->GetCount (); i++) {
+        for (; i < pUIData->GetCryptDisciplines ()->GetCount (); i++) {
             BuildDiscipline (i, pDisCol2Sizer, pPrimoPanel);
         }
     }
@@ -410,7 +410,7 @@ BrowserCryptFilter::Reset ()
 {
     InterfaceData *pUIData = InterfaceData::Instance ();
 
-    for (unsigned int i = 0; i < pUIData->GetDisciplines ()->GetCount (); i++) {
+    for (unsigned int i = 0; i < pUIData->GetCryptDisciplines ()->GetCount (); i++) {
         m_oDisciplinesCombos[i]->SetSelection (0);
     }
     for (unsigned int i = 0; i < pUIData->GetSpecials ()->GetCount (); i++) {
@@ -476,7 +476,7 @@ BrowserCryptFilter::BuildDiscipline (unsigned int uiDisciplineNumber, wxSizer *p
     wxStaticText *pLabel;
 
     pSizer = new wxBoxSizer (wxHORIZONTAL);
-    pLabel = new wxStaticText (pWindow, -1, pUIData->GetDisciplines ()->Item (uiDisciplineNumber)[0]);
+    pLabel = new wxStaticText (pWindow, -1, pUIData->GetCryptDisciplines ()->Item (uiDisciplineNumber)[0]);
     pCombo = new wxComboBox (pWindow, -1, wxT (""), wxDefaultPosition, wxSize (120, -1), 0, 0, wxCB_READONLY);
 
     pCombo->Append (wxT (""));
@@ -488,7 +488,7 @@ BrowserCryptFilter::BuildDiscipline (unsigned int uiDisciplineNumber, wxSizer *p
 
     wxString sIconName;
     sIconName.Printf (wxT ("Discipline %s"),
-                      pUIData->GetDisciplines ()->Item (uiDisciplineNumber)[2].c_str ());
+                      pUIData->GetCryptDisciplines ()->Item (uiDisciplineNumber)[2].c_str ());
     sIconName.Replace (wxT ("%"), wxT (""));
 
     wxStaticBitmap *pIcon = pUIData->MakeStaticBitmap (pWindow, sIconName);
