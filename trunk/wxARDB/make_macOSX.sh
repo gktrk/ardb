@@ -102,8 +102,9 @@ mkdir ardb.app
 mkdir ardb.app/Contents
 mkdir ardb.app/Contents/MacOS
 mkdir ardb.app/Contents/Resources
+mkdir ardb.app/Contents/Resources/xsl
 cp src/Info.plist ardb.app/Contents
 cp src/ardb ardb.app/Contents/MacOS
-cp -r resources/*.* ardb.app/Contents/Resources
-cp -r resources/* ardb.app/Contents/Resources
+ls -1 resources | grep -v ".xsl" | xargs -I FILE cp -r resources/FILE ardb.app/Contents/Resources
+cp resources/*.xsl ardb.app/Contents/Resources/xsl
 
