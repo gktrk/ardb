@@ -1,3 +1,4 @@
+
 /*  Anarch Revolt Deck Builder - a VTES inventory manager / deck builder
  *
  *  Copyright (C) 2002 Francois Gombault
@@ -40,7 +41,8 @@ BrowserCryptModel::BrowserCryptModel (wxNotebook *pViewPanel, unsigned int uiNum
                               "       sum(have) AS hav, "
                               "       sum(want) AS wan, "
                               "       sum(spare) AS spa, "
-                              "       card_name, "
+                              "       set_name, "
+                              "       card_name,"
                               "       advanced, "
                               "       capacity, "
                               "       disciplines, "
@@ -54,7 +56,7 @@ BrowserCryptModel::BrowserCryptModel (wxNotebook *pViewPanel, unsigned int uiNum
                               "FROM crypt_view "
                               "WHERE card_ref IN (SELECT card_name "
                               "                   FROM crypt_selection WHERE browser_num = %d) "
-                              "GROUP BY name_ref, advanced "),
+                              "GROUP BY card_name, advanced "),
                          m_uiModelIDNumber);
 
     m_sAddQuery.Printf (wxT ("INSERT INTO crypt_selection SELECT %d, card_ref, NULL FROM crypt_view %s"),
@@ -67,7 +69,7 @@ BrowserCryptModel::BrowserCryptModel (wxNotebook *pViewPanel, unsigned int uiNum
     m_sWipeQuery.Printf (wxT ("DELETE FROM crypt_selection WHERE browser_num = %d; "),
                          m_uiModelIDNumber);
 
-    SetSortColumn (4);
+    SetSortColumn (5);
     Reset();
 
     m_pController = new BrowserCryptController (this);
@@ -269,34 +271,38 @@ BrowserCryptModel::SetSortColumn (int iColumn)
         break;
     case 4:
     case -4:
-        m_sSortSuffix << wxT ("dumbitdown(card_name)");
+        m_sSortSuffix << wxT ("set_name");
         break;
     case 5:
     case -5:
-        m_sSortSuffix << wxT ("advanced");
+        m_sSortSuffix << wxT ("dumbitdown(card_name)");
         break;
     case 6:
     case -6:
-        m_sSortSuffix << wxT ("capacity");
+        m_sSortSuffix << wxT ("advanced");
         break;
     case 7:
     case -7:
-        m_sSortSuffix << wxT ("disciplines");
+        m_sSortSuffix << wxT ("capacity");
         break;
     case 8:
     case -8:
-        m_sSortSuffix << wxT ("card_type");
+        m_sSortSuffix << wxT ("disciplines");
         break;
     case 9:
     case -9:
-        m_sSortSuffix << wxT ("title");
+        m_sSortSuffix << wxT ("card_type");
         break;
     case 10:
     case -10:
-        m_sSortSuffix << wxT ("groupnumber");
+        m_sSortSuffix << wxT ("title");
         break;
     case 11:
     case -11:
+        m_sSortSuffix << wxT ("groupnumber");
+        break;
+    case 12:
+    case -12:
         m_sSortSuffix << wxT ("card_text");
         break;
     default:
