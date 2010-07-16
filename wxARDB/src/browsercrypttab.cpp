@@ -189,7 +189,7 @@ BrowserCryptTab::Init ()
 
     // Create the vampire list
     m_pCardGrid = new BrowserCryptCardGrid (m_pModel, this, m_pSplitterWindow);
-    m_pCardGrid->CreateGrid (0, 12);
+    m_pCardGrid->CreateGrid (0, 13);
     m_pCardGrid->SetSelectionMode (wxGrid::wxGridSelectRows);
     m_pCardGrid->SetGridLineColour (this->GetBackgroundColour ());
     m_pCardGrid->SetToolTip (wxT ("Double click adds to deck,\nRight click for menu"));
@@ -199,15 +199,19 @@ BrowserCryptTab::Init ()
     m_pCardGrid->SetColLabelValue (0, wxT ("Have"));
     m_pCardGrid->SetColLabelValue (1, wxT ("Want"));
     m_pCardGrid->SetColLabelValue (2, wxT ("Spare"));
-    m_pCardGrid->SetColLabelValue (3, wxT ("Name"));
-    m_pCardGrid->SetColLabelValue (4, wxT ("Adv"));
-    m_pCardGrid->SetColLabelValue (5, wxT ("Cap"));
-    m_pCardGrid->SetColLabelValue (6, wxT ("Disciplines"));
-    m_pCardGrid->SetColLabelValue (7, wxT ("Clan"));
-    m_pCardGrid->SetColLabelValue (8, wxT ("Title"));
-    m_pCardGrid->SetColLabelValue (9, wxT ("Grp"));
-    m_pCardGrid->SetColLabelValue (10, wxT ("Text"));
-    m_pCardGrid->SetColLabelValue (11, wxT ("Id"));
+    m_pCardGrid->SetColLabelValue (3, wxT ("Set"));
+    m_pCardGrid->SetColLabelValue (4, wxT ("Name"));
+    m_pCardGrid->SetColLabelValue (5, wxT ("Adv"));
+
+    m_pCardGrid->SetColLabelValue (6, wxT ("Cap"));
+    m_pCardGrid->SetColLabelValue (7, wxT ("Disciplines"));
+    m_pCardGrid->SetColLabelValue (8, wxT ("Clan"));
+    m_pCardGrid->SetColLabelValue (9, wxT ("Title"));
+    m_pCardGrid->SetColLabelValue (10, wxT ("Grp"));
+    m_pCardGrid->SetColLabelValue (11, wxT ("Text"));
+    //m_pCardGrid->SetColLabelValue (11, wxT ("Adv"));
+    m_pCardGrid->SetColLabelValue (12, wxT ("Id"));
+
 
     wxPanel *pCardTextPanel = new wxPanel(m_pSplitterWindow,-1);
     wxBoxSizer *pCardTextSizer = new wxBoxSizer (wxHORIZONTAL);
@@ -286,7 +290,7 @@ BrowserCryptTab::UpdateView ()
     FillCardList ();
 
     if (m_pCardGrid->GetNumberRows () > 0) {
-        for (unsigned int iCol = 0; iCol < 3; iCol++) {
+        for (unsigned int iCol = 0; iCol < 4; iCol++) {
             if (m_bDisplayInventory)
                 m_pCardGrid->AutoSizeColumn (iCol);
             else
@@ -296,7 +300,7 @@ BrowserCryptTab::UpdateView ()
         // Size last column (Id) to 0
         m_pCardGrid->SetColSize (m_pCardGrid->GetNumberCols () - 1, 0);
 
-        for (int iCol = 3; iCol < m_pCardGrid->GetNumberCols () - 1; iCol++) {
+        for (int iCol = 4; iCol < m_pCardGrid->GetNumberCols () - 1; iCol++) {
             m_pCardGrid->AutoSizeColumn (iCol);
             if (m_pCardGrid->GetColSize (iCol) < 30) {
                 m_pCardGrid->SetColSize (iCol, 30);
@@ -383,7 +387,7 @@ BrowserCryptTab::FillCardList ()
     m_pCardGrid->AppendRows (m_pModel->GetCardCount (), FALSE);
 
     for (unsigned int iLine = 0; iLine < m_pModel->GetCardCount (); iLine++) {
-        m_oArrayOfNames.Add (m_pModel->GetCardList ()->Item (iLine).Item (13));
+        m_oArrayOfNames.Add (m_pModel->GetCardList ()->Item (iLine).Item (14));
         m_pCardGrid->AutoSizeRow (iLine);
 
         for (int iCol = 0; iCol < m_pCardGrid->GetNumberCols (); iCol++) {
@@ -395,11 +399,11 @@ BrowserCryptTab::FillCardList ()
 
         }
         // Add this vampire's capacity to the total
-        if (m_pModel->GetCardList()->Item (iLine).Item (5).ToLong (&lCapacity)) {
+        if (m_pModel->GetCardList()->Item (iLine).Item (6).ToLong (&lCapacity)) {
             m_uiCapacityTotal += lCapacity;
         }
         // Remember the vampire's group
-        if (m_pModel->GetCardList()->Item (iLine).Item (9).ToLong (&lGroup)) {
+        if (m_pModel->GetCardList()->Item (iLine).Item (10).ToLong (&lGroup)) {
             m_acGroupCounts[lGroup] = m_acGroupCounts[lGroup] + 1;
         }
     }
@@ -568,7 +572,10 @@ BrowserCryptTab::OnInventoryButtonClick (wxCommandEvent& WXUNUSED (event))
 
     m_pCardGrid->DisableCellEditControl ();
 
-    //save display preference
+
+
+
+
     wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get ();
     if (pConfig) {
         wxString sDisplayInventory = wxT ("DisplayInventory");
@@ -577,13 +584,70 @@ BrowserCryptTab::OnInventoryButtonClick (wxCommandEvent& WXUNUSED (event))
     }
 
     // update display
-    for (unsigned int iCol = 0; iCol < 3; iCol++) {
+    for (unsigned int iCol = 0; iCol < 4; iCol++) {
         if (m_bDisplayInventory)
             m_pCardGrid->AutoSizeColumn (iCol);
         else
             m_pCardGrid->SetColSize (iCol, 0);
     }
     m_pCardGrid->ForceRefresh ();
+
+     if (m_bDisplayInventory==TRUE)
+    {m_pModel->m_sViewQuery.Printf (wxT ("SELECT DISTINCT "
+                              "       sum(have) AS hav, "
+                              "       sum(want) AS wan, "
+                              "       sum(spare) AS spa, "
+                              "       set_name, "
+                              "       card_name,"
+                              "       advanced, "
+                              "       capacity, "
+                              "       disciplines, "
+                              "       card_type, "
+                              "       title, "
+                              "       groupnumber, "
+                              "       card_text, "
+                              "       min(card_ref), "
+                              "       name_ref, "
+                              "       dumbitdown(card_name) "
+                              "FROM crypt_view "
+                              "WHERE card_ref IN (SELECT card_name "
+                              "                   FROM crypt_selection WHERE browser_num = %d) "
+                              "GROUP BY card_ref, advanced "),0);
+                              m_pModel->Reset();
+            }
+        if(m_bDisplayInventory==FALSE)
+        {m_pModel->m_sViewQuery.Printf (wxT ("SELECT DISTINCT "
+                              "       sum(have) AS hav, "
+                              "       sum(want) AS wan, "
+                              "       sum(spare) AS spa, "
+                              "       set_name, "
+                              "       card_name,"
+                              "       advanced, "
+                              "       capacity, "
+                              "       disciplines, "
+                              "       card_type, "
+                              "       title, "
+                              "       groupnumber, "
+                              "       card_text, "
+                              "       min(card_ref), "
+                              "       name_ref, "
+                              "       dumbitdown(card_name) "
+                              "FROM crypt_view "
+                              "WHERE card_ref IN (SELECT card_name "
+                              "                   FROM crypt_selection WHERE browser_num = %d) "
+                              "GROUP BY card_text, advanced "),0);
+                              m_pModel->Reset();
+
+
+
+            }
+
+
+
+
+
+
+
 
 }
 
@@ -657,7 +721,7 @@ BrowserCryptTab::OnFindTextChange (wxCommandEvent& WXUNUSED (event))
     while (bSearch && (unsigned int) iCard < m_pModel->GetCardCount ()) {
         // Here we search vampire names
         pRecord = &(m_pModel->GetCardList ()->Item (iCard));
-        bSearch = m_pFindText->GetValue ().CmpNoCase (pRecord->Item (13).Left (iStringLength).c_str ()) != 0;
+        bSearch = m_pFindText->GetValue ().CmpNoCase (pRecord->Item (14).Left (iStringLength).c_str ()) != 0;
         if (!bSearch) {
             pMatch = pRecord;
         } else {
@@ -961,20 +1025,21 @@ BrowserCryptCardGrid::OnInventoryChange (wxGridEvent& event)
     unsigned int uiCol = event.GetCol (),
         uiRow = event.GetRow ();
     long lHave, lWant, lSpare;
-    wxString sName, sAdv;
+    wxString sName, sAdv, sSet;
 
     GetCellValue (uiRow, 0).ToLong (&lHave);
     GetCellValue (uiRow, 1).ToLong (&lWant);
     GetCellValue (uiRow, 2).ToLong (&lSpare);
-    sName = GetCellValue (uiRow, 3);
-    sAdv = GetCellValue (uiRow, 4);
+    sSet= GetCellValue (uiRow, 3);
+    sName = GetCellValue (uiRow, 4);
+    sAdv = GetCellValue (uiRow, 5);
 
     if (uiCol > 2) {
         wxLogError (wxT ("You are not supposed to edit this column."));
         return;
     }
 
-    pInventoryModel->SetHWSCryptName (sName, wxEmptyString, sAdv.Length () > 0,
+    pInventoryModel->SetHWSCryptName (sName, sSet, sAdv.Length () > 0,
                                       lHave, lWant, lSpare);
 }
 
