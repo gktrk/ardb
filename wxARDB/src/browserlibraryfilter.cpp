@@ -45,6 +45,8 @@ wxDialog (0, -1, wxT ("Library Filter"), wxDefaultPosition, wxDefaultSize),
     m_pController (pController),
     m_pCostBlood (NULL),
     m_pCostPool (NULL),
+    m_pHave (NULL),
+    m_pHaveOrWant (NULL),
     m_pDisciplineLess (NULL),
     m_pDisciplineList (NULL),
     m_pEditionList (NULL),
@@ -209,7 +211,7 @@ wxDialog (0, -1, wxT ("Library Filter"), wxDefaultPosition, wxDefaultSize),
 
     // Other (cost blood, pool, burn option, etc..)
     wxStaticBoxSizer *pOtherBox = new wxStaticBoxSizer (new wxStaticBox (this, -1, wxT ("Other")), wxVERTICAL);
-    wxFlexGridSizer *pOtherSizer = new wxFlexGridSizer (2);
+    wxFlexGridSizer *pOtherSizer = new wxFlexGridSizer (2,2);
     pOtherBox->Add (pOtherSizer, 1, wxEXPAND | wxTOP, 5);
     for (unsigned int i = 0; i < pUIData->GetLibraryReqs ()->GetCount (); i++) {
         BuildLibraryReqs (i, pOtherSizer, this);
@@ -221,10 +223,13 @@ wxDialog (0, -1, wxT ("Library Filter"), wxDefaultPosition, wxDefaultSize),
 
     m_pCostBlood = new wxCheckBox (this, -1, wxT ("Cost Blood"));
     m_pCostPool = new wxCheckBox (this, -1, wxT ("Cost Pool"));
+    m_pHave = new wxCheckBox (this, -1, wxT ("Have Only"));
+    m_pHaveOrWant = new wxCheckBox (this, -1, wxT ("Have or Want"));
 
     pOtherSizer->Add(m_pCostBlood, 0, wxALL, 3);
     pOtherSizer->Add(m_pCostPool, 0, wxALL, 3);
-
+    pOtherSizer->Add(m_pHave, 0, wxALL, 3);
+    pOtherSizer->Add(m_pHaveOrWant, 0, wxALL, 3);
     pClanDiscSizer->Add(pOtherBox, 0, wxEXPAND);
 
 

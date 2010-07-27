@@ -82,7 +82,7 @@ BrowserCryptController::UpdateModel (BrowserCryptFilter *pFilter)
     ProcessFeather(pFilter);
     ProcessEditions(pFilter);
     ProcessRarity(pFilter);
-
+    ProcessOther(pFilter);
     switch (m_eMode) {
     case CRYPT_FILTER_ADD:
         sQuery.Printf(m_pModel->m_sAddQuery, m_sWhereClause.c_str());
@@ -488,4 +488,25 @@ BrowserCryptController::ProcessTitles (BrowserCryptFilter *pFilter)
         AddToWhereClause (sExpression);
         AddToFilterSummary (sSummary);
     }
+}
+
+void BrowserCryptController::ProcessOther (BrowserCryptFilter *pFilter)
+{InterfaceData *pUIData = InterfaceData::Instance ();
+   wxString sExpression, sSummary, sTemp;
+
+    if (pFilter->m_pHave->IsChecked ()) {
+        sExpression.Printf (wxT ("have >= 1"));
+        AddToWhereClause (sExpression);
+        sSummary.Printf (wxT ("Have Only"));
+        AddToFilterSummary (sSummary);
+    }
+    if (pFilter->m_pHaveOrWant->IsChecked ()) {
+        sExpression.Printf (wxT ("have >= 1 OR want >= 1"));
+        AddToWhereClause (sExpression);
+        sSummary.Printf (wxT ("Have or Want"));
+        AddToFilterSummary (sSummary);
+    }
+
+
+
 }

@@ -283,6 +283,18 @@ BrowserLibraryController::ProcessOthers (BrowserLibraryFilter *pFilter)
         sSummary.Printf (wxT ("cost pool"));
         AddToFilterSummary (sSummary);
     }
+        if (pFilter->m_pHave->IsChecked ()) {
+        sExpression.Printf (wxT ("have >= 1"));
+        AddToWhereClause (sExpression);
+        sSummary.Printf (wxT ("Have Only"));
+        AddToFilterSummary (sSummary);
+    }
+    if (pFilter->m_pHaveOrWant->IsChecked ()) {
+        sExpression.Printf (wxT ("have >= 1 OR want >= 1"));
+        AddToWhereClause (sExpression);
+        sSummary.Printf (wxT ("Have or Want"));
+       AddToFilterSummary (sSummary);
+    }
 }
 
 

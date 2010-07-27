@@ -181,7 +181,7 @@ BrowserLibraryTab::Init ()
 
     // Create the vampire list
     m_pCardGrid = new BrowserLibraryCardGrid (m_pModel, this, m_pSplitterWindow);
-    m_pCardGrid->CreateGrid (0, 9);
+    m_pCardGrid->CreateGrid (0, 10);
     m_pCardGrid->SetSelectionMode (wxGrid::wxGridSelectRows);
     m_pCardGrid->SetGridLineColour (this->GetBackgroundColour ());
     m_pCardGrid->SetToolTip (wxT ("Double click adds to deck,\nRight click for menu"));
@@ -191,12 +191,13 @@ BrowserLibraryTab::Init ()
     m_pCardGrid->SetColLabelValue (0, wxT ("Have"));
     m_pCardGrid->SetColLabelValue (1, wxT ("Want"));
     m_pCardGrid->SetColLabelValue (2, wxT ("Spare"));
-    m_pCardGrid->SetColLabelValue (3, wxT ("Name"));
-    m_pCardGrid->SetColLabelValue (4, wxT ("Type"));
-    m_pCardGrid->SetColLabelValue (5, wxT ("Requires"));
-    m_pCardGrid->SetColLabelValue (6, wxT ("Cost"));
-    m_pCardGrid->SetColLabelValue (7, wxT ("Text"));
-    m_pCardGrid->SetColLabelValue (8, wxT ("Id"));
+    m_pCardGrid->SetColLabelValue (3, wxT ("Set"));
+    m_pCardGrid->SetColLabelValue (4, wxT ("Name"));
+    m_pCardGrid->SetColLabelValue (5, wxT ("Type"));
+    m_pCardGrid->SetColLabelValue (6, wxT ("Requires"));
+    m_pCardGrid->SetColLabelValue (7, wxT ("Cost"));
+    m_pCardGrid->SetColLabelValue (8, wxT ("Text"));
+    m_pCardGrid->SetColLabelValue (9, wxT ("Id"));
 
     wxPanel *pCardTextPanel = new wxPanel(m_pSplitterWindow,-1);
     wxBoxSizer *pCardTextSizer = new wxBoxSizer (wxHORIZONTAL);
@@ -268,7 +269,7 @@ BrowserLibraryTab::UpdateView ()
     FillCardList ();
 
     if (m_pCardGrid->GetNumberRows () > 0) {
-        for (unsigned int iCol = 0; iCol < 3; iCol++) {
+        for (unsigned int iCol = 0; iCol < 4; iCol++) {
             if (m_bDisplayInventory)
                 m_pCardGrid->AutoSizeColumn (iCol);
             else
@@ -278,7 +279,7 @@ BrowserLibraryTab::UpdateView ()
         // Size last column (Id) to 0
         m_pCardGrid->SetColSize (m_pCardGrid->GetNumberCols () - 1, 0);
 
-        for (int iCol = 3; iCol < m_pCardGrid->GetNumberCols () - 1; iCol++) {
+        for (int iCol = 4; iCol < m_pCardGrid->GetNumberCols () - 1; iCol++) {
             m_pCardGrid->AutoSizeColumn (iCol);
             if (m_pCardGrid->GetColSize (iCol) < 30) {
                 m_pCardGrid->SetColSize (iCol, 30);
@@ -360,7 +361,7 @@ BrowserLibraryTab::FillCardList ()
     m_pCardGrid->AppendRows (m_pModel->GetCardCount (), FALSE);
 
     for (unsigned int iLine = 0; iLine < m_pModel->GetCardCount (); iLine++) {
-        m_oArrayOfNames.Add (m_pModel->GetCardList ()->Item (iLine).Item (10));
+        m_oArrayOfNames.Add (m_pModel->GetCardList ()->Item (iLine).Item (11));
         m_pCardGrid->AutoSizeRow (iLine);
 
         for (int iCol = 0; iCol < m_pCardGrid->GetNumberCols (); iCol++) {
@@ -462,13 +463,57 @@ BrowserLibraryTab::OnInventoryButtonClick (wxCommandEvent& WXUNUSED (event))
     }
 
     // update display
-    for (unsigned int iCol = 0; iCol < 3; iCol++) {
+    for (unsigned int iCol = 0; iCol < 4; iCol++) {
         if (m_bDisplayInventory)
             m_pCardGrid->AutoSizeColumn (iCol);
         else
             m_pCardGrid->SetColSize (iCol, 0);
     }
     m_pCardGrid->ForceRefresh ();
+
+    if (m_bDisplayInventory==TRUE)
+    {m_pModel->m_sViewQuery.Printf(wxT("SELECT DISTINCT "
+                              "       sum(have) AS hav, "
+                              "       sum(want) AS wan, "
+                              "       sum(spare) AS spa, "
+                              "       set_name, "
+                              "       card_name, "
+                              "       card_type, "
+                              "       requires || min(' ', requires) || discipline  || min(' ', discipline) || clan || min(' ', clan) AS req, "
+                              "       cost, "
+                              "       card_text, "
+                              "       min(card_ref), "
+                              "       name_ref, "
+                              "       dumbitdown(card_name) "
+                              "FROM library_view "
+                              "WHERE card_ref IN (SELECT card_name "
+                              "                   FROM library_selection"
+                              "                   WHERE browser_num = %d) "
+                              "GROUP BY card_ref "),0);
+     m_pModel->Reset();
+    }
+    if (m_bDisplayInventory==FALSE)
+    {m_pModel->m_sViewQuery.Printf(wxT("SELECT DISTINCT "
+                              "       sum(have) AS hav, "
+                              "       sum(want) AS wan, "
+                              "       sum(spare) AS spa, "
+                              "       set_name, "
+                              "       card_name, "
+                              "       card_type, "
+                              "       requires || min(' ', requires) || discipline  || min(' ', discipline) || clan || min(' ', clan) AS req, "
+                              "       cost, "
+                              "       card_text, "
+                              "       min(card_ref), "
+                              "       name_ref, "
+                              "       dumbitdown(card_name) "
+                              "FROM library_view "
+                              "WHERE card_ref IN (SELECT card_name "
+                              "                   FROM library_selection"
+                              "                   WHERE browser_num = %d) "
+                              "GROUP BY card_name "),0);
+     m_pModel->Reset();
+
+    }
 
 }
 
@@ -542,7 +587,7 @@ BrowserLibraryTab::OnFindTextChange (wxCommandEvent& WXUNUSED (event))
     while (bSearch && (unsigned int) iCard < m_pModel->GetCardCount ()) {
         // Here we search vampire names
         pRecord = &(m_pModel->GetCardList ()->Item (iCard));
-        bSearch = m_pFindText->GetValue ().CmpNoCase (pRecord->Item (10).Left (iStringLength).c_str ()) != 0;
+        bSearch = m_pFindText->GetValue ().CmpNoCase (pRecord->Item (11).Left (iStringLength).c_str ()) != 0;
         if (!bSearch) {
             pMatch = pRecord;
         } else {
@@ -838,19 +883,20 @@ BrowserLibraryCardGrid::OnInventoryChange (wxGridEvent& event)
     unsigned int uiCol = event.GetCol (),
                  uiRow = event.GetRow ();
     long lHave, lWant, lSpare;
-    wxString sName;
+    wxString sName,sSet;
 
     GetCellValue (uiRow, 0).ToLong (&lHave);
     GetCellValue (uiRow, 1).ToLong (&lWant);
     GetCellValue (uiRow, 2).ToLong (&lSpare);
-    sName = GetCellValue (uiRow, 3);
+    sSet = GetCellValue (uiRow, 3);
+    sName = GetCellValue (uiRow, 4);
 
     if (uiCol > 2) {
         wxLogError (wxT ("You are not supposed to edit this column."));
         return;
     }
 
-    pInventoryModel->SetHWSLibraryName (sName, wxEmptyString,
+    pInventoryModel->SetHWSLibraryName (sName, sSet,
                                         lHave, lWant, lSpare);
 }
 
@@ -948,7 +994,7 @@ BrowserLibraryCardGrid::OnPopupRemove (wxCommandEvent& WXUNUSED (event))
     for (unsigned int i = 0; i < MyGetSelectedRows ().Count (); i++) {
         GetCellValue (MyGetSelectedRows ().Item (i), GetNumberCols () -1).ToLong (&lCardRef);
         oIndexArray.Add (lCardRef);
-        oNameArray.Add (GetCellValue (MyGetSelectedRows ().Item (i), 3));
+        oNameArray.Add (GetCellValue (MyGetSelectedRows ().Item (i), 4));
     }
 
     for (unsigned int i = 0; i < oIndexArray.Count (); i++) {
