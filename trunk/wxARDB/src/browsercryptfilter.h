@@ -91,15 +91,20 @@ private:
     wxListView   *m_pSectList;
     wxCheckBox   *m_pSeraphCheckbox;
     wxListView   *m_pTitleList;
+    wxCheckBox   *m_pHave;
+    wxCheckBox   *m_pHaveOrWant;
     wxTextCtrl   *m_pCardNameText;
+
 
     // helper functions to build the interface
     wxSizer *BuildDiscipline (unsigned int uiDisciplineNumber, wxSizer *pContainer, wxWindow *pWindow);
     void BuildSpecial (unsigned int uiSpecialNumber, wxSizer *pContainer, wxWindow *pWindow);
-    void CreateSpecialBox(wxPanel *pPanel, wxSizer *pSizer, 
+    void CreateOtherBox(wxPanel *pPanel, wxSizer *pSizer,
+  			  InterfaceData *pUIData);
+    void CreateSpecialBox(wxPanel *pPanel, wxSizer *pSizer,
 			  InterfaceData *pUIData);
 
-    void CreateCapacityBox(wxPanel *pPanel, wxSizer *pSizer, 
+    void CreateCapacityBox(wxPanel *pPanel, wxSizer *pSizer,
 		      InterfaceData *pUIData);
 
     void FillCardPicker ();

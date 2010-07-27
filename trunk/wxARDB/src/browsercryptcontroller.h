@@ -68,7 +68,7 @@ private:
     void ProcessSects (BrowserCryptFilter *pFilter);
     void ProcessSpecials (BrowserCryptFilter *pFilter);
     void ProcessTitles (BrowserCryptFilter *pFilter);
-
+    void ProcessOther (BrowserCryptFilter *pFilter);
 };
 
 #include "browsercryptmodel.h"

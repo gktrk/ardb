@@ -40,6 +40,7 @@ BrowserLibraryModel::BrowserLibraryModel (wxNotebook *pViewPanel, unsigned int u
                               "       sum(have) AS hav, "
                               "       sum(want) AS wan, "
                               "       sum(spare) AS spa, "
+                              "       set_name, "
                               "       card_name, "
                               "       card_type, "
                               "       requires || min(' ', requires) || discipline  || min(' ', discipline) || clan || min(' ', clan) AS req, "
@@ -64,7 +65,7 @@ BrowserLibraryModel::BrowserLibraryModel (wxNotebook *pViewPanel, unsigned int u
     m_sWipeQuery.Printf (wxT ("DELETE FROM library_selection WHERE browser_num = %d; "),
                          m_uiModelIDNumber);
 
-    SetSortColumn(4);
+    SetSortColumn(5);
     Reset();
 
     m_pController = new BrowserLibraryController (this);
@@ -265,22 +266,26 @@ BrowserLibraryModel::SetSortColumn (int iColumn)
         break;
     case 4:
     case -4:
-        m_sSortSuffix << wxT ("dumbitdown(card_name)");
+        m_sSortSuffix << wxT ("set_name");
         break;
     case 5:
     case -5:
-        m_sSortSuffix << wxT ("card_type");
+        m_sSortSuffix << wxT ("dumbitdown(card_name)");
         break;
     case 6:
     case -6:
-        m_sSortSuffix << wxT ("req");
+        m_sSortSuffix << wxT ("card_type");
         break;
     case 7:
     case -7:
-        m_sSortSuffix << wxT ("cost");
+        m_sSortSuffix << wxT ("req");
         break;
     case 8:
     case -8:
+        m_sSortSuffix << wxT ("cost");
+        break;
+    case 9:
+    case -9:
         m_sSortSuffix << wxT ("card_text");
         break;
     default:

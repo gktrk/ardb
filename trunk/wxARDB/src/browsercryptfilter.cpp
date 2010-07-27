@@ -116,7 +116,7 @@ wxDialog (0, -1, wxT ("Crypt Filter"), wxDefaultPosition, wxDefaultSize, wxRESIZ
     if (nScreenHeight < 700) {
 	pTertioPanel = new wxPanel (pNotebook, -1);
 	pTertioSizer = new wxBoxSizer(wxVERTICAL);
-	pSpecialPanel = pTertioPanel; 
+	pSpecialPanel = pTertioPanel;
 	pSpecialSizer = pTertioSizer;
 	pCapSizer = pTertioSizer;
     } else {
@@ -205,7 +205,7 @@ wxDialog (0, -1, wxT ("Crypt Filter"), wxDefaultPosition, wxDefaultSize, wxRESIZ
 
 
     CreateCapacityBox(pSpecialPanel, pCapSizer, pUIData);
-
+    CreateOtherBox(pSpecialPanel, pSpecialSizer, pUIData);
 
     pPrimoPanel->SetAutoLayout (TRUE);
     pPrimoPanel->SetSizer (pPrimoSizer);
@@ -314,9 +314,28 @@ wxDialog (0, -1, wxT ("Crypt Filter"), wxDefaultPosition, wxDefaultSize, wxRESIZ
     }
 
 }
+void
+BrowserCryptFilter::CreateOtherBox(wxPanel *pPanel, wxSizer *pSizer,
+				     InterfaceData *pUIData)
+{
+    // Other (Have, wanted etc)
+    wxStaticBoxSizer *pOtherBox = new wxStaticBoxSizer (new wxStaticBox (pPanel, -1, wxT ("Other")), wxHORIZONTAL);
+    wxFlexGridSizer *pOtherSizer = new wxFlexGridSizer (2);
+    pOtherBox->Add (pOtherSizer, 1, wxEXPAND | wxTOP, 5);
+
+    m_pHave = new wxCheckBox (pPanel, -1, wxT ("Have Only"));
+    m_pHaveOrWant = new wxCheckBox (pPanel, -1, wxT ("Have or Want"));
+
+    pOtherSizer->Add(m_pHave, 0, wxALL, 3);
+    pOtherSizer->Add(m_pHaveOrWant, 0, wxALL, 3);
+
+    pSizer->Add (pOtherBox, 0, wxEXPAND | wxBOTTOM, 5);
+}
+
+
 
 void
-BrowserCryptFilter::CreateSpecialBox(wxPanel *pPanel, wxSizer *pSizer, 
+BrowserCryptFilter::CreateSpecialBox(wxPanel *pPanel, wxSizer *pSizer,
 				     InterfaceData *pUIData)
 {
     // Special abilities & card text
@@ -346,7 +365,7 @@ BrowserCryptFilter::CreateSpecialBox(wxPanel *pPanel, wxSizer *pSizer,
 }
 
 void
-BrowserCryptFilter::CreateCapacityBox(wxPanel *pPanel, wxSizer *pSizer, 
+BrowserCryptFilter::CreateCapacityBox(wxPanel *pPanel, wxSizer *pSizer,
 				      InterfaceData *pUIData)
 {
     // Capacity

@@ -59,6 +59,8 @@ private:
     BrowserLibraryController *m_pController;
     wxCheckBox   *m_pCostBlood;
     wxCheckBox   *m_pCostPool;
+    wxCheckBox   *m_pHave;
+    wxCheckBox   *m_pHaveOrWant;
     wxCheckBox   *m_pDisciplineLess;
     wxListView   *m_pDisciplineList;
     wxListView   *m_pEditionList;
