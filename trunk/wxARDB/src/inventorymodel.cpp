@@ -226,6 +226,8 @@ InventoryModel::ExportWithXSL (wxString &sFileName, wxString *pXSL)
     xmlDtdPtr dtd = NULL;                 // DTD pointer
     xmlNodePtr nStylesheet = NULL;        // xsl stylesheet node pointer
     xsltStylesheetPtr cur = NULL;         // xsl stylesheet
+    long lHaveCounter=0;
+    long lHaveTemp=0;
     wxString sCount;
 #ifdef __WXMSW__
     wxString sTemp;
@@ -283,8 +285,6 @@ InventoryModel::ExportWithXSL (wxString &sFileName, wxString *pXSL)
 
     // Add the crypt node
     nCrypt = my_xmlNewChild (nRoot, NULL, wxT ("crypt"), wxT (""));
-    sCount = wxT ("0");
-    my_xmlNewProp (nCrypt, wxT("size"), sCount);
 
     // Add the crypt cards
     for (unsigned int i = 0; i < m_oCryptList.GetCount (); i++) {
@@ -299,6 +299,9 @@ InventoryModel::ExportWithXSL (wxString &sFileName, wxString *pXSL)
         rarity,
         advanced
         */
+        //Item(1) is the number of this card the user has
+       m_oCryptList.Item (i).Item (1).ToLong(&lHaveTemp);
+       lHaveCounter = lHaveCounter + lHaveTemp;
 
         // The card node contains mandatory props
         node = my_xmlNewChild (nCrypt, NULL, wxT ("vampire"), wxT (""));
@@ -323,12 +326,15 @@ InventoryModel::ExportWithXSL (wxString &sFileName, wxString *pXSL)
                         m_oCryptList.Item (i).Item (7));
     }
 
+    //Set the total number of library cards the user Has
+    sCount = wxString::Format(wxT("%li"),lHaveCounter);
+    my_xmlNewProp (nCrypt, wxT("size"), sCount);
+    lHaveCounter = 0;
+
     // Add the library node
     nLibrary = my_xmlNewChild (nRoot, NULL, wxT ("library"), wxT (""));
-    sCount = wxT ("0");
-    my_xmlNewProp (nLibrary, wxT ("size"), sCount);
 
-    // Add the library cards
+   // Add the library cards
     for (unsigned int i = 0; i < m_oLibraryList.GetCount (); i++) {
         /*
         Reminder of the query string used to fill m_oLibraryList
@@ -340,6 +346,9 @@ InventoryModel::ExportWithXSL (wxString &sFileName, wxString *pXSL)
         set_name,
         rarity,
         */
+            //Item(1) is the number of this card the user has
+        m_oLibraryList.Item (i).Item (1).ToLong(&lHaveTemp);
+        lHaveCounter = lHaveCounter + lHaveTemp;
 
         // The card node contains mandatory props
         node = my_xmlNewChild (nLibrary, NULL, wxT ("card"), wxT (""));
@@ -361,6 +370,9 @@ InventoryModel::ExportWithXSL (wxString &sFileName, wxString *pXSL)
         my_xmlNewChild (node, NULL, wxT ("rarity"),
                         m_oLibraryList.Item (i).Item (6));
     }
+   //Set the total number of library cards the user has
+    sCount = wxString::Format(wxT("%li"),lHaveCounter);
+    my_xmlNewProp (nLibrary, wxT ("size"), sCount);
 
 
     // No XSL means we save in XML format
@@ -428,7 +440,7 @@ InventoryModel::GetHaveCrypt (long lRef)
     long lAmount;
 
     sQuery.Printf (wxT ("SELECT sum(number_owned) "
-                        "  FROM inventory_view_crypt "
+                        "  FROM inventory_view_ crypt "
                         "  WHERE card_ref IN "
                         "  (SELECT record_num "
                         "     FROM cards_crypt "
@@ -800,7 +812,7 @@ InventoryModel::my_xmlNewProp (xmlNodePtr node,
 }
 
 
-void ResetCryptInventory()
+                                                                                                                                                                                                                                                                        void ResetCryptInventory()
 {
     Database *pDatabase = Database::Instance();
     wxString sQuery;
@@ -827,14 +839,14 @@ long FindCryptCardRef(wxString sName, bool bAdvanced)
 
     sName.Replace (wxT ("'"), wxT ("''"));
 
-    // Check wether it's an advanced vampire or not
+     //Check wether it's an advanced vampire or not
     if (bAdvanced) {
         // Try to find an advanced vampire
         sQuery.Printf (wxT ("SELECT card_ref FROM crypt_view WHERE dumbitdown(card_name) LIKE dumbitdown('%s') AND advanced = 'Advanced' "), sName.c_str ());
-    } else {
+      } else {
         // Try to find a regular vampire
         sQuery.Printf (wxT ("SELECT card_ref FROM crypt_view WHERE dumbitdown(card_name) LIKE dumbitdown('%s') AND advanced = '' "), sName.c_str ());
-    }
+      }
 
     sQuery <<  wxT ("ORDER BY card_ref ASC LIMIT 1");
 
