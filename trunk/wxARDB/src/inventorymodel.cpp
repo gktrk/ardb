@@ -440,7 +440,7 @@ InventoryModel::GetHaveCrypt (long lRef)
     long lAmount;
 
     sQuery.Printf (wxT ("SELECT sum(number_owned) "
-                        "  FROM inventory_view_ crypt "
+                        "  FROM inventory_view_crypt "
                         "  WHERE card_ref IN "
                         "  (SELECT record_num "
                         "     FROM cards_crypt "
