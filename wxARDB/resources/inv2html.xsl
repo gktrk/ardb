@@ -114,6 +114,12 @@
       margin: 5px;
       text-decoration: none
       }
+      b
+	{
+	color: #aaaa88;
+      margin: 5px;
+      text-decoration: none
+      }
     </style>
     <title>VTES Inventory of cards</title>
   </head>
@@ -132,8 +138,8 @@
         <xsl:for-each select="/inventory/crypt/vampire">
           <xsl:sort select="name"/>
               <tr>
-                <td><span class="tablevalue"><xsl:call-template name="count-vampires"><xsl:with-param name="myname" select="string(name)" /><xsl:with-param name="myadv" select="string(adv)" /></xsl:call-template></span></td>
-                <td><span class="tablevalue"><a><xsl:attribute name='href'>http://monger.vekn.org/showvamp.html?NAME=<xsl:value-of select="name"/><xsl:if test="adv!=''">  ADV</xsl:if></xsl:attribute><xsl:value-of select="name"/><xsl:if test="adv!=''">  ADV</xsl:if></a></span></td>
+                <td><span class="tablevalue"><xsl:call-template name="count-vampires"><xsl:with-param name="myname" select="string(name)" /><xsl:with-param name="myadv" select="string(adv)" /><xsl:with-param name="myset" select="string(set)" /></xsl:call-template></span></td>
+                <td><span class="tablevalue"><a><xsl:attribute name='href'>http://monger.vekn.org/showvamp.html?NAME=<xsl:value-of select="name"/><xsl:if test="adv!=''">  ADV</xsl:if></xsl:attribute><xsl:value-of select="name"/><xsl:if test="adv!=''">  ADV</xsl:if></a><b><xsl:value-of select="set"/></b></span></td>
 	      </tr>
         </xsl:for-each>
       </tbody></table>
@@ -153,8 +159,9 @@
         <xsl:for-each select="/inventory/library/card">
           <xsl:sort select="name"/>
               <tr>
-                <td><span class="tablevalue"><xsl:call-template name="count-cards"><xsl:with-param name="myname" select="string(name)" /><xsl:with-param name="myadv" select="string(adv)" /></xsl:call-template></span></td>
-                <td><span class="tablevalue"><a><xsl:attribute name='href'>http://monger.vekn.org/showvamp.html?NAME=<xsl:value-of select="name"/></xsl:attribute><xsl:value-of select="name"/></a></span></td>
+                <td><span class="tablevalue"><xsl:call-template name="count-cards"><xsl:with-param name="myname" select="string(name)" /><xsl:with-param name="myadv" select="string(adv)" />
+<xsl:with-param name="myset" select="string(set)"/></xsl:call-template></span></td>
+                <td><span class="tablevalue"><a><xsl:attribute name='href'>http://monger.vekn.org/showvamp.html?NAME=<xsl:value-of select="name"/></xsl:attribute><xsl:value-of select="name"/></a><b><xsl:value-of select="set"/></b></span></td>
 	      </tr>
         </xsl:for-each>
       </tbody></table>
@@ -173,7 +180,8 @@
 
 <xsl:template name="count-vampires">
   <xsl:param name="myname"/>
-  <xsl:param name="myadv"/>
+  <xsl:param name="myset"/>
+   <xsl:param name="myadv"/>
   have:<xsl:value-of select="@have"/>
   need:<xsl:value-of select="@need"/>
   spare:<xsl:value-of select="@spare"/>
@@ -181,6 +189,7 @@
 
 <xsl:template name="count-cards">
   <xsl:param name="myname"/>
+  <xsl:param name="myset"/>
   have:<xsl:value-of select="@have"/>
   need:<xsl:value-of select="@need"/>
   spare:<xsl:value-of select="@spare"/>
