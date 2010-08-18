@@ -26,6 +26,7 @@
 #include "interfacedata.h"
 
 #include <stdlib.h>
+#include <algorithm> // for std::random_shuffle
 
 
 BEGIN_EVENT_TABLE(DrawSimulator, wxFrame)
@@ -118,9 +119,7 @@ void
 DrawSimulator::Draw ()
 {
     DeckModel *pDeckModel = DeckModel::Instance ();
-    int iRandomNumber;
     long lCount;
-    wxArrayString oTempArray;
     wxString sName;
 
     // Vampires
@@ -128,7 +127,6 @@ DrawSimulator::Draw ()
     m_oRemainingVampires.Clear ();
 
     if (pDeckModel->GetCryptList () &&  pDeckModel->GetCryptCount () > 0) {
-        oTempArray.Clear ();
         // Break down the numbered list into a flat list
         for (unsigned int i = 0; i < pDeckModel->GetCryptList ()->GetCount (); i++) {
             for (pDeckModel->GetCryptList ()->Item (i).Item (0).ToLong (&lCount);
@@ -140,21 +138,18 @@ DrawSimulator::Draw ()
                       << wxT (" (")
                       << pDeckModel->GetCryptList ()->Item (i).Item (3)
                       << wxT (")");
-                oTempArray.Add (sName);
+                m_oRemainingVampires.Add (sName);
             }
         }
-        // Shuffle the cards into a new list
-        for (unsigned int i = oTempArray.GetCount (); i > 0; i--) {
-            iRandomNumber = Random (i);
-            sName = oTempArray.Item (iRandomNumber);
-            m_oRemainingVampires.Add (sName);
-            oTempArray.RemoveAt (iRandomNumber);
-        }
+
+        // Shuffle the list of crypt card names stored in m_oRemainingVampires
+        std::random_shuffle(&m_oRemainingVampires[0], 
+                            &m_oRemainingVampires[m_oRemainingVampires.GetCount ()]);
+
         // Draw cards
         for (unsigned int i = 0; i < 4  && m_oRemainingVampires.GetCount (); i++) {
-            iRandomNumber = Random (m_oRemainingVampires.GetCount ());
-            m_oDrawnVampires.Add (m_oRemainingVampires.Item (iRandomNumber));
-            m_oRemainingVampires.RemoveAt (iRandomNumber);
+            m_oDrawnVampires.Add (m_oRemainingVampires.Item (i));
+            m_oRemainingVampires.RemoveAt (i);
         }
         // Display stuff
         m_pDrawnVampiresText->Freeze ();
@@ -182,26 +177,22 @@ DrawSimulator::Draw ()
     m_oRemainingCards.Clear ();
 
     if (pDeckModel->GetLibraryList () &&  pDeckModel->GetLibraryCount () > 0) {
-        oTempArray.Clear ();
         // Break down the numbered list into a flat list
         for (unsigned int i = 0; i < pDeckModel->GetLibraryList ()->GetCount (); i++) {
             for (pDeckModel->GetLibraryList ()->Item (i).Item (0).ToLong (&lCount);
                     lCount > 0; lCount--) {
-                oTempArray.Add ( pDeckModel->GetLibraryList ()->Item (i).Item (1));
+                m_oRemainingCards.Add ( pDeckModel->GetLibraryList ()->Item (i).Item (1));
             }
         }
-        // Shuffle the cards into a new list
-        for (unsigned int i = oTempArray.GetCount (); i > 0; i--) {
-            iRandomNumber = Random (i);
-            sName = oTempArray.Item (iRandomNumber);
-            m_oRemainingCards.Add (sName);
-            oTempArray.RemoveAt (iRandomNumber);
-        }
+
+        // Shuffle the list of library card names stored in m_oRemainingCards
+        std::random_shuffle(&m_oRemainingCards[0], 
+                            &m_oRemainingCards[m_oRemainingCards.GetCount ()]);
+
         // Draw cards
         for (unsigned int i = 0; i < 7  && m_oRemainingCards.GetCount (); i++) {
-            iRandomNumber = Random (m_oRemainingCards.GetCount ());
-            m_oDrawnCards.Add (m_oRemainingCards.Item (iRandomNumber));
-            m_oRemainingCards.RemoveAt (iRandomNumber);
+            m_oDrawnCards.Add (m_oRemainingCards.Item (i));
+            m_oRemainingCards.RemoveAt (i);
         }
         // Display stuff
         m_pDrawnCardsText->Freeze ();
@@ -237,11 +228,4 @@ void
 DrawSimulator::OnButtonDraw (wxCommandEvent & WXUNUSED (event))
 {
     Draw ();
-}
-
-
-int
-DrawSimulator::Random (int iMax)
-{
-    return (int) (iMax * (rand() * 1.0) / RAND_MAX);
 }

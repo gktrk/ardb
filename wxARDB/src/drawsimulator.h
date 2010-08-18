@@ -48,7 +48,6 @@ private:
     void Draw ();
     void OnButtonClose (wxCommandEvent & WXUNUSED (event));
     void OnButtonDraw (wxCommandEvent & WXUNUSED (event));
-    int Random (int iMax);
 
     enum {
         ID_CLOSE_BUTTON = wxID_HIGHEST + 1,
