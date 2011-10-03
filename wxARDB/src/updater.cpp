@@ -383,7 +383,7 @@ bool Updater::UpdateDatabase()
 
 wxString Updater::GetServerName()
 {
-    wxString sServer (wxT ("www.white-wolf.com"));
+    wxString sServer (wxT ("www.vekn.net"));
     wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get();
 
     if (pConfig) {
@@ -396,7 +396,7 @@ wxString Updater::GetServerName()
 
 wxString Updater::GetFileName()
 {
-    wxString sFile (wxT ("/VTES/downloads/vtescsv.zip"));
+    wxString sFile (wxT ("/images/stories/downloads/vtescsv.zip"));
     wxFileConfig *pConfig = (wxFileConfig *) wxFileConfig::Get();
 
     if (pConfig) {
