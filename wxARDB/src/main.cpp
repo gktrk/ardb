@@ -31,7 +31,7 @@
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
-#define VERSION_NUMBER wxT("3.1.1")
+#define VERSION_NUMBER wxT("3.2")
 
 #ifdef __BORLANDC__
 #pragma hdrstop
