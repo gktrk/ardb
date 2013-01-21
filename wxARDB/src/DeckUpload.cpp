@@ -64,8 +64,8 @@ bool DeckUpload::Upload(wxString &sCrypt, wxString &sLibrary, wxString &sTitle, 
     postBuffer += wxT("sl_deck_submit=1&");
     postBuffer += wxT("sl_user_agent=ardb&");
     postBuffer += wxT("sl_agent_version=2.9.0&");
-    postBuffer += wxT("username=") + sUserName + wxT("&");
-    postBuffer += wxT("password=") + sPassword + wxT("&");
+    postBuffer += wxT("username=") + UriEncode(sUserName) + wxT("&");
+    postBuffer += wxT("password=") + UriEncode(sPassword) + wxT("&");
     postBuffer += wxT("title=") + UriEncode(sTitle) + wxT("&");
     postBuffer += wxT("author=") + UriEncode(sAuthor) + wxT("&");
     postBuffer += wxT("description=") + UriEncode(sDesc) + wxT("&");
