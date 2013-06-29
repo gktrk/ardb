@@ -1,5 +1,5 @@
 /* XPM */
-static char * ardbsplash_xpm[] = {
+static const char * const ardbsplash_xpm[] = {
 "353 438 1273 2",
 "  	c None",
 ". 	c #D7D9D7",
