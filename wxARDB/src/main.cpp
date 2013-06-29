@@ -540,7 +540,7 @@ BrowserFrame::OnFileImageDownload (wxCommandEvent& WXUNUSED (event))
 
             wxDownloadFile *pDownloadFile;
             pDownloadFile = new wxDownloadFile(this,
-                                               wxT("http://www.powerbase-bath.com/files/"),
+                                               wxT("http://ardb.googlecode.com/files/"),
                                                filesToDownload, wxT("cardimages"), true, 1000);
 
 
