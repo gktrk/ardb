@@ -52,7 +52,7 @@ wxDownloadFile::~wxDownloadFile(void)
 
 void* wxDownloadFile::Entry()
 {
-    char c = 0;
+    char *buf = new char [m_nNotifyBytes];
     int bytesread = 0;
     m_bIsDownload = true;
     wxDownloadEvent event(wxEVT_DOWNLOAD, GetId() );
@@ -121,9 +121,9 @@ void* wxDownloadFile::Entry()
                 wxInt64 nCount = 0;
                 file.Create(m_strDstDir + wxT("_dl") + m_strFiles[m_nCurrentFile], true);
 
-                while ((bytesread = (int)(pIn_Stream->Read(&c, 1)).LastRead()) > 0 &&
+                while ((bytesread = (int)(pIn_Stream->Read(buf, m_nNotifyBytes)).LastRead()) > 0 &&
                        m_bIsDownload && !TestDestroy() ) {
-                    file.Write((const void *)&c, bytesread);
+					file.Write((const void *)buf, bytesread);
                     nCount += bytesread;
                     if (m_bNotifyDownloading &&
                         (nCount%m_nNotifyBytes) == 0 && nCount>=m_nNotifyBytes) {
@@ -184,6 +184,7 @@ void* wxDownloadFile::Entry()
             fFilesLeftToDownload = FALSE;
         }
     }
+	delete [] buf;
 
     event.SetDownLoadStatus(wxDownloadEvent::DOWNLOAD_COMPLETE);
 
