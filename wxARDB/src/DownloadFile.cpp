@@ -23,6 +23,7 @@
 #ifdef  __WXMSW__
 #include <wx/msw/registry.h>
 #endif
+#include <wx/wfstream.h>
 
 wxDownloadFile::wxDownloadFile(wxWindow *pParent, wxString strURL, wxArrayString &strFiles,
                                wxString strDstDir, bool bNotify, wxInt64 nBytes)
@@ -120,10 +121,12 @@ void* wxDownloadFile::Entry()
                 wxFile file;
                 wxInt64 nCount = 0;
                 file.Create(m_strDstDir + wxT("_dl") + m_strFiles[m_nCurrentFile], true);
+				wxFileOutputStream pOut_Stream(file);
+				wxBufferedOutputStream pBuffered_Out_Stream(pOut_Stream);
 
                 while ((bytesread = (int)(pIn_Stream->Read(buf, m_nNotifyBytes)).LastRead()) > 0 &&
                        m_bIsDownload && !TestDestroy() ) {
-					file.Write((const void *)buf, bytesread);
+					pBuffered_Out_Stream.Write(buf, bytesread);
                     nCount += bytesread;
                     if (m_bNotifyDownloading &&
                         (nCount%m_nNotifyBytes) == 0 && nCount>=m_nNotifyBytes) {
@@ -133,7 +136,9 @@ void* wxDownloadFile::Entry()
                     }
                 }
 
-                file.Close();
+				pBuffered_Out_Stream.Sync();
+				pOut_Stream.Close();
+				file.Close();
                 delete pIn_Stream;
 
                 //File downloaded.
