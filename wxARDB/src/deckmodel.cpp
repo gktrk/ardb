@@ -578,13 +578,10 @@ DeckModel::DelFromLibrary (long lCardRef, int iCount, bool bRefreshUI)
 bool
 DeckModel::ExportToHTML ()
 {
-    Database *pDatabase = Database::Instance ();
     wxString sXSL, sConfEntry = wxT("DeckHTMLTemplate");
     wxString sFile = StripInvalidFilename(m_sName);
 
-    if (pDatabase == NULL) return false;
-
-    sXSL << pDatabase->GetDatabaseDirectory ()
+    sXSL << *g_pArdbDir
          << wxFileName::GetPathSeparator ()
          << wxT("xsl/deck2html_eldb.xsl");
 
@@ -607,13 +604,10 @@ DeckModel::ExportToHTML ()
 bool
 DeckModel::ExportToJOL ()
 {
-    Database *pDatabase = Database::Instance ();
     wxString sXSL, sConfEntry = wxT("DeckJOLTemplate");
     wxString sFile = StripInvalidFilename(m_sName);
 
-    if (pDatabase == NULL) return false;
-
-    sXSL << pDatabase->GetDatabaseDirectory ()
+    sXSL << *g_pArdbDir
          << wxFileName::GetPathSeparator ()
          << wxT("xsl/deck2jol.xsl");
 
@@ -635,13 +629,10 @@ DeckModel::ExportToJOL ()
 bool
 DeckModel::ExportToLackey()
 {
-    Database *pDatabase = Database::Instance ();
     wxString sXSL, sConfEntry = wxT("DeckLackeyTemplate");
     wxString sFile = StripInvalidFilename(m_sName);
 
-    if (pDatabase == NULL) return false;
-
-    sXSL << pDatabase->GetDatabaseDirectory ()
+    sXSL << *g_pArdbDir
          << wxFileName::GetPathSeparator ()
          << wxT("xsl/deck2lackey.xsl");
 
@@ -664,13 +655,10 @@ DeckModel::ExportToLackey()
 bool
 DeckModel::ExportToPhpBB ()
 {
-    Database *pDatabase = Database::Instance ();
     wxString sXSL, sConfEntry = wxT("DeckPhpBBTemplate");
     wxString sFile = StripInvalidFilename(m_sName);
 
-    if (pDatabase == NULL) return false;
-
-    sXSL << pDatabase->GetDatabaseDirectory ()
+    sXSL << *g_pArdbDir
          << wxFileName::GetPathSeparator ()
          << wxT("xsl/deck2phpbb.xsl");
 
@@ -693,14 +681,11 @@ DeckModel::ExportToPhpBB ()
 bool
 DeckModel::ExportToText ()
 {
-    Database *pDatabase = Database::Instance ();
     wxString sXSL;
     wxString sConfEntry = wxT("DeckTextTemplate");
     wxString sFile = StripInvalidFilename(m_sName);
 
-    if (pDatabase == NULL) return false;
-
-    sXSL << pDatabase->GetDatabaseDirectory ()
+    sXSL << *g_pArdbDir
          << wxFileName::GetPathSeparator ()
          << wxT("xsl/deck2text.xsl");
 
@@ -744,7 +729,6 @@ bool
 DeckModel::ExportToSecretLibrary(wxString &sUsername, wxString &sPassword)
 {
     bool result;
-    Database *pDatabase = Database::Instance ();
     wxString sCryptXSL;
     wxString sLibraryXSL;
     wxString sTitleXSL;
@@ -757,25 +741,23 @@ DeckModel::ExportToSecretLibrary(wxString &sUsername, wxString &sPassword)
     wxString sAuthor = wxT("");
     wxString sDesc = wxT("");
 
-    if (pDatabase == NULL) return false;
-
-    sCryptXSL << pDatabase->GetDatabaseDirectory ()
+    sCryptXSL << *g_pArdbDir
               << wxFileName::GetPathSeparator ()
               << wxT("xsl/crypt2text.xsl");
 
-    sLibraryXSL << pDatabase->GetDatabaseDirectory ()
+    sLibraryXSL << *g_pArdbDir
                 << wxFileName::GetPathSeparator ()
                 << wxT("xsl/library2text.xsl");
 
-    sTitleXSL  << pDatabase->GetDatabaseDirectory ()
+    sTitleXSL  << *g_pArdbDir
                << wxFileName::GetPathSeparator ()
                << wxT("xsl/title2text.xsl");
 
-    sAuthorXSL  << pDatabase->GetDatabaseDirectory ()
+    sAuthorXSL  << *g_pArdbDir
                 << wxFileName::GetPathSeparator ()
                 << wxT("xsl/author2text.xsl");
 
-    sDescXSL  << pDatabase->GetDatabaseDirectory ()
+    sDescXSL  << *g_pArdbDir
               << wxFileName::GetPathSeparator ()
               << wxT("xsl/desc2text.xsl");
 
