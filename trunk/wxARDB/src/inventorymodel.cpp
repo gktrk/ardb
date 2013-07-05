@@ -85,13 +85,10 @@ InventoryModel::DeleteInstance ()
 bool
 InventoryModel::ExportToCSV ()
 {
-    Database *pDatabase = Database::Instance ();
     wxString sXSL, sConfEntry = wxT("InventoryCSVTemplate");
     wxString sFile = m_sName;
 
-    if (pDatabase == NULL) return false;
-
-    sXSL << pDatabase->GetDatabaseDirectory ()
+    sXSL << *g_pArdbDir
          << wxFileName::GetPathSeparator ()
          << wxT("xsl/inv2csv.xsl");
 
@@ -122,13 +119,10 @@ InventoryModel::ExportToCSV ()
 bool
 InventoryModel::ExportToHTML ()
 {
-    Database *pDatabase = Database::Instance ();
     wxString sXSL, sConfEntry = wxT("InventoryHTMLTemplate");
     wxString sFile = m_sName;
 
-    if (pDatabase == NULL) return false;
-
-    sXSL << pDatabase->GetDatabaseDirectory ()
+    sXSL << *g_pArdbDir
          << wxFileName::GetPathSeparator ()
          << wxT("xsl/inv2html.xsl");
 
@@ -159,13 +153,10 @@ InventoryModel::ExportToHTML ()
 bool
 InventoryModel::ExportToText ()
 {
-    Database *pDatabase = Database::Instance ();
     wxString sXSL, sConfEntry = wxT("InventoryTextTemplate");
     wxString sFile = m_sName;
 
-    if (pDatabase == NULL) return false;
-
-    sXSL << pDatabase->GetDatabaseDirectory ()
+    sXSL << *g_pArdbDir
          << wxFileName::GetPathSeparator ()
          << wxT("xsl/inv2text.xsl");
 
