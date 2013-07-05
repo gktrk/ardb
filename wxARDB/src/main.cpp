@@ -73,6 +73,9 @@ class BrowserFrame ;
 #include "inventorymodel.h"
 #include "ardb_db_edition_filter.h"
 #include "DeckUpload.h"
+#include "interfacedata.h"
+
+wxString *g_pArdbDir;
 
 wxDEFINE_SCOPED_PTR_TYPE(wxZipEntry);
 
@@ -121,6 +124,7 @@ MyApp::OnExit ()
 bool
 MyApp::OnInit ()
 {
+    g_pArdbDir = new wxString(wxFileName::GetCwd());
     wxSplashScreen* pSplash = NULL;
 
     ::wxInitAllImageHandlers();
@@ -392,6 +396,8 @@ BrowserFrame::OnClose (wxCloseEvent& WXUNUSED(event))
 
     delete g_pIcon;
     delete g_pSplashBitmap;
+
+    delete g_pArdbDir;
 
     Destroy ();
 }

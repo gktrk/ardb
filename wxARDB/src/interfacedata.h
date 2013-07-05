@@ -38,6 +38,8 @@ extern wxFrame *g_pMainWindow;
 
 extern unsigned int g_uiGroupCount;
 
+extern wxString *g_pArdbDir;
+
 class InterfaceData
 {
 public:

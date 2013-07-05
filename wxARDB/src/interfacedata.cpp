@@ -71,12 +71,13 @@ InterfaceData::InterfaceData () :
     Database *pDatabase = Database::Instance ();
     if (!pDatabase) return;
     RecordSet *pResult;
+    wxString sImageDir(*g_pArdbDir + wxFileName::GetPathSeparator () + wxT("vtesicons"));
 
     // try to find the directory with our images
-    if (wxFile::Exists (wxT ("./Blank.xpm")))
-        m_sImagedir = wxT("./");
-    else if ( wxFile::Exists(wxT("vtesicons/Blank.xpm")) )
-        m_sImagedir = wxT("vtesicons/");
+    if (wxFile::Exists (sImageDir +  wxFileName::GetPathSeparator () + wxT ("Blank.xpm")))
+        m_sImagedir = sImageDir;
+    else if (wxFile::Exists (*g_pArdbDir +  wxFileName::GetPathSeparator () + wxT ("Blank.xpm")))
+        m_sImagedir = *g_pArdbDir;
     else {
         wxLogWarning(wxT("Can't find image files in either '.' or 'vtesicons'!"));
         m_sImagedir = wxT ("");
@@ -248,7 +249,7 @@ InterfaceData::MakeStaticBitmap (wxWindow* pParent, wxString& sName)
         wxStaticBitmap *pStaticBitmap;
         wxString sIconName = sName;
 
-        sIconName.Prepend (m_sImagedir);
+        sIconName.Prepend (m_sImagedir + wxFileName::GetPathSeparator());
         sIconName.Append (wxT (".xpm"));
 
         if (!wxFile::Exists (sIconName)) {
